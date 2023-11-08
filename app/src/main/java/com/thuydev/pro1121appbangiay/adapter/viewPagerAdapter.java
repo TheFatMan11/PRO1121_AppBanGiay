@@ -1,13 +1,12 @@
-package com.thuydev.pro1121_appbangiay.adapter;
+package com.thuydev.pro1121appbangiay.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.thuydev.pro1121_appbangiay.fragment.ThongKe_DoanhThu;
-import com.thuydev.pro1121_appbangiay.fragment.ThongKe_Top10SP;
+import com.thuydev.pro1121appbangiay.fragment.ThongKe_DoanhThu;
+import com.thuydev.pro1121appbangiay.fragment.ThongKe_Top10SP;
 
 public class viewPagerAdapter extends FragmentStateAdapter {
      public viewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {

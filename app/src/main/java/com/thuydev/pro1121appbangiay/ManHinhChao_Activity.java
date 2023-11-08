@@ -1,4 +1,4 @@
-package com.thuydev.pro1121_appbangiay;
+package com.thuydev.pro1121appbangiay;
 
 import androidx.appcompat.app.AppCompatActivity;
 

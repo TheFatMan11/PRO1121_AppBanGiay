@@ -1,4 +1,4 @@
-package com.thuydev.pro1121_appbangiay;
+package com.thuydev.pro1121appbangiay;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.thuydev.pro1121_appbangiay.model.User;
+import com.thuydev.pro1121appbangiay.model.User;
 
 public class DangKy_Activity extends AppCompatActivity {
 private EditText email,matKhau,reMatKhau;

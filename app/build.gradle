@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.thuydev.pro1121_appbangiay'
+    namespace 'com.thuydev.pro1121appbangiay'
     compileSdk 34
 
     defaultConfig {

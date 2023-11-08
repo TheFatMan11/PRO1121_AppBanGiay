@@ -1,7 +1,6 @@
-package com.thuydev.pro1121_appbangiay.model;
+package com.thuydev.pro1121appbangiay.model;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class User {
     private String Email;

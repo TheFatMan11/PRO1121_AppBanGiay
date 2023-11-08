@@ -1,4 +1,4 @@
-package com.thuydev.pro1121_appbangiay.fragment;
+package com.thuydev.pro1121appbangiay.fragment;
 
 import android.os.Bundle;
 
@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.thuydev.pro1121_appbangiay.R;
-import com.thuydev.pro1121_appbangiay.adapter.viewPagerAdapter;
+import com.thuydev.pro1121appbangiay.R;
+import com.thuydev.pro1121appbangiay.adapter.viewPagerAdapter;
 
 
 public class frg_ThongKe extends Fragment {

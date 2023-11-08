@@ -1,4 +1,4 @@
-package com.thuydev.pro1121_appbangiay.fragment;
+package com.thuydev.pro1121appbangiay.fragment;
 
 import android.os.Bundle;
 
@@ -8,14 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.thuydev.pro1121_appbangiay.R;
+import com.thuydev.pro1121appbangiay.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ThongKe_Top10SP#newInstance} factory method to
+ * Use the {@link ThongKe_DoanhThu#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ThongKe_Top10SP extends Fragment {
+public class ThongKe_DoanhThu extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class ThongKe_Top10SP extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ThongKe_Top10SP() {
+    public ThongKe_DoanhThu() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class ThongKe_Top10SP extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ThongKe_Top10SP.
+     * @return A new instance of fragment ThongKe_DoanhThu.
      */
     // TODO: Rename and change types and number of parameters
-    public static ThongKe_Top10SP newInstance(String param1, String param2) {
-        ThongKe_Top10SP fragment = new ThongKe_Top10SP();
+    public static ThongKe_DoanhThu newInstance(String param1, String param2) {
+        ThongKe_DoanhThu fragment = new ThongKe_DoanhThu();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class ThongKe_Top10SP extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_thong_ke__top10_s_p, container, false);
+        return inflater.inflate(R.layout.fragment_thong_ke__doanh_thu, container, false);
     }
 }
