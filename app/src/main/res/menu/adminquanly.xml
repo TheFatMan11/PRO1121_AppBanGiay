@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:id="menu_qlnv"
-    android:title=""
-    android:icon="@drawable/people"
-    />
-    <item android:id="menu_qlkh"
+    <item
+        android:id="@+id/menu_qlnv"
+        android:icon="@drawable/people"
+        android:title="" />
+    <item
+        android:id="@+id/menu_qlkh"
         android:icon="@drawable/call"
-        android:title=""
-        />
-    <item android:id="menu_thongke"
-        android:title=""
+        android:title="" />
+    <item
+        android:id="@+id/menu_hotro"
         android:icon="@drawable/call"
-        />
-    <item android:id="menu_thongke"
-        android:title=""
+        android:title="" />
+    <item
+        android:id="@+id/menu_thongke"
         android:icon="@drawable/call"
-        />
-    <item android:id="menu_resetpass"
-        android:title=""
+        android:title="" />
+    <item
+        android:id="@+id/menu_resetpass"
         android:icon="@drawable/resetpassword"
-        />
+        android:title="" />
 
 </menu>
