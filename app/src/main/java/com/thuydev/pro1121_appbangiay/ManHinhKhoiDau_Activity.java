@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 public class ManHinhKhoiDau_Activity extends AppCompatActivity {
 Button dangNhap;
-TextView dangKy;
+private TextView dangKy;
 private  Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +25,13 @@ private  Intent intent;
         dangNhap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chuyen(XacNhan_Activity.class);
+                chuyen(DangNhap_Activity.class);
             }
         });
         dangKy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ManHinhKhoiDau_Activity.this, "Chưa làm ok", Toast.LENGTH_SHORT).show();
+                chuyen(DangKy_Activity.class);
             }
         });
     }

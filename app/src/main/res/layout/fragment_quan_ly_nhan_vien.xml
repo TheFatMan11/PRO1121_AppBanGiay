@@ -20,13 +20,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/more" />
- <com.google.android.material.bottomnavigation.BottomNavigationView
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     android:background="#FF9800"
-     app:menu="@menu/adminquanly"
 
-     />
 
 
 </LinearLayout>

@@ -13,11 +13,17 @@
         android:theme="@style/Theme.PRO1121_AppBanGiay"
         tools:targetApi="31">
         <activity
+            android:name=".DangKy_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".DangNhap_Activity"
+            android:exported="false" />
+        <activity
             android:name=".XacNhan_Activity"
             android:exported="false" />
         <activity
             android:name=".ManHinhKhoiDau_Activity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".ManHinhChao_Activity"
             android:exported="true">

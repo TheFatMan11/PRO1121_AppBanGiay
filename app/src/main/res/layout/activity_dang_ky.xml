@@ -24,7 +24,7 @@
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/logo3"
+                android:src="@drawable/logo1"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -44,21 +44,35 @@
                 android:textColor="#E6903B"
                 android:searchResultHighlightColor="#E6903B"
                 android:background="@drawable/shape_edittext"
-                android:id="@+id/edt_email_dangnhap"
+                android:id="@+id/edt_email_dangnky"
                 />
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="Password"
+                android:hint="Mật khẩu"
                 android:textColorHint="#E6903B"
                 android:padding="10dp"
+                android:inputType="textPassword"
                 android:textColor="#E6903B"
                 android:searchResultHighlightColor="#E6903B"
                 android:layout_marginTop="10dp"
                 tools:ignore="Autofill,HardcodedText,UnusedAttribute"
                 android:background="@drawable/shape_edittext"
-                android:id="@+id/edt_matkhau_dangnhap"
-
+                android:id="@+id/edt_matkhau_dangky"
+                />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Nhập lại mật khẩu"
+                android:textColorHint="#E6903B"
+                android:padding="10dp"
+                android:inputType="textPassword"
+                android:textColor="#E6903B"
+                android:searchResultHighlightColor="#E6903B"
+                android:layout_marginTop="10dp"
+                tools:ignore="Autofill,HardcodedText,UnusedAttribute"
+                android:background="@drawable/shape_edittext"
+                android:id="@+id/edt_rematkhau_dangky"
                 />
             <LinearLayout
                 android:layout_width="match_parent"
@@ -79,7 +93,6 @@
                     android:id="@+id/btn_dangky_on"/>
             </LinearLayout>
 
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
