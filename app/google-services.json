@@ -7,25 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:491679317463:android:a272905aeff6c793835f92",
-        "android_client_info": {
-          "package_name": "com.thuydev.pro1121_appbangiay"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA9PYu-ig_Rln_cVk5fAOEyihhQgJ5fcTc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:491679317463:android:07b00ce53ba12cd3835f92",
         "android_client_info": {
           "package_name": "com.thuydev.pro1121appbangiay"

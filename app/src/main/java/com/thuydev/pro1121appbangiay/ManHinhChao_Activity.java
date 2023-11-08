@@ -1,5 +1,6 @@
 package com.thuydev.pro1121appbangiay;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,11 +9,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
 
 public class ManHinhChao_Activity extends AppCompatActivity {
     private SharedPreferences preferences;
+    private FirebaseFirestore db;
+    private DocumentReference reference;
+    private  Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +38,11 @@ public class ManHinhChao_Activity extends AppCompatActivity {
                     Intent intent = new Intent(ManHinhChao_Activity.this,ManHinhKhoiDau_Activity.class);
                     startActivity(intent);
                     thaygiatri();
+                    finish();
                 }else {
-                dangNhap();
+                vaomanhinh();
                 }
-                finish();
+
             }
         },3000);
     }
@@ -41,15 +53,51 @@ public class ManHinhChao_Activity extends AppCompatActivity {
         editor.apply();
     }
 
-    private void dangNhap() {
+
+    private void vaomanhinh() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Intent intent;
-        if (user==null){
+        if (user == null) {
             intent = new Intent(this, DangNhap_Activity.class);
             startActivity(intent);
-            Toast.makeText(this, "Chưa có tài khoản", Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(this, "Vào màn hình đăng nhập", Toast.LENGTH_SHORT).show();
+        } else {
+            db = FirebaseFirestore.getInstance();
+            final Long[] chucvu = new Long[]{0L};
+            reference = db.collection("user").document(user.getUid());
+            reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isComplete()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Tài liệu người dùng tồn tại
+                            Map<String, Object> userData = document.getData();
+                            chucvu[0] = (Long) userData.get("chucVu");
+                            if (chucvu[0]==null){
+                                return;
+                            }
+                            if (chucvu[0] == 1) {
+                                intent = new Intent(ManHinhChao_Activity.this, ManHinhAdmin.class);
+                                startActivity(intent);
+                            } else if (chucvu[0] == 2) {
+                                intent = new Intent(ManHinhChao_Activity.this, ManHinhNhanVien.class);
+                                startActivity(intent);
+                            } else if (chucvu[0] == 3) {
+                                intent = new Intent(ManHinhChao_Activity.this, ManHinhKhachHang.class);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(ManHinhChao_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                            }
+                            finish();
+                        } else {
+                            Toast.makeText(ManHinhChao_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(ManHinhChao_Activity.this, "Lỗi truy vấn", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
         }
+
     }
 }

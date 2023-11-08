@@ -18,14 +18,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.model.User;
+
+import java.util.Map;
 
 public class DangKy_Activity extends AppCompatActivity {
 private EditText email,matKhau,reMatKhau;
 private Button dangKy;
 private ProgressDialog progressDialog;
 private FirebaseFirestore db ;
+    private Intent intent;
+    private DocumentReference reference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +90,51 @@ private FirebaseFirestore db ;
                 });
     }
 
+    private void vaomanhinh() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            intent = new Intent(this, DangNhap_Activity.class);
+            startActivity(intent);
+        } else {
+            db = FirebaseFirestore.getInstance();
+            final Long[] chucvu = {0l};
+            reference = db.collection("user").document(user.getUid());
+            reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isComplete()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Tài liệu người dùng tồn tại
+                            Map<String, Object> userData = document.getData();
+                            chucvu[0] = (Long) userData.get("chucVu");
+                            if (chucvu[0] == 1) {
+                                intent = new Intent(DangKy_Activity.this, ManHinhAdmin.class);
+                                startActivity(intent);
+                                finish();
+                            } else if (chucvu[0] == 2) {
+                                intent = new Intent(DangKy_Activity.this, ManHinhNhanVien.class);
+                                startActivity(intent);
+                                finish();
+                            } else if (chucvu[0] == 3) {
+                                intent = new Intent(DangKy_Activity.this, ManHinhKhachHang.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(DangKy_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(DangKy_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(DangKy_Activity.this, "Lỗi truy vấn", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
+        }
+
+    }
     private void taoUser(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db=FirebaseFirestore.getInstance();

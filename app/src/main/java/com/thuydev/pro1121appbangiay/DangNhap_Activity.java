@@ -165,18 +165,22 @@ public class DangNhap_Activity extends AppCompatActivity {
                         if (document.exists()) {
                             // Tài liệu người dùng tồn tại
                             Map<String, Object> userData = document.getData();
-                            chucvu[0] = (Long) userData.get("chucvu");
+                            chucvu[0] = (Long) userData.get("chucVu");
                             if (chucvu[0] == 1) {
                                 intent = new Intent(DangNhap_Activity.this, ManHinhAdmin.class);
                                 startActivity(intent);
+                                finish();
                             } else if (chucvu[0] == 2) {
-                                Toast.makeText(DangNhap_Activity.this, "Màn hình nhân viên", Toast.LENGTH_SHORT).show();
+                                intent = new Intent(DangNhap_Activity.this, ManHinhNhanVien.class);
+                                startActivity(intent);
+                                finish();
                             } else if (chucvu[0] == 3) {
-                                Toast.makeText(DangNhap_Activity.this, "Màn hình khách hàng", Toast.LENGTH_SHORT).show();
+                                intent = new Intent(DangNhap_Activity.this, ManHinhKhachHang.class);
+                                startActivity(intent);
+                                finish();
                             } else {
                                 Toast.makeText(DangNhap_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
                             }
-                            finish();
                         } else {
                             Toast.makeText(DangNhap_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
                         }
