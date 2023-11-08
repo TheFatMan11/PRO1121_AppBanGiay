@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".ManHinhAdmin">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcv_Admin"
@@ -19,6 +19,6 @@
         android:layout_height="wrap_content"
         android:background="#FF9800"
         app:itemActiveIndicatorStyle="@drawable/shape_icon2"
+        app:itemIconTint="@color/white"
         app:menu="@menu/adminquanly" />
-
 </LinearLayout>
