@@ -45,7 +45,7 @@ public class ManHinhChao_Activity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Intent intent;
         if (user==null){
-            intent = new Intent(this,MainActivity.class);
+            intent = new Intent(this, XacNhan_Activity.class);
             startActivity(intent);
             Toast.makeText(this, "Chưa có tài khoản", Toast.LENGTH_SHORT).show();
         }else {
