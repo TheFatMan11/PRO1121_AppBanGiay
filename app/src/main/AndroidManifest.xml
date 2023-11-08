@@ -13,6 +13,12 @@
         android:theme="@style/Theme.PRO1121_AppBanGiay"
         tools:targetApi="31">
         <activity
+            android:name=".ManHinhKhachHang"
+            android:exported="false" />
+        <activity
+            android:name=".ManHinhNhanVien"
+            android:exported="false" />
+        <activity
             android:name=".ManHinhAdmin"
             android:exported="false" />
         <activity

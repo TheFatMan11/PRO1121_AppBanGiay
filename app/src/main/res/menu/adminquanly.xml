@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:id="@+id/menu_qlnv"
+<item android:id="@+id/menu_admin_qlnv"
     android:title=""
     android:icon="@drawable/people"
     />
-    <item android:id="@+id/menu_qlkh"
+    <item android:id="@+id/menu_admin_qlkh"
         android:icon="@drawable/many_people"
         android:title=""
         />
-    <item android:id="@+id/menu_thongke"
+    <item android:id="@+id/menu_admin_thongke"
         android:title=""
         android:icon="@drawable/stockmarket"
         />
-    <item android:id="@+id/menu_qlsv"
+    <item android:id="@+id/menu_admin_qlsp"
         android:title=""
         android:icon="@drawable/hiking"
         />
 
-    <item android:id="@+id/menu_resetpass"
+    <item android:id="@+id/menu_admin_resetpass"
         android:title=""
         android:icon="@drawable/resetpassword"
         />
