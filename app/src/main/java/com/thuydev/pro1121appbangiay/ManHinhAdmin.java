@@ -12,6 +12,8 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -82,6 +84,13 @@ public class ManHinhAdmin extends AppCompatActivity {
             Toast.makeText(this, "oK ", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_toolbar, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     public void relaceFrg(Fragment fragment) {
