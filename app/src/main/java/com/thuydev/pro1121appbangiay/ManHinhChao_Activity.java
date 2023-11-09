@@ -90,9 +90,11 @@ public class ManHinhChao_Activity extends AppCompatActivity {
                             finish();
                         } else {
                             Toast.makeText(ManHinhChao_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
+                            FirebaseAuth.getInstance().signOut();
                         }
                     } else {
                         Toast.makeText(ManHinhChao_Activity.this, "Lỗi truy vấn", Toast.LENGTH_SHORT).show();
+                        FirebaseAuth.getInstance().signOut();
                     }
                 }
             });
