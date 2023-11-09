@@ -7,6 +7,13 @@
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".ManHinhKhachHang">
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#FF9800"
+        android:id="@+id/toolbar_khachhang"
+        app:menu="@menu/menu_toolbar"
+        />
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcv_KhachHang"
         android:layout_width="match_parent"

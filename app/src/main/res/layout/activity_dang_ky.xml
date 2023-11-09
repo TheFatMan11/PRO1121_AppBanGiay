@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/white"
-    tools:context=".XacNhan_Activity">
+    >
 
     <ScrollView
         android:layout_width="match_parent"

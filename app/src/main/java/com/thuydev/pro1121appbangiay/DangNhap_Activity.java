@@ -130,14 +130,13 @@ public class DangNhap_Activity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(DangNhap_Activity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                             vaomanhinh();
-
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(DangNhap_Activity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                            progressDialog.cancel();
                         }
-                        progressDialog.cancel();
+
                     }
                 });
     }
@@ -169,18 +168,18 @@ public class DangNhap_Activity extends AppCompatActivity {
                             if (chucvu[0] == 1) {
                                 intent = new Intent(DangNhap_Activity.this, ManHinhAdmin.class);
                                 startActivity(intent);
-                                finish();
                             } else if (chucvu[0] == 2) {
                                 intent = new Intent(DangNhap_Activity.this, ManHinhNhanVien.class);
                                 startActivity(intent);
-                                finish();
                             } else if (chucvu[0] == 3) {
                                 intent = new Intent(DangNhap_Activity.this, ManHinhKhachHang.class);
                                 startActivity(intent);
-                                finish();
                             } else {
                                 Toast.makeText(DangNhap_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
                             }
+                            progressDialog.cancel();
+                            finish();
+                            Toast.makeText(DangNhap_Activity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(DangNhap_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
                         }
