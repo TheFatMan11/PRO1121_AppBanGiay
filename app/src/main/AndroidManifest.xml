@@ -40,6 +40,9 @@
         <activity
             android:name=".ManHinhNhanVien"
             android:exported="false" />
+        <activity
+            android:name=".ThongTinTaiKhoan"
+            android:exported="false" />
     </application>
 
 </manifest>
