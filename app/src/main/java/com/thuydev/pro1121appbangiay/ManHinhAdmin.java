@@ -47,15 +47,19 @@ public class ManHinhAdmin extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.menu_admin_qlkh){
+                    relaceFrg(new QuanLyKhachHang());
                     Toast.makeText(ManHinhAdmin.this, "Đang ở quản lý khách hàng", Toast.LENGTH_SHORT).show();
                     getSupportActionBar().setTitle("Quản Lý Khách Hàng");
                 }else if (item.getItemId() == R.id.menu_admin_qlnv){
+                    relaceFrg(new QuanLyNhanVien());
                     Toast.makeText(ManHinhAdmin.this, "Đang ở quản lý nhân viên", Toast.LENGTH_SHORT).show();
                     getSupportActionBar().setTitle("Quản Lý Nhân Viên");
                 }else if (item.getItemId() == R.id.menu_admin_qlsp){
+
                     Toast.makeText(ManHinhAdmin.this, "Đang ở quản lý sản phẩm", Toast.LENGTH_SHORT).show();
                     getSupportActionBar().setTitle("Quản Lý Sản Phẩm");
                 }else if (item.getItemId() == R.id.menu_admin_thongke){
+                    relaceFrg(new frg_ThongKe());
                     Toast.makeText(ManHinhAdmin.this, "Đang ở thống kê", Toast.LENGTH_SHORT).show();
                     getSupportActionBar().setTitle("Thống kê");
                 } else if (item.getItemId()== R.id.menu_admin_resetpass) {
@@ -70,6 +74,14 @@ public class ManHinhAdmin extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId()==R.id.menu_toolbar){
+            Toast.makeText(this, "oK ", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void relaceFrg(Fragment fragment) {
