@@ -81,7 +81,7 @@ public class ManHinhAdmin extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId()==R.id.menu_toolbar){
-            Toast.makeText(this, "oK ", Toast.LENGTH_SHORT).show();
+            item.setIcon(R.drawable.bell);
         }
         return super.onOptionsItemSelected(item);
     }
