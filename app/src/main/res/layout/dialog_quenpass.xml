@@ -27,6 +27,7 @@
             android:background="@drawable/shape_edittext"
             android:hint="Email"
             android:padding="10dp"
+            android:textColor="#E6903B"
             android:textColorHint="#E6903B"
             android:id="@+id/edt_email_quen"/>
         <androidx.appcompat.widget.AppCompatButton

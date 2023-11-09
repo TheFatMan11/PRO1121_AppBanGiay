@@ -7,12 +7,18 @@
     android:orientation="vertical"
     android:background="@color/white"
     tools:context=".ManHinhNhanVien">
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#FF9800"
+        android:id="@+id/toolbar_nhanvien"
+        app:menu="@menu/menu_toolbar"
+        />
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcv_Nhanvien"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
