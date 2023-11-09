@@ -4,26 +4,27 @@
     android:orientation="horizontal"
     android:layout_margin="20dp"
     android:background="@drawable/shape_item"
-    android:padding="10dp"
+    android:padding="5dp"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="100dp"
-        android:layout_height="150dp">
+        android:layout_height="wrap_content">
 
-        <TextView
+        <ImageView
+            android:id="@+id/imv_anhsp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_launcher_background"/>
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"/>
 
     </LinearLayout>
     <LinearLayout
         android:layout_width="0dp"
         android:layout_marginLeft="25dp"
         android:layout_weight="1"
-        android:layout_marginTop="10dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         >
         <TextView
@@ -61,6 +62,23 @@
             android:textSize="15dp"
             android:text="Năm sản xuất: "/>
 
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/refresh"
+            android:id="@+id/ibtn_update"/>
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/remove"
+            android:id="@+id/ibtn_delete"/>
     </LinearLayout>
 
 </LinearLayout>

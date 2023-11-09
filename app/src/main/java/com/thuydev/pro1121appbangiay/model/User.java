@@ -3,6 +3,7 @@ package com.thuydev.pro1121appbangiay.model;
 import java.util.HashMap;
 
 public class User {
+    private String maUser;
     private String Email;
     private String hoTen;
     private String SDT;
@@ -13,20 +14,32 @@ public class User {
     public User() {
     }
 
-    public User(String email, int trangThai, Long soDu, int chucVu) {
+    public User(String maUser,String email, int trangThai, Long soDu, int chucVu) {
         Email = email;
         this.trangThai = trangThai;
         this.soDu = soDu;
         this.chucVu = chucVu;
+        this.maUser = maUser;
     }
 
-    public User(String email, String hoTen, String SDT, int trangThai, Long soDu, int chucVu) {
+
+
+    public User(String maUser, String email, String hoTen, String SDT, int trangThai, Long soDu, int chucVu) {
+        this.maUser = maUser;
         Email = email;
         this.hoTen = hoTen;
         this.SDT = SDT;
         this.trangThai = trangThai;
         this.soDu = soDu;
         this.chucVu = chucVu;
+    }
+
+    public String getMaUser() {
+        return maUser;
+    }
+
+    public void setMaUser(String maUser) {
+        this.maUser = maUser;
     }
 
     public String getEmail() {
@@ -77,22 +90,4 @@ public class User {
         this.chucVu = chucVu;
     }
 
-    HashMap<String, Object> mapDangKy(){
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("email",getEmail());
-        map.put("trangThai",getTrangThai());
-        map.put("chucVu",getChucVu());
-        map.put("soDu",getSoDu());
-        return map;
-    }
-    HashMap<String, Object> map(){
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("email",getEmail());
-        map.put("hoTen",getHoTen());
-        map.put("sdt",getSDT());
-        map.put("trangThai",getTrangThai());
-        map.put("chucVu",getChucVu());
-        map.put("soDu",getSoDu());
-        return map;
-    }
 }

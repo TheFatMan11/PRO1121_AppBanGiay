@@ -1,5 +1,9 @@
 package com.thuydev.pro1121appbangiay;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +15,11 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +43,23 @@ public class ManHinhAdmin extends AppCompatActivity {
     QuanLyGiay quanLyGiay = new QuanLyGiay();
     frg_ThongKe thongKe = new frg_ThongKe();
     FragmentManager manager;
+    Uri uri;
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult o) {
+                    if (o.getResultCode() == RESULT_OK) {
+                        Intent intent = o.getData();
+                        if (intent == null) {
+                            return;
+                        }
+                        uri = intent.getData();
+                        quanLyGiay.hienthiAnh(uri);
 
+                    }
+
+                }
+            });
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,23 +74,18 @@ public class ManHinhAdmin extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.menu_admin_qlkh){
-                    relaceFrg(new QuanLyKhachHang());
-                    Toast.makeText(ManHinhAdmin.this, "Đang ở quản lý khách hàng", Toast.LENGTH_SHORT).show();
+                    relaceFrg(quanLyKhachHang);
                     getSupportActionBar().setTitle("Quản Lý Khách Hàng");
                 }else if (item.getItemId() == R.id.menu_admin_qlnv){
-                    relaceFrg(new QuanLyNhanVien());
-                    Toast.makeText(ManHinhAdmin.this, "Đang ở quản lý nhân viên", Toast.LENGTH_SHORT).show();
+                    relaceFrg(quanLyNhanVien);
                     getSupportActionBar().setTitle("Quản Lý Nhân Viên");
                 }else if (item.getItemId() == R.id.menu_admin_qlsp){
-
-                    Toast.makeText(ManHinhAdmin.this, "Đang ở quản lý sản phẩm", Toast.LENGTH_SHORT).show();
+                    relaceFrg(quanLyGiay);
                     getSupportActionBar().setTitle("Quản Lý Sản Phẩm");
                 }else if (item.getItemId() == R.id.menu_admin_thongke){
-                    relaceFrg(new frg_ThongKe());
-                    Toast.makeText(ManHinhAdmin.this, "Đang ở thống kê", Toast.LENGTH_SHORT).show();
+                    relaceFrg(thongKe);
                     getSupportActionBar().setTitle("Thống kê");
                 } else if (item.getItemId()== R.id.menu_admin_resetpass) {
-                    Toast.makeText(ManHinhAdmin.this, "Đang ở đổi mật khẩu", Toast.LENGTH_SHORT).show();
                     getSupportActionBar().setTitle("Đổi mật khẩu");
                 }else {
                     Toast.makeText(ManHinhAdmin.this, "Lỗi", Toast.LENGTH_SHORT).show();
@@ -97,5 +117,26 @@ public class ManHinhAdmin extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fcv_Admin, fragment).commit();
     }
-
+    public void layAnh() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        launcher.launch(intent);
+    }
+    public void yeucauquyen() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            layAnh();
+            return;
+        }
+        if (this.checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            // xử lý sau
+            layAnh();
+        } else {
+            String[] quyen = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+            requestPermissions(quyen, 10);
+        }
+    }
+    public Uri anh(){
+        return uri;
+    }
 }
