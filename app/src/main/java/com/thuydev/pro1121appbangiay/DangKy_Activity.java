@@ -138,6 +138,9 @@ private FirebaseFirestore db ;
     private void taoUser(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db=FirebaseFirestore.getInstance();
+        if (user==null){
+            return;
+        }
         db.collection("user").document(user.getUid()).set(new User(user.getUid(),user.getEmail(),0,0L,3)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

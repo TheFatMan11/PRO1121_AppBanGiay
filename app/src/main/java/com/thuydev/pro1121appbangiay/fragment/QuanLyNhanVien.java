@@ -25,6 +25,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -52,6 +55,7 @@ public class QuanLyNhanVien extends Fragment {
     String id;
     User user = new User();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth firebaseAuth;
 
     public QuanLyNhanVien() {
         // Required empty public constructor
@@ -67,6 +71,8 @@ public class QuanLyNhanVien extends Fragment {
         list.clear();
         loatData();
         nghe();
+        firebaseAuth = FirebaseAuth.getInstance();
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +125,7 @@ public class QuanLyNhanVien extends Fragment {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isComplete()) {
                                         Toast.makeText(getContext(), "Them thanh công", Toast.LENGTH_SHORT).show();
+                                        themTK(email, matkhau);
                                         list.clear();
                                         nghe();
                                         dialog.dismiss();
@@ -159,6 +166,19 @@ public class QuanLyNhanVien extends Fragment {
         recyclerView.setAdapter(new AdapterUser(getContext(), list));
         adapterUser = new AdapterUser(getContext(), list);
         recyclerView.setAdapter(adapterUser);
+    }
+
+    public void themTK(String email, String matkhau) {
+        firebaseAuth.createUserWithEmailAndPassword(email, matkhau).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isComplete()) {
+                    Toast.makeText(getContext(), "Thanh cong", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Thất bại", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void nghe() {

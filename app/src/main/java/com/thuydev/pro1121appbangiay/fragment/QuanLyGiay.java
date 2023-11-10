@@ -121,7 +121,6 @@ public class QuanLyGiay extends Fragment {
                     Toast.makeText(getContext(), "Không được để trống", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                upAnh(Uri.parse(linkImage));
                 if (linkImage.isEmpty()) {
                     Toast.makeText(getContext(), "Vui lòng thêm ảnh sản phẩm", Toast.LENGTH_SHORT).show();
                     return;
@@ -130,7 +129,7 @@ public class QuanLyGiay extends Fragment {
                     Toast.makeText(getContext(), "Bạn không được viết gì khác ngoài số và dấu phẩy", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                sanPham.setAnh(linkImage);
+                sanPham.setAnh(linkMoi);
                 sanPham.setMaSp(id);
                 sanPham.setTenSP(ten.getText().toString().trim());
                 sanPham.setGia(Long.parseLong(gia.getText().toString()));
@@ -350,10 +349,11 @@ public class QuanLyGiay extends Fragment {
     public void hienthiAnh(Uri uri) {
         Glide.with(getContext()).load(uri).error(R.drawable.shoes).into(anh);
         linkImage = uri.toString();
+        upAnh(uri);
     }
 
     private StorageReference storageReference;
-
+private String linkMoi="";
     private void upAnh(Uri imageUri) {
         // Tạo một tham chiếu đến nơi bạn muốn lưu trữ tệp ảnh trong Firebase Storage
         storageReference = FirebaseStorage.getInstance().getReference("images").child(id);
@@ -365,7 +365,7 @@ public class QuanLyGiay extends Fragment {
                         storageReference.child("images").child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                linkImage = uri.toString();
+                                linkMoi = uri.toString();
                                 Toast.makeText(getContext(), "Up ảnh thành công", Toast.LENGTH_SHORT).show();
                             }
                         });
