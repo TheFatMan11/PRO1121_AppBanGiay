@@ -30,19 +30,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:text="Tên: "/>
+            android:text="Tên: "
+            android:textColor="#FA0202"/>
         <TextView
             android:id="@+id/tv_Email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:text="Email: "/>
-        <TextView
-            android:id="@+id/tv_Trangthai"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="15dp"
-            android:text="Trạng Thái: "/>
+            android:text="Email: "
+            android:textColor="#FA0202"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
+                android:text="Trạng Thái: "
+                android:textColor="#FA0202"/>
+
+            <TextView
+                android:id="@+id/tv_Trangthai"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="abc"
+                android:textSize="15dp"
+                android:textColor="#909090"/>
+        </LinearLayout>
+
     </LinearLayout>
     <ImageButton
         android:id="@+id/ibtn_xoa"

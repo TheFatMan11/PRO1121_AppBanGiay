@@ -12,8 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="#FF9800"
-        app:titleTextColor="@color/white"
-        android:gravity="center"
         app:menu="@menu/menu_toolbar" />
 
     <androidx.fragment.app.FragmentContainerView

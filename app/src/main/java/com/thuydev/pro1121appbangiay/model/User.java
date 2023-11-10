@@ -1,12 +1,10 @@
 package com.thuydev.pro1121appbangiay.model;
 
-import java.util.HashMap;
-
 public class User {
     private String maUser;
     private String Email;
     private String hoTen;
-    private String SDT;
+    private long SDT;
     private int trangThai;
     private Long soDu;
     private int chucVu;
@@ -24,7 +22,7 @@ public class User {
 
 
 
-    public User(String maUser, String email, String hoTen, String SDT, int trangThai, Long soDu, int chucVu) {
+    public User(String maUser, String email, String hoTen, long SDT, int trangThai, Long soDu, int chucVu) {
         this.maUser = maUser;
         Email = email;
         this.hoTen = hoTen;
@@ -58,11 +56,11 @@ public class User {
         this.hoTen = hoTen;
     }
 
-    public String getSDT() {
+    public long getSDT() {
         return SDT;
     }
 
-    public void setSDT(String SDT) {
+    public void setSDT(long l) {
         this.SDT = SDT;
     }
 
