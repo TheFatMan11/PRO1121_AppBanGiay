@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -149,6 +150,7 @@ public class DangNhap_Activity extends AppCompatActivity {
 
     private void vaomanhinh() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if (user == null) {
             intent = new Intent(this, DangNhap_Activity.class);
             startActivity(intent);
@@ -181,6 +183,7 @@ public class DangNhap_Activity extends AppCompatActivity {
                             finish();
                             Toast.makeText(DangNhap_Activity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         } else {
+                            Log.e("TAG", "vaomanhinh: "+user.getUid());
                             Toast.makeText(DangNhap_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
                         }
                     } else {

@@ -56,7 +56,8 @@ public class QuanLyNhanVien extends Fragment {
     User user = new User();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth firebaseAuth;
-
+    String email,matkhau,hoten,sdt,cv;
+    Dialog dialog;
     public QuanLyNhanVien() {
         // Required empty public constructor
     }
@@ -81,7 +82,7 @@ public class QuanLyNhanVien extends Fragment {
                 LayoutInflater inflater2 = getLayoutInflater();
                 View view1 = inflater2.inflate(R.layout.dialog_nhanvien, null);
                 builder.setView(view1);
-                Dialog dialog = builder.create();
+                dialog = builder.create();
                 dialog.show();
 
                 edt_Email = view1.findViewById(R.id.edt_email);
@@ -96,11 +97,11 @@ public class QuanLyNhanVien extends Fragment {
                     @Override
                     public void onClick(View v) {
 
-                        String email = edt_Email.getText().toString();
-                        String matkhau = edt_matKhau.getText().toString();
-                        String hoten = edt_hoTen.getText().toString();
-                        String sdt = edt_sdt.getText().toString();
-                        String cv = edt_cv.getText().toString();
+                        email = edt_Email.getText().toString();
+                        matkhau = edt_matKhau.getText().toString();
+                        hoten = edt_hoTen.getText().toString();
+                        sdt = edt_sdt.getText().toString();
+                        cv = edt_cv.getText().toString();
                         id = UUID.randomUUID().toString();
 
 
@@ -113,27 +114,9 @@ public class QuanLyNhanVien extends Fragment {
                         } else if (!isValidatePhone(sdt) || sdt.length() > 10) {
                             Toast.makeText(getContext(), "Số điện thoại không đúng", Toast.LENGTH_SHORT).show();
                         } else {
-                            user.setMaUser(id);
-                            user.setEmail(email);
-                            user.setHoTen(hoten);
-                            user.setSDT(Long.parseLong(sdt));
-                            user.setChucVu((int) Long.parseLong(cv));
-                            user.setTrangThai(1);
+                            themTK();
 
-                            db.collection("user").document(id).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isComplete()) {
-                                        Toast.makeText(getContext(), "Them thanh công", Toast.LENGTH_SHORT).show();
-                                        themTK(email, matkhau);
-                                        list.clear();
-                                        nghe();
-                                        dialog.dismiss();
-                                    } else {
-                                        Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+
                         }
                     }
                 });
@@ -168,11 +151,31 @@ public class QuanLyNhanVien extends Fragment {
         recyclerView.setAdapter(adapterUser);
     }
 
-    public void themTK(String email, String matkhau) {
+    public void themTK() {
         firebaseAuth.createUserWithEmailAndPassword(email, matkhau).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isComplete()) {
+                    FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+                    user.setMaUser(user1.getUid());
+                    user.setEmail(email);
+                    user.setHoTen(hoten);
+                    user.setSDT(Long.parseLong(sdt));
+                    user.setChucVu((int) Long.parseLong(cv));
+                    user.setTrangThai(1);
+                    db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isComplete()) {
+                                Toast.makeText(getContext(), "Them thanh công", Toast.LENGTH_SHORT).show();
+                                list.clear();
+                                nghe();
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                     Toast.makeText(getContext(), "Thanh cong", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Thất bại", Toast.LENGTH_SHORT).show();
