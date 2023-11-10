@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -152,6 +153,7 @@ public class QuanLyNhanVien extends Fragment {
     }
 
     public void themTK() {
+
         firebaseAuth.createUserWithEmailAndPassword(email, matkhau).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -169,6 +171,7 @@ public class QuanLyNhanVien extends Fragment {
                             if (task.isComplete()) {
                                 Toast.makeText(getContext(), "Them thanh công", Toast.LENGTH_SHORT).show();
                                 list.clear();
+                                FirebaseAuth.getInstance().signOut();
                                 nghe();
                                 dialog.dismiss();
                             } else {
@@ -183,6 +186,8 @@ public class QuanLyNhanVien extends Fragment {
             }
         });
     }
+
+
 
     private void nghe() {
         db.collection("user").whereEqualTo("chucVu", 2).addSnapshotListener(new EventListener<QuerySnapshot>() {

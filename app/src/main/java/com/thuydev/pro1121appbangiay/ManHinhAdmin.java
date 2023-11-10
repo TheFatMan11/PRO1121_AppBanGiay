@@ -27,13 +27,15 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.thuydev.pro1121appbangiay.adapter.viewPagerAdapter;
+import com.google.firebase.FirebaseApp;
+
 import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyKhachHang;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyNhanVien;
 import com.thuydev.pro1121appbangiay.fragment.frg_ThongKe;
 
 public class ManHinhAdmin extends AppCompatActivity {
+
     Toolbar toolbar;
     FragmentContainerView viewPager;
     BottomNavigationView bottomNavigationView;
@@ -139,4 +141,9 @@ public class ManHinhAdmin extends AppCompatActivity {
     public Uri anh(){
         return uri;
     }
+
+public void taoUser(){
+
+}
+
 }
