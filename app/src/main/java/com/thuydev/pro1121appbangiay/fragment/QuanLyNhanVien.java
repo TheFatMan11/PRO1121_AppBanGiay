@@ -64,9 +64,9 @@ public class QuanLyNhanVien extends Fragment {
         View view = inflater.inflate(R.layout.fragment_quan_ly_nhan_vien, null);
         recyclerView = view.findViewById(R.id.rcv_nhanVien);
         button = view.findViewById(R.id.ibtn_them_nv);
-
+        list.clear();
         loatData();
-        nghe1();
+        nghe();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,16 +114,17 @@ public class QuanLyNhanVien extends Fragment {
                             user.setChucVu((int) Long.parseLong(cv));
                             user.setTrangThai(1);
 
-                            db.collection("user").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            db.collection("user").document(id).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                        Toast.makeText(getContext(), "Them thanh cong", Toast.LENGTH_SHORT).show();
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isComplete()) {
+                                        Toast.makeText(getContext(), "Them thanh công", Toast.LENGTH_SHORT).show();
+                                        list.clear();
+                                        nghe();
                                         dialog.dismiss();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), "Them that bai", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
                         }
@@ -154,79 +155,41 @@ public class QuanLyNhanVien extends Fragment {
     }
 
     public void loatData() {
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(manager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(new AdapterUser(getContext(), list));
         adapterUser = new AdapterUser(getContext(), list);
         recyclerView.setAdapter(adapterUser);
     }
 
-    private void nghe1() {
-        CollectionReference reference = db.collection("user");
-
-        reference.whereEqualTo("chucVu", 2).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (queryDocumentSnapshots.toObjects(User.class).isEmpty()) {
-                    return;
-                }
-                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                    switch (dc.getType()) {
-                        case ADDED:
-                            list.add(dc.getDocument().toObject(User.class));
-                            adapterUser.notifyDataSetChanged();
-                            break;
-                        case MODIFIED:
-                            User dtoq = dc.getDocument().toObject(User.class);
-                            if (dc.getOldIndex() == dc.getNewIndex()) {
-                                list.set(dc.getOldIndex(), dtoq);
-                            } else {
-                                list.remove(dc.getOldIndex());
-                                list.add(dtoq);
-                            }
-                            adapterUser.notifyDataSetChanged();
-                            break;
-                        case REMOVED:
-                            list.remove(dc.getOldIndex());
-                            adapterUser.notifyDataSetChanged();
-                            break;
-                    }
-                }
-            }
-        });
-    }
-
     private void nghe() {
-        CollectionReference reference = db.collection("user");
-
-        reference.whereEqualTo("chucVu", 2).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("user").whereEqualTo("chucVu", 2).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (queryDocumentSnapshots.toObjects(User.class) == null) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
                     return;
                 }
-                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                    switch (dc.getType()) {
-                        case ADDED:
-                            dc.getDocument().toObject(User.class);
-                            list.add(dc.getDocument().toObject(User.class));
-                            adapterUser.notifyDataSetChanged();
-                            break;
-                        case MODIFIED:
-                            User dtoq = dc.getDocument().toObject(User.class);
-                            if (dc.getOldIndex() == dc.getNewIndex()) {
-                                list.set(dc.getOldIndex(), dtoq);
+                if (value != null) {
+                    for (DocumentChange dc : value.getDocumentChanges()) {
+                        switch (dc.getType()) {
+                            case ADDED:
+                                list.add(dc.getDocument().toObject(User.class));
                                 adapterUser.notifyDataSetChanged();
-                            } else {
+                                break;
+                            case MODIFIED:
+                                User user1 = dc.getDocument().toObject(User.class);
+                                if (dc.getOldIndex() == dc.getNewIndex()) {
+                                    list.set(dc.getOldIndex(), user1);
+                                    adapterUser.notifyDataSetChanged();
+                                } else {
+                                    list.remove(dc.getOldIndex());
+                                    list.add(user1);
+                                    adapterUser.notifyDataSetChanged();
+                                }
+                                break;
+                            case REMOVED:
                                 list.remove(dc.getOldIndex());
-                                list.add(dtoq);
                                 adapterUser.notifyDataSetChanged();
-                            }
-                            break;
-                        case REMOVED:
-                            dc.getDocument().toObject(User.class);
-                            list.remove(dc.getOldIndex());
-                            adapterUser.notifyDataSetChanged();
-                            break;
+                        }
                     }
                 }
             }
