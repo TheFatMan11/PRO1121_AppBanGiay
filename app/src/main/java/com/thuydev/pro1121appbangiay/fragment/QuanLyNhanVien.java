@@ -117,10 +117,8 @@ public class QuanLyNhanVien extends Fragment {
                             db.collection("user").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-                                    if (documentReference == null) {
                                         Toast.makeText(getContext(), "Them thanh cong", Toast.LENGTH_SHORT).show();
                                         dialog.dismiss();
-                                    }
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
