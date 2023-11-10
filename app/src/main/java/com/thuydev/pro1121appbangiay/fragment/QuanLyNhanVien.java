@@ -66,7 +66,7 @@ public class QuanLyNhanVien extends Fragment {
         button = view.findViewById(R.id.ibtn_them_nv);
 
         loatData();
-        nghe1();
+        nghe();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,28 +169,9 @@ public class QuanLyNhanVien extends Fragment {
                 if (queryDocumentSnapshots.toObjects(User.class).isEmpty()) {
                     return;
                 }
-                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                    switch (dc.getType()) {
-                        case ADDED:
-                            list.add(dc.getDocument().toObject(User.class));
-                            adapterUser.notifyDataSetChanged();
-                            break;
-                        case MODIFIED:
-                            User dtoq = dc.getDocument().toObject(User.class);
-                            if (dc.getOldIndex() == dc.getNewIndex()) {
-                                list.set(dc.getOldIndex(), dtoq);
-                            } else {
-                                list.remove(dc.getOldIndex());
-                                list.add(dtoq);
-                            }
-                            adapterUser.notifyDataSetChanged();
-                            break;
-                        case REMOVED:
-                            list.remove(dc.getOldIndex());
-                            adapterUser.notifyDataSetChanged();
-                            break;
-                    }
-                }
+                list.addAll(queryDocumentSnapshots.toObjects(User.class));
+                adapterUser.notifyDataSetChanged();
+                Log.e("TAG", "onSuccess: "+list.size() );
             }
         });
     }
@@ -208,8 +189,10 @@ public class QuanLyNhanVien extends Fragment {
                     switch (dc.getType()) {
                         case ADDED:
                             dc.getDocument().toObject(User.class);
+                            list.clear();
                             list.add(dc.getDocument().toObject(User.class));
                             adapterUser.notifyDataSetChanged();
+                            Log.e("TAG", "onSuccess: "+list.size() );
                             break;
                         case MODIFIED:
                             User dtoq = dc.getDocument().toObject(User.class);
@@ -221,11 +204,13 @@ public class QuanLyNhanVien extends Fragment {
                                 list.add(dtoq);
                                 adapterUser.notifyDataSetChanged();
                             }
+                            Log.e("TAG", "onSuccess: 1"+list.size() );
                             break;
                         case REMOVED:
                             dc.getDocument().toObject(User.class);
                             list.remove(dc.getOldIndex());
                             adapterUser.notifyDataSetChanged();
+                            Log.e("TAG", "onSuccess: 2"+list.size() );
                             break;
                     }
                 }
