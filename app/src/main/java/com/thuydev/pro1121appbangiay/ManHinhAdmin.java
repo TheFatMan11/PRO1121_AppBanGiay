@@ -26,13 +26,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.thuydev.pro1121appbangiay.adapter.Adapter_sanpham;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyKhachHang;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyNhanVien;
 import com.thuydev.pro1121appbangiay.fragment.frg_ThongKe;
+
+import java.util.UUID;
 
 public class ManHinhAdmin extends AppCompatActivity {
 
@@ -56,7 +64,7 @@ public class ManHinhAdmin extends AppCompatActivity {
                             return;
                         }
                         uri = intent.getData();
-                        quanLyGiay.hienthiAnh(uri);
+                            quanLyGiay.hienthiAnh(uri);
 
                     }
 
@@ -120,7 +128,9 @@ public class ManHinhAdmin extends AppCompatActivity {
     public void relaceFrg(Fragment fragment) {
         manager.beginTransaction().replace(R.id.fcv_Admin, fragment).commit();
     }
+
     public void layAnh() {
+        yeucauquyen();
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -139,12 +149,8 @@ public class ManHinhAdmin extends AppCompatActivity {
             requestPermissions(quyen, 10);
         }
     }
-    public Uri anh(){
-        return uri;
-    }
 
-public void taoUser(){
 
-}
+
 
 }

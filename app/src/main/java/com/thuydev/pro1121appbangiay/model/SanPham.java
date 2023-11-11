@@ -1,7 +1,19 @@
 package com.thuydev.pro1121appbangiay.model;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
+
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SanPham {
     private String maSp;
@@ -115,4 +127,38 @@ public class SanPham {
         map.put("time",time);
         return map;
     }
+FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String tenHang;
+
+    public String getTenHang() {
+
+        return tenHang;
+    }
+
+    public void setTenHang(String tenHang) {
+        this.tenHang = tenHang;
+    }
+
+    public void tenHang(QuanLyGiay giay) {
+        DocumentReference reference;
+       reference = db.collection("hang").document(getMaHang());
+       reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+           @Override
+           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+               if (!task.isComplete()){
+                   return;
+               }
+               DocumentSnapshot snapshot = task.getResult();
+               if (!snapshot.exists()){
+                   return;
+               }
+               Map<String,Object> map = snapshot.getData();
+               tenHang = (String) map.get("tenHang");
+               giay.setA(tenHang);
+
+           }
+       });
+
+    }
+
 }
