@@ -1,25 +1,44 @@
 package com.thuydev.pro1121appbangiay.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
     private final Context context;
     private final List<User> list;
+    FirebaseFirestore db;
+    FirebaseAuth auth;
 
     public AdapterUser(Context context, List list) {
         this.context = context;
@@ -36,15 +55,99 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
+        User user = list.get(position);
         holder.tvTen.setText("Tên: " + list.get(position).getHoTen());
         holder.tvEmail.setText("Email: " + list.get(position).getEmail());
-        long trangThai = 1;
-        if (trangThai == 0) {
+
+        if (user.getTrangThai() == 0) {
             holder.tvTrangThai.setText("Không hoạt động");
-        } else if (trangThai == 1) {
+            holder.tvTrangThai.setTextColor(ContextCompat.getColor(context, R.color.xam));
+        } else if (user.getTrangThai() == 1) {
             holder.tvTrangThai.setText("Đang hoạt động");
             holder.tvTrangThai.setTextColor(ContextCompat.getColor(context, R.color.xanhla));
         }
+        holder.ibtn_xoa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setIcon(R.drawable.warning);
+                builder.setTitle("Cảnh báo !");
+                builder.setMessage("Bạn có chắc chắn muốn xóa dữ liệu của nhân viên " + user.getHoTen() + " không ?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        db = FirebaseFirestore.getInstance();
+                        db.collection("user").whereEqualTo("chucVu", 2).get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        DocumentSnapshot snapshot = queryDocumentSnapshots.getDocuments().get(position);
+                                        snapshot.getReference().delete();
+                                        Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+
+
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setIcon(R.drawable.warning);
+                builder.setTitle("Cánh bảo !");
+                builder.setMessage("Bạn có muốn dừng hoạt động nhân viên " + user.getHoTen() + " không ?");
+                builder.setPositiveButton("Tắt trạng thái", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        db = FirebaseFirestore.getInstance();
+                        user.setTrangThai(0);
+                        db.collection("user").whereEqualTo("chucVu", 2).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                for (DocumentSnapshot snapshot : task.getResult().getDocuments()) {
+                                    snapshot.getReference().set(user);
+                                    Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Mở trạng thái", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        db = FirebaseFirestore.getInstance();
+                        user.setTrangThai(1);
+                        db.collection("user").whereEqualTo("chucVu", 2).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                for (DocumentSnapshot snapshot : task.getResult().getDocuments()) {
+                                    snapshot.getReference().set(user);
+                                    Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+                builder.create().show();
+
+            }
+        });
     }
 
     @Override
@@ -56,6 +159,7 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
         TextView tvTen, tvEmail, tvTrangThai;
         ImageButton ibtn_xoa;
 
+
         public viewHolder(@NonNull View itemView) {
             super(itemView);
             tvTen = itemView.findViewById(R.id.tv_Ten);
@@ -64,4 +168,6 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
             ibtn_xoa = itemView.findViewById(R.id.ibtn_xoa);
         }
     }
+
+
 }

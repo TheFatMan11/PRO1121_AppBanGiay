@@ -6,36 +6,66 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.thuydev.pro1121appbangiay.ManHinhAdmin;
 import com.thuydev.pro1121appbangiay.R;
+import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
+import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class Adapter_sanpham extends RecyclerView.Adapter<Adapter_sanpham.ViewDolder>{
 List<SanPham> list;
 Context context;
+QuanLyGiay quanLyGiay;
+    Dialog dialog;
+    private EditText thuongHieu,ten,gia,list_kichco,namSX,soLuong,edt_hang;
+    private ImageView anh;
+    private SanPham sanPham;
+    String id="",linkImage="";
+    private Adapter_hang adapter;
+    private int change = 0;
     FirebaseFirestore db;
-    public Adapter_sanpham(List<SanPham> list, Context context) {
+    public Adapter_sanpham(List<SanPham> list, Context context,QuanLyGiay quanLyGiay) {
         this.list = list;
         this.context = context;
+        this.quanLyGiay = quanLyGiay;
     }
 
     @NonNull
@@ -96,8 +126,24 @@ Context context;
             }
         });
 
-
+holder.update.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+    Update(position);
     }
+});
+    }
+
+    private void Update(int position) {
+        SanPham sanPham = list.get(position);
+        sanPham.tenHang(quanLyGiay);
+        quanLyGiay.them("Sửa sản phẩm",list.get(position).getMaSp(),sanPham,"Sửa");
+    }
+
+
+
+
+
 
     @Override
     public int getItemCount() {
@@ -120,4 +166,9 @@ ImageButton update,delete;
             delete = itemView.findViewById(R.id.ibtn_delete);
         }
     }
+    List<Hang> list_Hang;
+
+
+
+
 }

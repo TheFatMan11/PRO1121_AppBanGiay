@@ -154,7 +154,6 @@ public class QuanLyNhanVien extends Fragment {
     }
 
     public void themTK() {
-
         firebaseAuth.createUserWithEmailAndPassword(email, matkhau).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -179,6 +178,7 @@ public class QuanLyNhanVien extends Fragment {
                         }
                     });
                     Toast.makeText(getContext(), "Thanh cong", Toast.LENGTH_SHORT).show();
+                    return;
                 } else {
                     Toast.makeText(getContext(), "Thất bại", Toast.LENGTH_SHORT).show();
                 }
