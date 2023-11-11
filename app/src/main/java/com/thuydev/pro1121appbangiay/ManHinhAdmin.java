@@ -72,6 +72,8 @@ public class ManHinhAdmin extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Quản Lý Nhân Viên");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        manager = getSupportFragmentManager();
+        manager.beginTransaction().add(R.id.fcv_Admin,quanLyNhanVien).commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -116,7 +118,6 @@ public class ManHinhAdmin extends AppCompatActivity {
     }
 
     public void relaceFrg(Fragment fragment) {
-        FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fcv_Admin, fragment).commit();
     }
     public void layAnh() {

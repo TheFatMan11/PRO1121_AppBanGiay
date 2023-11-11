@@ -47,7 +47,7 @@ import java.util.UUID;
 
 
 public class QuanLyNhanVien extends Fragment {
-    List<User> list = new ArrayList<>();
+    List<User> list ;
     EditText edt_maNV, edt_Email, edt_matKhau, edt_hoTen, edt_sdt, edt_cv;
     AppCompatButton btn_Luu, btn_Huy;
     RecyclerView recyclerView;
@@ -70,9 +70,8 @@ public class QuanLyNhanVien extends Fragment {
         View view = inflater.inflate(R.layout.fragment_quan_ly_nhan_vien, null);
         recyclerView = view.findViewById(R.id.rcv_nhanVien);
         button = view.findViewById(R.id.ibtn_them_nv);
-        list.clear();
         loatData();
-        nghe();
+
         firebaseAuth = FirebaseAuth.getInstance();
 
 
@@ -146,7 +145,9 @@ public class QuanLyNhanVien extends Fragment {
     }
 
     public void loatData() {
+        nghe();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        list =new ArrayList<>();
         recyclerView.setAdapter(new AdapterUser(getContext(), list));
         adapterUser = new AdapterUser(getContext(), list);
         recyclerView.setAdapter(adapterUser);
@@ -170,9 +171,7 @@ public class QuanLyNhanVien extends Fragment {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isComplete()) {
                                 Toast.makeText(getContext(), "Them thanh công", Toast.LENGTH_SHORT).show();
-                                list.clear();
                                 FirebaseAuth.getInstance().signOut();
-                                nghe();
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
@@ -198,8 +197,10 @@ public class QuanLyNhanVien extends Fragment {
                 }
                 if (value != null) {
                     for (DocumentChange dc : value.getDocumentChanges()) {
+                        Log.e("TAG", "onEvent: "+ dc.getType() );
                         switch (dc.getType()) {
                             case ADDED:
+                                dc.getDocument().toObject(User.class);
                                 list.add(dc.getDocument().toObject(User.class));
                                 adapterUser.notifyDataSetChanged();
                                 break;
@@ -215,6 +216,7 @@ public class QuanLyNhanVien extends Fragment {
                                 }
                                 break;
                             case REMOVED:
+                                dc.getDocument().toObject(User.class);
                                 list.remove(dc.getOldIndex());
                                 adapterUser.notifyDataSetChanged();
                         }
