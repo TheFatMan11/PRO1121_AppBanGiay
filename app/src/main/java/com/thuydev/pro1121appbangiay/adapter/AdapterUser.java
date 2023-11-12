@@ -126,12 +126,12 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
                                     db.collection("user").document(docID).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-                                            Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "Tắt thành công", Toast.LENGTH_SHORT).show();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(context, "That bai", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "Tắt thất bại", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -153,18 +153,17 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
                                     db.collection("user").document(docID).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-                                            Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "Mở thành công", Toast.LENGTH_SHORT).show();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(context, "That bai", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "Mở thất bại", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
                             }
                         });
-
                     }
                 });
                 builder.create().show();

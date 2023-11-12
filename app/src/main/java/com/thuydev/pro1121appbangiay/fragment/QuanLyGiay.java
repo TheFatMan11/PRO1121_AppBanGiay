@@ -133,7 +133,7 @@ EditText a;
         them.setText(tennut);
         anh.setOnClickListener(v -> {
             ManHinhAdmin admin = (ManHinhAdmin) getActivity();
-            admin.layAnh();
+            admin.yeucauquyen(getContext());;
         });
         thuongHieu.setOnClickListener(v -> addHang(thuongHieu, sanPham));
 
@@ -423,4 +423,6 @@ EditText a;
     public Adapter_sanpham getAdapter() {
         return adapterSanpham;
     }
+
+
 }
