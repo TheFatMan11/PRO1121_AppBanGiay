@@ -38,6 +38,7 @@
         <activity
             android:name=".ManHinhKhachHang"
             android:exported="false" />
+
         <activity
             android:name=".ManHinhNhanVien"
             android:exported="false" />
