@@ -120,9 +120,20 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
                         db.collection("user").whereEqualTo("chucVu", 2).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                for (DocumentSnapshot snapshot : task.getResult().getDocuments()) {
-                                    snapshot.getReference().set(user);
-                                    Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show();
+                                if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                                    DocumentSnapshot snapshot = task.getResult().getDocuments().get(position);
+                                    String docID = snapshot.getId();
+                                    db.collection("user").document(docID).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(context, "That bai", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
                             }
                         });
@@ -136,12 +147,24 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
                         db.collection("user").whereEqualTo("chucVu", 2).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                for (DocumentSnapshot snapshot : task.getResult().getDocuments()) {
-                                    snapshot.getReference().set(user);
-                                    Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show();
+                                if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                                    DocumentSnapshot snapshot = task.getResult().getDocuments().get(position);
+                                    String docID = snapshot.getId();
+                                    db.collection("user").document(docID).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(context, "That bai", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
                             }
                         });
+
                     }
                 });
                 builder.create().show();
