@@ -10,11 +10,11 @@
         />
     <item android:id="@+id/menu_admin_thongke"
         android:title=""
-        android:icon="@drawable/stockmarket"
+        android:icon="@drawable/barchart"
         />
     <item android:id="@+id/menu_admin_qlsp"
         android:title=""
-        android:icon="@drawable/hiking"
+        android:icon="@drawable/sportshoe"
         />
 
     <item android:id="@+id/menu_admin_resetpass"
