@@ -133,7 +133,7 @@ EditText a;
         them.setText(tennut);
         anh.setOnClickListener(v -> {
             ManHinhAdmin admin = (ManHinhAdmin) getActivity();
-            admin.yeucauquyen(getContext());;
+            admin.yeucauquyen(getContext());
         });
         thuongHieu.setOnClickListener(v -> addHang(thuongHieu, sanPham));
 
@@ -170,6 +170,7 @@ EditText a;
         builder.deleteCharAt(ma.length()-1);
         return ma;
     }
+
     private Adapter_hang adapter;
     private EditText edt_hang;
     private int change = 0;
