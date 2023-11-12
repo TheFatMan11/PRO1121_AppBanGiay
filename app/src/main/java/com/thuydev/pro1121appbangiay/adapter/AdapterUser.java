@@ -1,5 +1,6 @@
 package com.thuydev.pro1121appbangiay.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -54,7 +55,7 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull viewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
         User user = list.get(position);
         holder.tvTen.setText("Tên: " + list.get(position).getHoTen());
         holder.tvEmail.setText("Email: " + list.get(position).getEmail());
@@ -115,55 +116,13 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
                 builder.setPositiveButton("Tắt trạng thái", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db = FirebaseFirestore.getInstance();
-                        user.setTrangThai(0);
-                        db.collection("user").whereEqualTo("chucVu", 2).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                                    DocumentSnapshot snapshot = task.getResult().getDocuments().get(position);
-                                    String docID = snapshot.getId();
-                                    db.collection("user").document(docID).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            Toast.makeText(context, "Tắt thành công", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(context, "Tắt thất bại", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                       changeTT(0,list.get(position));
                     }
                 });
                 builder.setNegativeButton("Mở trạng thái", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db = FirebaseFirestore.getInstance();
-                        user.setTrangThai(1);
-                        db.collection("user").whereEqualTo("chucVu", 2).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                                    DocumentSnapshot snapshot = task.getResult().getDocuments().get(position);
-                                    String docID = snapshot.getId();
-                                    db.collection("user").document(docID).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            Toast.makeText(context, "Mở thành công", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(context, "Mở thất bại", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                        changeTT(1,list.get(position));
                     }
                 });
                 builder.create().show();
@@ -171,7 +130,20 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
             }
         });
     }
-
+    private void changeTT(int i,User user) {
+        db = FirebaseFirestore.getInstance();
+        user.setTrangThai(i);
+        db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isComplete()){
+                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
     @Override
     public int getItemCount() {
         return list.size();
