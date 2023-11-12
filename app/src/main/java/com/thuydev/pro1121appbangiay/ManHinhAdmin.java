@@ -44,6 +44,7 @@ import com.thuydev.pro1121appbangiay.adapter.Adapter_sanpham;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyKhachHang;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyNhanVien;
+import com.thuydev.pro1121appbangiay.fragment.frg_DoiMatKhau;
 import com.thuydev.pro1121appbangiay.fragment.frg_ThongKe;
 
 import java.util.UUID;
@@ -58,6 +59,7 @@ public class ManHinhAdmin extends AppCompatActivity {
     QuanLyKhachHang quanLyKhachHang = new QuanLyKhachHang();
     QuanLyGiay quanLyGiay = new QuanLyGiay();
     frg_ThongKe thongKe = new frg_ThongKe();
+    frg_DoiMatKhau doiMatKhau = new frg_DoiMatKhau();
     FragmentManager manager;
     Uri uri;
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
@@ -70,12 +72,13 @@ public class ManHinhAdmin extends AppCompatActivity {
                             return;
                         }
                         uri = intent.getData();
-                            quanLyGiay.hienthiAnh(uri);
+                        quanLyGiay.hienthiAnh(uri);
 
                     }
 
                 }
             });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,25 +90,26 @@ public class ManHinhAdmin extends AppCompatActivity {
         getSupportActionBar().setTitle("Quản Lý Nhân Viên");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         manager = getSupportFragmentManager();
-        manager.beginTransaction().add(R.id.fcv_Admin,quanLyNhanVien).commit();
+        manager.beginTransaction().add(R.id.fcv_Admin, quanLyNhanVien).commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.menu_admin_qlkh){
+                if (item.getItemId() == R.id.menu_admin_qlkh) {
                     relaceFrg(quanLyKhachHang);
                     getSupportActionBar().setTitle("Quản Lý Khách Hàng");
-                }else if (item.getItemId() == R.id.menu_admin_qlnv){
+                } else if (item.getItemId() == R.id.menu_admin_qlnv) {
                     relaceFrg(quanLyNhanVien);
                     getSupportActionBar().setTitle("Quản Lý Nhân Viên");
-                }else if (item.getItemId() == R.id.menu_admin_qlsp){
+                } else if (item.getItemId() == R.id.menu_admin_qlsp) {
                     relaceFrg(quanLyGiay);
                     getSupportActionBar().setTitle("Quản Lý Sản Phẩm");
-                }else if (item.getItemId() == R.id.menu_admin_thongke){
+                } else if (item.getItemId() == R.id.menu_admin_thongke) {
                     relaceFrg(thongKe);
                     getSupportActionBar().setTitle("Thống kê");
-                } else if (item.getItemId()== R.id.menu_admin_resetpass) {
+                } else if (item.getItemId() == R.id.menu_admin_resetpass) {
+                    relaceFrg(doiMatKhau);
                     getSupportActionBar().setTitle("Đổi mật khẩu");
-                }else {
+                } else {
                     Toast.makeText(ManHinhAdmin.this, "Lỗi", Toast.LENGTH_SHORT).show();
                 }
 
@@ -114,7 +118,7 @@ public class ManHinhAdmin extends AppCompatActivity {
         });
 
         OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
-        onBackPressedDispatcher.addCallback(this,new OnBackPressedCallback(true) {
+        onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ManHinhAdmin.this);
@@ -125,6 +129,9 @@ public class ManHinhAdmin extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(ManHinhAdmin.this, DangNhap_Activity.class);
+                        startActivity(intent);
+                        finish();
                         Toast.makeText(ManHinhAdmin.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -143,7 +150,7 @@ public class ManHinhAdmin extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId()==R.id.menu_toolbar){
+        if (item.getItemId() == R.id.menu_toolbar) {
             item.setIcon(R.drawable.bell);
         }
         return super.onOptionsItemSelected(item);
@@ -167,6 +174,7 @@ public class ManHinhAdmin extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         launcher.launch(intent);
     }
+
     public void yeucauquyen(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             layAnh();
@@ -180,7 +188,9 @@ public class ManHinhAdmin extends AppCompatActivity {
             requestPermissions(quyen, CODE_QUYEN);
         }
     }
+
     private static final int CODE_QUYEN = 1;
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

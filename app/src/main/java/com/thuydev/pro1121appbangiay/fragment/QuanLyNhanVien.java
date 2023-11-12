@@ -109,7 +109,7 @@ public class QuanLyNhanVien extends Fragment {
                             Toast.makeText(getContext(), "Không đúng định dạng của email", Toast.LENGTH_SHORT).show();
                         } else if (matkhau.length() < 8) {
                             Toast.makeText(getContext(), "Mật khẩu phải từ 8 chữ số", Toast.LENGTH_SHORT).show();
-                        } else if (!isValidatePhone(sdt) || sdt.length() > 10) {
+                        } else if (!isValidatePhone(sdt) || sdt.length() <10) {
                             Toast.makeText(getContext(), "Số điện thoại không đúng", Toast.LENGTH_SHORT).show();
                         } else {
                             themTK();
@@ -152,10 +152,9 @@ public class QuanLyNhanVien extends Fragment {
     }
 
     public void themTK() {
-        firebaseAuth.createUserWithEmailAndPassword(email, matkhau).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(email, matkhau).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isComplete()) {
+            public void onSuccess(AuthResult authResult) {
                     FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
                     user.setMaUser(user1.getUid());
                     user.setEmail(email);
@@ -176,10 +175,12 @@ public class QuanLyNhanVien extends Fragment {
                         }
                     });
                     Toast.makeText(getContext(), "Thanh cong", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    Toast.makeText(getContext(), "Thất bại", Toast.LENGTH_SHORT).show();
-                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -201,6 +202,7 @@ public class QuanLyNhanVien extends Fragment {
                                 dc.getDocument().toObject(User.class);
                                 list.add(dc.getDocument().toObject(User.class));
                                 adapterUser.notifyDataSetChanged();
+                                Log.e("TAG","loi"+dc.getDocument().toObject(User.class));
                                 break;
                             case MODIFIED:
                                 User user1 = dc.getDocument().toObject(User.class);
