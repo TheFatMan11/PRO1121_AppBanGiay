@@ -11,11 +11,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SanPham {
+public class SanPham implements Serializable {
     private String maSp;
     private String anh;
     private String tenSP;

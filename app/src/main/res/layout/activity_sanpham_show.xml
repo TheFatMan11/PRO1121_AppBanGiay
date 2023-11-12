@@ -22,6 +22,7 @@
                 app:cardCornerRadius="15dp">
 
                 <ImageView
+                    android:id="@+id/imv_anh_sp_lon"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -84,7 +85,9 @@
                 android:text="Thêm vào giỏ hàng"
                 android:textSize="20dp"
                 android:textStyle="bold"
-                android:layout_marginTop="?actionBarSize"/>
+                android:layout_marginTop="?actionBarSize"
+                android:id="@+id/btn_themgio"
+                />
         </LinearLayout>
 
     </ScrollView>
