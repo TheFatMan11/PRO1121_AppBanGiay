@@ -44,6 +44,7 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
     public AdapterUser(Context context, List list) {
         this.context = context;
         this.list = list;
+        db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -77,22 +78,17 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db = FirebaseFirestore.getInstance();
-                        db.collection("user").whereEqualTo("chucVu", 2).get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        DocumentSnapshot snapshot = queryDocumentSnapshots.getDocuments().get(position);
-                                        snapshot.getReference().delete();
-                                        Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show();
-
-                                    }
-                                });
+                        db.collection("user").document(list.get(position).getMaUser()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isComplete()){
+                                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }else {
+                                    Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
 
 
                     }
@@ -131,7 +127,6 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
         });
     }
     private void changeTT(int i,User user) {
-        db = FirebaseFirestore.getInstance();
         user.setTrangThai(i);
         db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
