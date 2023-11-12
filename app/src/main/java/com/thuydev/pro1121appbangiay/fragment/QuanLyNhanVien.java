@@ -89,7 +89,6 @@ public class QuanLyNhanVien extends Fragment {
                 edt_matKhau = view1.findViewById(R.id.edt_matKhau);
                 edt_hoTen = view1.findViewById(R.id.edt_hoTen);
                 edt_sdt = view1.findViewById(R.id.edt_sdt);
-                edt_cv = view1.findViewById(R.id.edt_chuVu);
                 btn_Luu = view1.findViewById(R.id.btn_Luu);
                 btn_Huy = view1.findViewById(R.id.btn_Huy);
 
@@ -101,11 +100,10 @@ public class QuanLyNhanVien extends Fragment {
                         matkhau = edt_matKhau.getText().toString();
                         hoten = edt_hoTen.getText().toString();
                         sdt = edt_sdt.getText().toString();
-                        cv = edt_cv.getText().toString();
                         id = UUID.randomUUID().toString();
 
 
-                        if (email.isEmpty() || matkhau.isEmpty() || hoten.isEmpty() || sdt.isEmpty() || cv.isEmpty()) {
+                        if (email.isEmpty() || matkhau.isEmpty() || hoten.isEmpty() || sdt.isEmpty() ) {
                             Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                         } else if (!isValidateEmail(email)) {
                             Toast.makeText(getContext(), "Không đúng định dạng của email", Toast.LENGTH_SHORT).show();
@@ -163,7 +161,7 @@ public class QuanLyNhanVien extends Fragment {
                     user.setEmail(email);
                     user.setHoTen(hoten);
                     user.setSDT(Long.parseLong(sdt));
-                    user.setChucVu((int) Long.parseLong(cv));
+                    user.setChucVu(2);
                     user.setTrangThai(1);
                     db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
