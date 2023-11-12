@@ -41,6 +41,8 @@
         android:layout_margin="10dp"
         android:background="@drawable/shape_edittext"
         android:hint="Nhập số điện thoại"
+        android:maxLength="10"
+
         android:padding="10dp" />
 
     <LinearLayout
