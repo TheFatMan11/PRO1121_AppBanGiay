@@ -199,6 +199,8 @@ public class ManHinhAdmin extends AppCompatActivity {
                 layAnh();
             } else {
                 Toast.makeText(this, "Bạn cần cấp quyền để sử dụng tính năng này", Toast.LENGTH_SHORT).show();
+                String[] quyen = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+                requestPermissions(quyen, CODE_QUYEN);
             }
         }
     }

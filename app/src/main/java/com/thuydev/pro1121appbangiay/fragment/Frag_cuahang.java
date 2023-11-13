@@ -26,6 +26,7 @@ import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 public class Frag_cuahang extends Fragment {
@@ -76,6 +77,7 @@ public class Frag_cuahang extends Fragment {
                 for (DocumentSnapshot dc : value.getDocuments()) {
                     nghe2(dc.getString("maHang"), dc.getString("tenHang"));
                 }
+
             }
         });
     }
@@ -94,10 +96,12 @@ public class Frag_cuahang extends Fragment {
                     if (maHang.equals(dc.getDocument().get("maHang").toString())) {
                         list_sp.add(dc.getDocument().toObject(SanPham.class));
                     }
-
+                        switch (dc.getType()){
+                            case MODIFIED:
+                               return;
+                    }
                 }
-                list_hang.add(new Hang(maHang,name, list_sp));
-
+                list_hang.add(new Hang(maHang, name, list_sp));
                 list_hang.sort(new Comparator<Hang>() {
                     @Override
                     public int compare(Hang o1, Hang o2) {

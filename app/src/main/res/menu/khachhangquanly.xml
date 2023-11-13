@@ -5,20 +5,20 @@
         android:icon="@drawable/shoes"
         />
 
-    <item android:id="@+id/menu_nhanvien_giohang"
+    <item android:id="@+id/menu_khachhang_giohang"
         android:title=""
         android:icon="@drawable/shoppingcart"
         />
-    <item android:id="@+id/menu_nhanvien_hotro"
+    <item android:id="@+id/menu_khachhang_hotro"
         android:title=""
         android:icon="@drawable/conversation"
         />
 
-    <item android:id="@+id/menu_nhanvien_hoadon"
+    <item android:id="@+id/menu_khachhang_hoadon"
         android:title=""
         android:icon="@drawable/bill_kh"
         />
-    <item android:id="@+id/menu_nhanvien_thongtincanhan"
+    <item android:id="@+id/menu_khachhang_thongtincanhan"
         android:title=""
         android:icon="@drawable/user1"
         />

@@ -17,6 +17,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thuydev.pro1121appbangiay.R;
+import com.thuydev.pro1121appbangiay.SeeSanPham;
 
 import java.util.List;
 
@@ -41,6 +42,8 @@ int i = -1;
         String cam = "#FF4800";
         String vang = "#FFC107";
         if (position==i){
+            SeeSanPham sanPham = (SeeSanPham) context;
+            sanPham.setKichCo(list.get(i));
             holder.mau.setBackgroundColor(Color.parseColor(cam));
         }else {
             holder.mau.setBackgroundColor(Color.parseColor(vang));
