@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -160,7 +162,8 @@ FirebaseFirestore db;
     }
 
     private void ngheGio() {
-        db.collection("gioHang").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        db.collection("gioHang").whereEqualTo("maKhachHang",user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {

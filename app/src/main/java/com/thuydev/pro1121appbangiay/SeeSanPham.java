@@ -28,6 +28,7 @@ import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
 import java.util.List;
+import java.util.UUID;
 
 public class SeeSanPham extends AppCompatActivity {
     RecyclerView rcv_list;
@@ -98,7 +99,7 @@ public class SeeSanPham extends AppCompatActivity {
 
     private void themGio() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        db.collection("gioHang").document(sanPham.getMaSp()).
+        db.collection("gioHang").document(UUID.randomUUID()+"").
                 set(new GioHang(sanPham.getMaSp(), user.getUid(), sanPham.getMaSp(),kichCo, Long.parseLong(so + "")))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
