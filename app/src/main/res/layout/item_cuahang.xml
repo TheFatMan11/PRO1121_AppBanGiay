@@ -19,7 +19,7 @@
                 android:textColor="#FF9800"
                 android:textStyle="bold"
                 android:id="@+id/tv_tenhang"
-                android:textSize="16dp"/>
+                android:textSize="30dp"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

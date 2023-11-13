@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="xanhla">#89FF00</color>
     <color name="xam">#909090</color>
+    <color name="cam">#FF4800</color>
+    <color name="vang">#FFC107</color>
 </resources>

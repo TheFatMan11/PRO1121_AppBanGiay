@@ -22,6 +22,7 @@ import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_cuahang;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
+import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -93,10 +94,10 @@ public class Frag_cuahang extends Fragment {
                     if (maHang.equals(dc.getDocument().get("maHang").toString())) {
                         list_sp.add(dc.getDocument().toObject(SanPham.class));
                     }
-                    Log.e("TAG", "onEvent:1 " + maHang);
-                    Log.e("TAG", "onEvent:2 " + dc.getDocument().get("maHang").toString());
+
                 }
                 list_hang.add(new Hang(maHang,name, list_sp));
+
                 list_hang.sort(new Comparator<Hang>() {
                     @Override
                     public int compare(Hang o1, Hang o2) {

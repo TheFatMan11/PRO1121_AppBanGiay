@@ -1,12 +1,19 @@
 package com.thuydev.pro1121appbangiay.adapter;
 
+import static android.graphics.Color.parseColor;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thuydev.pro1121appbangiay.R;
@@ -16,7 +23,7 @@ import java.util.List;
 public class Adapter_kichco extends RecyclerView.Adapter<Adapter_kichco.ViewHolder> {
     List<String> list;
     Context context;
-
+int i = -1;
     public Adapter_kichco(List<String> list, Context context) {
         this.list = list;
         this.context = context;
@@ -29,8 +36,23 @@ public class Adapter_kichco extends RecyclerView.Adapter<Adapter_kichco.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.ten.setText(list.get(position));
+        String cam = "#FF4800";
+        String vang = "#FFC107";
+        if (position==i){
+            holder.mau.setBackgroundColor(Color.parseColor(cam));
+        }else {
+            holder.mau.setBackgroundColor(Color.parseColor(vang));
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                i=position;
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -40,10 +62,12 @@ public class Adapter_kichco extends RecyclerView.Adapter<Adapter_kichco.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView ten;
+        LinearLayout mau;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ten = itemView.findViewById(R.id.tv_kichco_show1);
+            mau = itemView.findViewById(R.id.cv_kichco);
         }
     }
 }
