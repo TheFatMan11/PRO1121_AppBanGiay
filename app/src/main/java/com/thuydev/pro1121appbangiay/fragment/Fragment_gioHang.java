@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,11 +65,11 @@ FirebaseFirestore db;
         rcv_list = view.findViewById(R.id.rcv_listgio);
         tongGia = view.findViewById(R.id.tv_gio_gia);
         mua = view.findViewById(R.id.ll_themgio);
-        adapterGiohang = new Adapter_giohang(list_gio,list_sanPham,list_hang,getContext());
+        adapterGiohang = new Adapter_giohang(list_gio,list_sanPham,list_hang,getContext(),this);
         rcv_list.setAdapter(adapterGiohang);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         rcv_list.setLayoutManager(manager);
-
+        tinhTong();
 
     }
 
@@ -77,6 +78,7 @@ FirebaseFirestore db;
         ngheGio();
         ngheSP();
         ngheHang();
+
     }
 
     private void ngheHang() {
@@ -195,11 +197,15 @@ FirebaseFirestore db;
         });
     }
 
-  private void  tinhTong(){
+  public void  tinhTong(){
+      Long tong = 0l;
         for (GioHang s : list_gio){
             for (SanPham a : list_sanPham){
-
+                if (s.getMaSanPham().equals(a.getMaSp())){
+                    tong= Long.parseLong(s.getSoLuong()+"")*Long.parseLong(a.getGia()+"")+tong;
+                }
             }
         }
+        tongGia.setText(tong+" đ");
     }
 }

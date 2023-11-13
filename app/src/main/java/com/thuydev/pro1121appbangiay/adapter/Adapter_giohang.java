@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.thuydev.pro1121appbangiay.R;
+import com.thuydev.pro1121appbangiay.fragment.Fragment_gioHang;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
@@ -24,14 +25,15 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
     List<SanPham> list_sanPham;
     List<Hang> list_hang;
     Context context;
+    Fragment_gioHang gioHang;
 
-    public Adapter_giohang(List<GioHang> list_gio, List<SanPham> list_sanPham, List<Hang> list_hang, Context context) {
+    public Adapter_giohang(List<GioHang> list_gio, List<SanPham> list_sanPham, List<Hang> list_hang, Context context, Fragment_gioHang gioHang) {
         this.list_gio = list_gio;
         this.list_sanPham = list_sanPham;
         this.list_hang = list_hang;
         this.context = context;
+        this.gioHang = gioHang;
     }
-
 
     @NonNull
     @Override
@@ -44,6 +46,7 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String link = laylink(list_gio.get(position).getMaSanPham());
         Log.e("TAG", "onBindViewHolder: " + link);
+        gioHang.tinhTong();
         if (link.isEmpty()) {
             return;
         }
