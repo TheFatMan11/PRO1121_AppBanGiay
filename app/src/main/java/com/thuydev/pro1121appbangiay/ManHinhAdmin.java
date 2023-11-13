@@ -183,6 +183,7 @@ public class ManHinhAdmin extends AppCompatActivity {
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU){
             String[] quyen = new String[]{Manifest.permission.READ_MEDIA_IMAGES};
             requestPermissions(quyen, CODE_QUYEN);
+            return;
         }
         if (context.checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             // xử lý sau
