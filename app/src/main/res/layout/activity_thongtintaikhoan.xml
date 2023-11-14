@@ -66,6 +66,10 @@
             android:src="@drawable/cancel"
             android:id="@+id/imv_cancel"/>
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/cam"/>
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout_thongtinkhach"
         android:layout_width="match_parent"

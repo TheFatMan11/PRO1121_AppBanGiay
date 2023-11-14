@@ -13,11 +13,11 @@ import com.thuydev.pro1121appbangiay.model.Hang;
 
 import java.util.List;
 
-public class Adapter_hang extends BaseAdapter {
-    List<Hang> list;
+public class Adapter_diachi extends BaseAdapter {
+    List<String> list;
     Context context;
 
-    public Adapter_hang(List<Hang> list, Context context) {
+    public Adapter_diachi(List<String> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -41,8 +41,11 @@ public class Adapter_hang extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
         View view = inflater.inflate(R.layout.item_list_hang,parent,false);
-        TextView ten = view.findViewById(R.id.tv_ten_hang);
-        ten.setText("Tên: "+list.get(position).getTenHang());
+        if (list!=null){
+            TextView ten = view.findViewById(R.id.tv_ten_hang);
+            ten.setText(list.get(position));
+        }
+
         return view;
     }
 }

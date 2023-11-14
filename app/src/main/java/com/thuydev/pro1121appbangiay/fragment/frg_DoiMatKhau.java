@@ -24,8 +24,7 @@ import java.net.Authenticator;
 
 
 public class frg_DoiMatKhau extends Fragment {
-    EditText edt_passCu, edt_passMoi, edt_xacNhan;
-    AppCompatButton btn_doiMK;
+
 
 
     public frg_DoiMatKhau() {
@@ -37,6 +36,8 @@ public class frg_DoiMatKhau extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_frg__doi_mat_khau, null);
+        EditText edt_passCu, edt_passMoi, edt_xacNhan;
+        AppCompatButton btn_doiMK;
         edt_passCu = view.findViewById(R.id.edt_nhapmkcu);
         edt_passMoi = view.findViewById(R.id.edt_nhapmkmoi);
         edt_xacNhan = view.findViewById(R.id.edt_xacnhanmk);

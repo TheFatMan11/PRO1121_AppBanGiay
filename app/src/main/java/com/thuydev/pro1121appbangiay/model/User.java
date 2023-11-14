@@ -1,5 +1,7 @@
 package com.thuydev.pro1121appbangiay.model;
 
+import java.util.List;
+
 public class User {
     private String maUser;
     private String Email;
@@ -8,18 +10,19 @@ public class User {
     private int trangThai;
     private Long soDu;
     private int chucVu;
+    private List<String> diachi;
+    private String chonDiaCHi;
 
     public User() {
     }
 
-    public User(String maUser,String email, int trangThai, Long soDu, int chucVu) {
+    public User(String maUser, String email, int trangThai, Long soDu, int chucVu) {
         Email = email;
         this.trangThai = trangThai;
         this.soDu = soDu;
         this.chucVu = chucVu;
         this.maUser = maUser;
     }
-
 
 
     public User(String maUser, String email, String hoTen, String SDT, int trangThai, Long soDu, int chucVu) {
@@ -30,6 +33,22 @@ public class User {
         this.trangThai = trangThai;
         this.soDu = soDu;
         this.chucVu = chucVu;
+    }
+
+    public String getChonDiaCHi() {
+        return chonDiaCHi;
+    }
+
+    public void setChonDiaCHi(String chonDiaCHi) {
+        this.chonDiaCHi = chonDiaCHi;
+    }
+
+    public List<String> getDiachi() {
+        return diachi;
+    }
+
+    public void setDiachi(List<String> diachi) {
+        this.diachi = diachi;
     }
 
     public String getMaUser() {

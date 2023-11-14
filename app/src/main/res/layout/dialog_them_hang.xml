@@ -19,7 +19,9 @@
             android:text="Hãng sản phẩm đang có "
             android:textColor="#E6903B"
             android:textSize="30dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:id="@+id/tv_tittle2"
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -32,6 +34,7 @@
             android:layout_height="230dp" />
 
         <EditText
+            android:layout_margin="10dp"
             android:id="@+id/edt_themhang_"
             android:layout_width="match_parent"
             android:layout_height="50dp"

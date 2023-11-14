@@ -4,16 +4,21 @@ import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +49,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.thuydev.pro1121appbangiay.adapter.Adapter_diachi;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_thongtin;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 import com.thuydev.pro1121appbangiay.model.User;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -60,7 +67,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
     TabLayoutMediator mediator;
     Adapter_thongtin adapterThongtin;
     CircleImageView avatar;
-    ImageView edit_profile,cancel;
+    ImageView edit_profile, cancel;
     TextView ten, tien;
     FirebaseFirestore db;
 
@@ -78,15 +85,17 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         tien = findViewById(R.id.tv_sodu_khach);
         db = FirebaseFirestore.getInstance();
         progressDialog = new ProgressDialog(ThongTinTaiKhoan.this);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Sẽ mất một lúc vui lòng chờ");
         nghe();
         pager2.setAdapter(adapterThongtin);
         tabLayout = findViewById(R.id.tabLayout_thongtinkhach);
-cancel.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        finish();
-    }
-});
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,8 +116,10 @@ cancel.setOnClickListener(new View.OnClickListener() {
 
         mediator.attach();
     }
+
     ImageView anh;
-    private void suaProFile() {
+
+    public void suaProFile() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.dialog_updateprofile, null, false);
         builder.setView(view);
@@ -132,9 +143,10 @@ cancel.setOnClickListener(new View.OnClickListener() {
         }
         Glide.with(this).load(user.getPhotoUrl()).
                 error(R.drawable.baseline_crop_original_24).into(anh);
+        linkMoi = user.getPhotoUrl().toString();
         ten.setText(us.getHoTen());
         email.setText(us.getEmail());
-        sdt.setText(us.getSDT() + "");
+        sdt.setText(us.getSDT());
         sua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,6 +165,10 @@ cancel.setOnClickListener(new View.OnClickListener() {
         });
 
 
+    }
+
+    public User getUser(){
+        return us;
     }
 
     private void seTaiKhoan(Uri uri) {
@@ -199,6 +215,7 @@ cancel.setOnClickListener(new View.OnClickListener() {
                     return;
                 }
                 us = task.getResult().toObject(User.class);
+                adapterThongtin.data(us);
                 if (us == null) {
                     Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
                     return;
@@ -227,7 +244,7 @@ cancel.setOnClickListener(new View.OnClickListener() {
             layAnh();
             return;
         }
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             String[] quyen = new String[]{android.Manifest.permission.READ_MEDIA_IMAGES};
             requestPermissions(quyen, CODE_QUYEN);
             return;
@@ -254,6 +271,7 @@ cancel.setOnClickListener(new View.OnClickListener() {
             }
         }
     }
+
     Uri uri;
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -271,9 +289,10 @@ cancel.setOnClickListener(new View.OnClickListener() {
 
                 }
             });
-String linkMoi;
-ProgressDialog progressDialog;
-    public void upAnh(Uri imageUri ) {
+    String linkMoi;
+    ProgressDialog progressDialog;
+
+    public void upAnh(Uri imageUri) {
         StorageReference storageReference;
         storageReference = FirebaseStorage.getInstance().getReference("images").child(user.getUid());
         storageReference.putFile(imageUri)
@@ -300,5 +319,113 @@ ProgressDialog progressDialog;
                         Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    List<String> list_diaChi = new ArrayList<>();
+    public void addDiaChi() {
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_them_hang, null, false);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
+        ListView listView = view.findViewById(R.id.list_hang);
+        EditText edt_diachi = view.findViewById(R.id.edt_themhang_);
+        TextView tv = view.findViewById(R.id.tv_tittle2);
+        ImageButton themHang = view.findViewById(R.id.ibtn_addhang);
+        edt_diachi.setHint("Số nhà,Ngõ,Đường,Quận,Thành Phố");
+        tv.setText("Địa chỉ");
+        edt_diachi.setVisibility(View.GONE);
+
+        if (us.getDiachi()==null){
+            list_diaChi = new ArrayList<>();
+        }else {
+            list_diaChi = us.getDiachi();
+        }
+
+        Adapter_diachi adapter = new Adapter_diachi(list_diaChi, this);
+        listView.setAdapter(adapter);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                android.app.AlertDialog.Builder builder1 = new android.app.AlertDialog.Builder(ThongTinTaiKhoan.this);
+                builder1.setTitle("Cảnh báo").setIcon(R.drawable.cancel).setMessage("Nếu bạn xác nhận dữ liệu sẽ mất mãi mãi");
+                builder1.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder1.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // xóa phần tử list ở đây
+                        list_diaChi.remove(position);
+                        us.setDiachi(list_diaChi);
+                        db.collection("user").document(us.getMaUser()).set(us).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isComplete()) {
+                                    Toast.makeText(ThongTinTaiKhoan.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+                builder1.create().show();
+
+                return true;
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // chọn địa chỉ
+                us.setChonDiaCHi(list_diaChi.get(position));
+                db.collection("user").document(user.getUid()).set(us).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                       if (task.isComplete()){
+                           Toast.makeText(ThongTinTaiKhoan.this, "Đơn hàng của bạn sẽ được giao tới địa chỉ này", Toast.LENGTH_SHORT).show();
+                       }else {
+                           Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                       }
+                    }
+                });
+                dialog.dismiss();
+            }
+        });
+        final int[] change = {0};
+        themHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (change[0] == 0) {
+                    edt_diachi.setVisibility(View.VISIBLE);
+                    change[0] = 1;
+                } else {
+                    edt_diachi.setVisibility(View.GONE);
+                    change[0] = 0;
+                    list_diaChi.add(edt_diachi.getText().toString());
+                    us.setDiachi(list_diaChi);
+                    db.collection("user").document(us.getMaUser()).set(us).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isComplete()) {
+                                Toast.makeText(ThongTinTaiKhoan.this, "Thêm địa chỉ thành công", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
 }

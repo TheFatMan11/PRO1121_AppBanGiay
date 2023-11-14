@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -19,6 +20,8 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,17 +29,25 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -107,8 +118,8 @@ public class ManHinhAdmin extends AppCompatActivity {
                     relaceFrg(thongKe);
                     getSupportActionBar().setTitle("Thống kê");
                 } else if (item.getItemId() == R.id.menu_admin_resetpass) {
-                    relaceFrg(doiMatKhau);
-                    getSupportActionBar().setTitle("Đổi mật khẩu");
+                    doipass(ManHinhAdmin.this);
+                    return false;
                 } else {
                     Toast.makeText(ManHinhAdmin.this, "Lỗi", Toast.LENGTH_SHORT).show();
                 }
@@ -206,5 +217,61 @@ public class ManHinhAdmin extends AppCompatActivity {
                 Toast.makeText(this, "Bạn cần cấp quyền để sử dụng tính năng này", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public static void doipass(Activity activity){
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View view = inflater.inflate(R.layout.fragment_frg__doi_mat_khau, null);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
+        EditText edt_passCu, edt_passMoi, edt_xacNhan;
+        AppCompatButton btn_doiMK;
+        edt_passCu = view.findViewById(R.id.edt_nhapmkcu);
+        edt_passMoi = view.findViewById(R.id.edt_nhapmkmoi);
+        edt_xacNhan = view.findViewById(R.id.edt_xacnhanmk);
+        btn_doiMK = view.findViewById(R.id.btn_doiMK);
+
+        btn_doiMK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pasCu = edt_passCu.getText().toString();
+                String pasMoi = edt_passMoi.getText().toString();
+                String xacNhan = edt_xacNhan.getText().toString();
+
+                if (pasCu.isEmpty() || pasMoi.isEmpty() || xacNhan.isEmpty()) {
+                    Toast.makeText(activity, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                } else if (xacNhan.equals(pasMoi)) {
+                    doiMK(pasCu, pasMoi,dialog,activity);
+                } else {
+                    Toast.makeText(activity, "Xác nhận mật khẩu mới sai", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+    public static void doiMK(String pasCu, String pasMoi, Dialog dialog,Context context) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        AuthCredential authenticator = EmailAuthProvider.getCredential(user.getEmail(), pasCu);
+        user.reauthenticate(authenticator).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    user.updatePassword(pasMoi).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(context, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(context, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(context, "Mật khẩu cũ sai vui lòng nhập lại", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

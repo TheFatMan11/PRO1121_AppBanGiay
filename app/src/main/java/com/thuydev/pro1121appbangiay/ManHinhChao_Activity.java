@@ -90,7 +90,6 @@ public class ManHinhChao_Activity extends AppCompatActivity {
                     if (user.getUid().equals(dc.get("maUser"))) {
                         chay(user);
                         i = 1;
-
                         return;
                     }
                 }
@@ -120,17 +119,18 @@ public class ManHinhChao_Activity extends AppCompatActivity {
                         }
                         if (chucvu[0] == 1) {
                             intent = new Intent(ManHinhChao_Activity.this, ManHinhAdmin.class);
-                            startActivity(intent);
                         } else if (chucvu[0] == 2) {
                             intent = new Intent(ManHinhChao_Activity.this, ManHinhNhanVien.class);
-                            startActivity(intent);
                         } else if (chucvu[0] == 3) {
                             intent = new Intent(ManHinhChao_Activity.this, ManHinhKhachHang.class);
-                            startActivity(intent);
                         } else {
                             Toast.makeText(ManHinhChao_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
                         }
                         finishAffinity();
+                        if (!isFinishing()){
+                            return;
+                        }
+                        startActivity(intent);
                         Log.e("TAG", "onComplete: "+"có lỗi " );
                     } else {
                         Toast.makeText(ManHinhChao_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
