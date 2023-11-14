@@ -143,7 +143,10 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         }
         Glide.with(this).load(user.getPhotoUrl()).
                 error(R.drawable.baseline_crop_original_24).into(anh);
-        linkMoi = user.getPhotoUrl().toString();
+        if (user.getPhotoUrl()!=null){
+            linkMoi = user.getPhotoUrl().toString();
+        }
+
         ten.setText(us.getHoTen());
         email.setText(us.getEmail());
         sdt.setText(us.getSDT());

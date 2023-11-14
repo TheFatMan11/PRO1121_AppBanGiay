@@ -24,19 +24,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class loatDonHang extends AppCompatActivity {
-    FirebaseFirestore db ;
+    FirebaseFirestore db;
     List<DonHang> list_dh = new ArrayList<>();
     List<User> list_User = new ArrayList<>();
     List<GioHang> list_GioHang = new ArrayList<>();
     List<SanPham> list_sp = new ArrayList<>();
-    Adapter_quanlyhoadon adapterQuanlyhoadon = new Adapter_quanlyhoadon(list_GioHang,list_sp,list_User,list_dh,loatDonHang.this);
 
+    Adapter_quanlyhoadon adapterQuanlyhoadon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loat_don_hang);
-
-
+        adapterQuanlyhoadon = new Adapter_quanlyhoadon( list_sp, list_User, list_dh, loatDonHang.this);
+        ngheGio();
+        ngheKH();
+        ngheHoaDon();
+        ngheSP();
 
     }
 
@@ -117,6 +120,7 @@ public class loatDonHang extends AppCompatActivity {
             }
         });
     }
+
     public void ngheSP() {
         db = FirebaseFirestore.getInstance();
         db.collection("sanPham").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -156,6 +160,7 @@ public class loatDonHang extends AppCompatActivity {
             }
         });
     }
+
     public void ngheGio() {
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -195,7 +200,6 @@ public class loatDonHang extends AppCompatActivity {
             }
         });
     }
-
 
 
 }

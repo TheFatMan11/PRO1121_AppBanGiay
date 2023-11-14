@@ -20,6 +20,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.thuydev.pro1121appbangiay.ManHinhNhanVien;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_quanlyhoadon;
 import com.thuydev.pro1121appbangiay.loatDonHang;
@@ -62,18 +63,32 @@ public class Frg_quanLyHoaDon extends Fragment {
     }
 
     public void loatData() {
-        loatDonHang nghe = new loatDonHang();
-        nghe.ngheGio();
-        nghe.ngheHoaDon();
-        nghe.ngheKH();
-        nghe.ngheSP();
-        adapterQuanlyhoadon = new Adapter_quanlyhoadon(list_gioHang,list_sp,list_Users,list_dh,getContext());
-        recyclerView.setAdapter(adapterQuanlyhoadon);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(manager);
+        ManHinhNhanVien nhanVien = (ManHinhNhanVien) getContext();
+        nhanVien.setRecyclerView(recyclerView);
+
     }
 
 
+
+    public void setList_gioHang(List<GioHang> list_gioHang) {
+        this.list_gioHang = list_gioHang;
+    }
+
+    public void setList_sp(List<SanPham> list_sp) {
+        this.list_sp = list_sp;
+    }
+
+    public void setList_dh(List<DonHang> list_dh) {
+        this.list_dh = list_dh;
+    }
+
+    public void setList_Users(List<User> list_Users) {
+        this.list_Users = list_Users;
+    }
+
+    public void setDb(FirebaseFirestore db) {
+        this.db = db;
+    }
 }
 
 

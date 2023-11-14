@@ -161,5 +161,20 @@ FirebaseFirestore db = FirebaseFirestore.getInstance();
        });
 
     }
-
+    public String getTenSP(List<SanPham> list_sanPham) {
+        for (SanPham u : list_sanPham) {
+            if (maSp.equals(u.getMaSp())) {
+                return u.getTenSP();
+            }
+        }
+        return null;
+    }
+    public String getgia(List<SanPham> list_sanPham) {
+        for (SanPham u : list_sanPham) {
+            if (maSp.equals(u.getMaSp())) {
+                return u.getGia()+"";
+            }
+        }
+        return null;
+    }
 }

@@ -101,7 +101,7 @@ public class Fragment_gioHang extends Fragment {
         int thang = lich.get(Calendar.MONTH)+1;
         int nam = lich.get(Calendar.YEAR);
         String ngayMua = nam+"/"+thang+"/"+ngay;
-        db.collection("donHang").document(maDon).set(new DonHang(maDon,user.getUid(),listMaSP,new Date().getTime(),0,tong,ngayMua))
+        db.collection("donHang").document(maDon).set(new DonHang(maDon,user.getUid(),listMaSP,new Date().getTime(),0,tinhTong(),ngayMua))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -267,9 +267,9 @@ public class Fragment_gioHang extends Fragment {
             }
         });
     }
-    Long tong = 0l;
-    public void tinhTong() {
 
+    public Long tinhTong() {
+        Long tong = 0l;
         for (GioHang s : list_gio) {
             for (SanPham a : list_sanPham) {
                 if (s.getMaSanPham().equals(a.getMaSp())) {
@@ -278,5 +278,6 @@ public class Fragment_gioHang extends Fragment {
             }
         }
         tongGia.setText(tong + " đ");
+        return tong;
     }
 }

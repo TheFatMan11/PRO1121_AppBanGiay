@@ -1,7 +1,9 @@
 package com.thuydev.pro1121appbangiay.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +40,8 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
 //    }
 
 
-    public Adapter_quanlyhoadon(List<GioHang> list_gio,List<SanPham> list_sanPham,List<User> list_Users,  List<DonHang> list_doHang,  Context context) {
-        this.list_gio = list_gio;
+    public Adapter_quanlyhoadon(List<SanPham> list_sanPham, List<User> list_Users, List<DonHang> list_doHang, Context context) {
+
         this.list_sanPham = list_sanPham;
         this.list_Users = list_Users;
         this.list_doHang = list_doHang;
@@ -55,43 +57,49 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         return new viewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-
-        SanPham sanPham = getTenSP(list_sanPham.get(position).getMaSp());
-        if (sanPham == null) {
+        if (list_Users.size() == 0 && list_doHang.size() == 0 && list_sanPham.size() == 0) {
             return;
         }
-        holder.tv_tenSP.setText("Tên sản phẩm: " + sanPham.getTenSP());
-        holder.tv_gia.setText("Giá :" + sanPham.getGia());
-        GioHang hang = getgioHang(list_gio.get(position).getMaKhachHang());
-        if (hang == null) {
+        String[] data = getdata(position);
+        Log.e("TAG", "onBindViewHolder: " +getdata(position));
+        if (data.length<=0){
             return;
         }
-        holder.tv_soluong.setText("Số lượng: " + hang.getSoLuong());
-        User user = getKhachHang(list_Users.get(position).getMaUser());
-        holder.tv_tenKH.setText("Họ tên:" + user.getHoTen());
-        holder.tv_sdt.setText("Sđt: " + user.getSDT());
-
+        holder.tv_tenKH.setText("Họ tên:" + data[0]);
+        holder.tv_diaChi.setText("Địa chỉ: "+data[1]);
+        holder.tv_sdt.setText("Sđt: " + data[2]);
+        holder.tv_gia.setText("Giá :" +data[3]);
+//        holder.tv_soluong.setText("Số lượng sản phẩm mua: "+data[4]);
     }
 
-    private SanPham getTenSP(String maSP) {
-        for (SanPham u : list_sanPham) {
-            if (maSP.equals(u.getTenSP())) {
-                return u;
+    private String[] getdata(int position) {
+        String[] a = new String[]{"","","","",""};
+        for (User u : list_Users) {
+            if (list_doHang.get(position).getMaKhachHang()
+                    .equals(u.getMaUser())) {
+                a[0] = u.getHoTen();
+                a[1] = u.getChonDiaCHi();
+                a[2] = u.getSDT();
+            }
+            Log.e("TAG", "getdata: 1"+u.getMaUser() );
+            Log.e("TAG", "getdata: 2"+list_doHang.get(position).getMaKhachHang() );
+        }
+        Long tong = 0l;
+        for (SanPham s : list_sanPham) {
+            for (int i = 0; i < list_doHang.get(position).getListSP().size(); i++) {
+                if (s.getMaSp().equals(list_doHang.get(position).getListSP().get(i))) {
+                    tong += s.getGia();
+                }
             }
         }
-        return null;
+        a[3] = tong + "";
+        a[4] = (list_doHang.get(position).getListSP().size() + 1) + "";
+        return a;
     }
 
-    private GioHang getgioHang(String maGH) {
-        for (GioHang hang : list_gio) {
-            if (maGH.equals(hang.getMaGio())) {
-                return hang;
-            }
-        }
-        return null;
-    }
 
     private User getKhachHang(String maKH) {
         for (User user : list_Users) {

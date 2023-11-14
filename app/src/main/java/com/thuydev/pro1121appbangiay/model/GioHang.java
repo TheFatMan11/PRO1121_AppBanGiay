@@ -1,5 +1,7 @@
 package com.thuydev.pro1121appbangiay.model;
 
+import java.util.List;
+
 public class GioHang {
     private String maGio;
     private String maKhachHang;
@@ -60,5 +62,14 @@ public class GioHang {
 
     public void setMaSanPham(String maSanPham) {
         this.maSanPham = maSanPham;
+    }
+
+    public GioHang getgioHang(List<GioHang> list_gio) {
+        for (GioHang hang : list_gio) {
+            if (maGio.equals(hang.getMaGio())) {
+                return hang;
+            }
+        }
+        return null;
     }
 }

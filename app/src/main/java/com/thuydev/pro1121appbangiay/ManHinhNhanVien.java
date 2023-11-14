@@ -7,12 +7,15 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
@@ -22,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,12 +33,26 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.thuydev.pro1121appbangiay.adapter.Adapter_quanlyhoadon;
 import com.thuydev.pro1121appbangiay.fragment.Frg_quanLyHoaDon;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyKhachHang;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyNhanVien;
 import com.thuydev.pro1121appbangiay.fragment.frg_DoiMatKhau;
 import com.thuydev.pro1121appbangiay.fragment.frg_ThongKe;
+import com.thuydev.pro1121appbangiay.model.DonHang;
+import com.thuydev.pro1121appbangiay.model.GioHang;
+import com.thuydev.pro1121appbangiay.model.SanPham;
+import com.thuydev.pro1121appbangiay.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManHinhNhanVien extends AppCompatActivity {
     Toolbar toolbar;
@@ -43,10 +61,15 @@ public class ManHinhNhanVien extends AppCompatActivity {
 
     QuanLyGiay quanLyGiay = new QuanLyGiay();
     frg_ThongKe thongKe = new frg_ThongKe();
-    frg_DoiMatKhau doiMatKhau = new frg_DoiMatKhau();
+    Frg_quanLyHoaDon frgQuanLyHoaDon = new Frg_quanLyHoaDon();
     FragmentManager manager;
     Uri uri;
-
+    RecyclerView recyclerView;
+    Adapter_quanlyhoadon adapterQuanlyhoadon;
+    List<DonHang> list_dh = new ArrayList<>();
+    List<User> list_User = new ArrayList<>();
+    List<GioHang> list_GioHang = new ArrayList<>();
+    List<SanPham> list_sp = new ArrayList<>();
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -72,6 +95,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
         viewPager = findViewById(R.id.fcv_Nhanvien);
         bottomNavigationView = findViewById(R.id.bnv_NhanVien);
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setTitle("Quản Lý Sản Phẩm");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         manager = getSupportFragmentManager();
@@ -86,11 +110,13 @@ public class ManHinhNhanVien extends AppCompatActivity {
                     relaceFrg(thongKe);
                     getSupportActionBar().setTitle("Thống kê");
                 } else if (item.getItemId() == R.id.menu_nhanvien_qlhd) {
-                    relaceFrg(new Frg_quanLyHoaDon());
+                    relaceFrg(frgQuanLyHoaDon);
                     getSupportActionBar().setTitle("Quản Lý Hóa Đơn");
+                    nghe();
+                    setQuanLy();
                 } else if (item.getItemId() == R.id.menu_nhanvien_resetpass) {
-                    relaceFrg(doiMatKhau);
-                    getSupportActionBar().setTitle("Đổi mật khẩu");
+                    ManHinhAdmin.doipass(ManHinhNhanVien.this);
+                    return false;
                 } else {
                     Toast.makeText(ManHinhNhanVien.this, "Lỗi", Toast.LENGTH_SHORT).show();
                 }
@@ -185,5 +211,187 @@ public class ManHinhNhanVien extends AppCompatActivity {
                 Toast.makeText(this, "Bạn cần cấp quyền để sử dụng tính năng này", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    FirebaseFirestore db;
+    public void ngheHoaDon() {
+        db = FirebaseFirestore.getInstance();
+        db.collection("donHang").whereEqualTo("trangThai", 0).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Toast.makeText(ManHinhNhanVien.this, "Lỗi không có dữ liệu", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (value != null) {
+                    for (DocumentChange dc : value.getDocumentChanges()) {
+                        switch (dc.getType()) {
+                            case ADDED:
+                                dc.getDocument().toObject(DonHang.class);
+                                list_dh.add(dc.getDocument().toObject(DonHang.class));
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                                break;
+                            case MODIFIED:
+                                DonHang dtoq = dc.getDocument().toObject(DonHang.class);
+                                if (dc.getOldIndex() == dc.getNewIndex()) {
+                                    list_dh.set(dc.getOldIndex(), dtoq);
+                                } else {
+                                    list_dh.remove(dc.getOldIndex());
+                                    list_dh.add(dtoq);
+                                }
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                                break;
+                            case REMOVED:
+                                dc.getDocument().toObject(DonHang.class);
+                                list_dh.remove(dc.getOldIndex());
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                                break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+public  void setQuanLy(){
+        frgQuanLyHoaDon.setList_sp(list_sp);
+        frgQuanLyHoaDon.setList_dh(list_dh);
+        frgQuanLyHoaDon.setList_Users(list_User);
+        frgQuanLyHoaDon.setList_gioHang(list_GioHang);
+
+}
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+        adapterQuanlyhoadon = new Adapter_quanlyhoadon(list_sp,list_User,list_dh,this);
+        recyclerView.setAdapter(adapterQuanlyhoadon);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(manager);
+    }
+
+    public void ngheKH() {
+
+        db = FirebaseFirestore.getInstance();
+        db.collection("user").whereEqualTo("chucVu", 3).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    return;
+                }
+                if (value != null) {
+                    for (DocumentChange dc : value.getDocumentChanges()) {
+                        Log.e("TAG", "onEvent: " + dc.getType());
+                        switch (dc.getType()) {
+                            case ADDED:
+                                dc.getDocument().toObject(User.class);
+                                list_User.add(dc.getDocument().toObject(User.class));
+                                break;
+                            case MODIFIED:
+                                User user1 = dc.getDocument().toObject(User.class);
+                                if (dc.getOldIndex() == dc.getNewIndex()) {
+                                    list_User.set(dc.getOldIndex(), user1);
+                                    adapterQuanlyhoadon.notifyDataSetChanged();
+                                } else {
+                                    list_User.remove(dc.getOldIndex());
+                                    list_User.add(user1);
+                                    adapterQuanlyhoadon.notifyDataSetChanged();
+                                }
+                                break;
+                            case REMOVED:
+                                dc.getDocument().toObject(User.class);
+                                list_User.remove(dc.getOldIndex());
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void ngheSP() {
+        db = FirebaseFirestore.getInstance();
+        db.collection("sanPham").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Toast.makeText(ManHinhNhanVien.this, "Lỗi không có dữ liệu", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (value != null) {
+                    for (DocumentChange dc : value.getDocumentChanges()) {
+                        switch (dc.getType()) {
+                            case ADDED:
+                                dc.getDocument().toObject(SanPham.class);
+                                list_sp.add(dc.getDocument().toObject(SanPham.class));
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                                break;
+                            case MODIFIED:
+                                SanPham dtoq = dc.getDocument().toObject(SanPham.class);
+                                if (dc.getOldIndex() == dc.getNewIndex()) {
+                                    list_sp.set(dc.getOldIndex(), dtoq);
+                                } else {
+                                    list_sp.remove(dc.getOldIndex());
+                                    list_sp.add(dtoq);
+                                }
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                                break;
+                            case REMOVED:
+                                dc.getDocument().toObject(SanPham.class);
+                                list_sp.remove(dc.getOldIndex());
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                                break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+public void nghe(){
+        ngheGio();
+        ngheKH();
+        ngheHoaDon();
+        ngheSP();
+}
+    public void ngheGio() {
+        db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        db.collection("gioHang").whereEqualTo("maKhachHang", user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Toast.makeText(ManHinhNhanVien.this, "Lỗi không có dữ liệu", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (value != null) {
+                    for (DocumentChange dc : value.getDocumentChanges()) {
+                        switch (dc.getType()) {
+                            case ADDED:
+                                list_GioHang.add(dc.getDocument().toObject(GioHang.class));
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                                break;
+                            case MODIFIED:
+                                GioHang dtoq = dc.getDocument().toObject(GioHang.class);
+                                if (dc.getOldIndex() == dc.getNewIndex()) {
+                                    list_GioHang.set(dc.getOldIndex(), dtoq);
+                                } else {
+                                    list_GioHang.remove(dc.getOldIndex());
+                                    list_GioHang.add(dtoq);
+                                }
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                                break;
+                            case REMOVED:
+                                dc.getDocument().toObject(GioHang.class);
+                                list_GioHang.remove(dc.getOldIndex());
+                                adapterQuanlyhoadon.notifyDataSetChanged();
+                                break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void setAdapterQuanlyhoadon(Adapter_quanlyhoadon adapterQuanlyhoadon) {
+        this.adapterQuanlyhoadon = adapterQuanlyhoadon;
     }
 }
