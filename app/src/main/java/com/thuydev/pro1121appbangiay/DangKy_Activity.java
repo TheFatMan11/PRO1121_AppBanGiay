@@ -90,58 +90,14 @@ private FirebaseFirestore db ;
                 });
     }
 
-    private void vaomanhinh() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            intent = new Intent(this, DangNhap_Activity.class);
-            startActivity(intent);
-        } else {
-            db = FirebaseFirestore.getInstance();
-            final Long[] chucvu = {0l};
-            reference = db.collection("user").document(user.getUid());
-            reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isComplete()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            // Tài liệu người dùng tồn tại
-                            Map<String, Object> userData = document.getData();
-                            chucvu[0] = (Long) userData.get("chucVu");
-                            if (chucvu[0] == 1) {
-                                intent = new Intent(DangKy_Activity.this, ManHinhAdmin.class);
-                                startActivity(intent);
-                                finish();
-                            } else if (chucvu[0] == 2) {
-                                intent = new Intent(DangKy_Activity.this, ManHinhNhanVien.class);
-                                startActivity(intent);
-                                finish();
-                            } else if (chucvu[0] == 3) {
-                                intent = new Intent(DangKy_Activity.this, ManHinhKhachHang.class);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Toast.makeText(DangKy_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(DangKy_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(DangKy_Activity.this, "Lỗi truy vấn", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
 
-        }
-
-    }
     private void taoUser(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db=FirebaseFirestore.getInstance();
         if (user==null){
             return;
         }
-        db.collection("user").document(user.getUid()).set(new User(user.getUid(),user.getEmail(),0,0L,3)).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("user").document(user.getUid()).set(new User(user.getUid(),user.getEmail(),1,0L,3)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Toast.makeText(DangKy_Activity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();

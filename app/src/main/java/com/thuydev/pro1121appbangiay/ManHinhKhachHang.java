@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,7 +51,8 @@ Frag_cuahang fragCuahang;
                     getSupportActionBar().setTitle("Hóa đơn");
                 }
                 else if (item.getItemId() ==R.id.menu_khachhang_thongtincanhan){
-                    getSupportActionBar().setTitle("Thông tin cá nhân");
+                    Intent intent = new Intent(ManHinhKhachHang.this,ThongTinTaiKhoan.class);
+                    startActivity(intent);
                     return false;
                 }
                 return true;

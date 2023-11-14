@@ -159,7 +159,7 @@ public class QuanLyNhanVien extends Fragment {
                     user.setMaUser(user1.getUid());
                     user.setEmail(email);
                     user.setHoTen(hoten);
-                    user.setSDT(Long.parseLong(sdt));
+                    user.setSDT(sdt);
                     user.setChucVu(2);
                     user.setTrangThai(1);
                     db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
