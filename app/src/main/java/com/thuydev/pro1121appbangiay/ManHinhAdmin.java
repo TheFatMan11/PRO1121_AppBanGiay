@@ -179,7 +179,6 @@ public class ManHinhAdmin extends AppCompatActivity {
     }
 
     public void layAnh() {
-
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);

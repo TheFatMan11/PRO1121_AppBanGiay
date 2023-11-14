@@ -25,5 +25,6 @@
         android:background="#FF9800"
         app:itemActiveIndicatorStyle="@drawable/shape_icon2"
         app:itemIconTint="@color/white"
+        android:id="@+id/bnv_NhanVien"
         app:menu="@menu/nhanvienquanly" />
 </LinearLayout>
