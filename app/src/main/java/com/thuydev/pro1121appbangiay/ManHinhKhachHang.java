@@ -48,6 +48,7 @@ Frag_cuahang fragCuahang;
                     getSupportActionBar().setTitle("Hỗ trợ");
                 }
                 else if (item.getItemId() ==R.id.menu_khachhang_hoadon){
+
                     getSupportActionBar().setTitle("Hóa đơn");
                 }
                 else if (item.getItemId() ==R.id.menu_khachhang_thongtincanhan){

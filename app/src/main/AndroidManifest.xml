@@ -17,6 +17,9 @@
         android:theme="@style/Theme.PRO1121_AppBanGiay"
         tools:targetApi="31">
         <activity
+            android:name=".loatDonHang"
+            android:exported="false" />
+        <activity
             android:name=".SeeSanPham"
             android:exported="false" />
         <activity
