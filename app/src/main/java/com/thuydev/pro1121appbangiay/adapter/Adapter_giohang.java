@@ -1,5 +1,6 @@
 package com.thuydev.pro1121appbangiay.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -7,18 +8,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_gioHang;
+import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHolder> {
     List<GioHang> list_gio;
@@ -26,6 +38,8 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
     List<Hang> list_hang;
     Context context;
     Fragment_gioHang gioHang;
+    FirebaseFirestore db;
+
 
     public Adapter_giohang(List<GioHang> list_gio, List<SanPham> list_sanPham, List<Hang> list_hang, Context context, Fragment_gioHang gioHang) {
         this.list_gio = list_gio;
@@ -33,6 +47,7 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
         this.list_hang = list_hang;
         this.context = context;
         this.gioHang = gioHang;
+        db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -42,10 +57,10 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
                 inflate(R.layout.item_giohang, parent, false));
     }
 
+    @SuppressLint("RecyclerView")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String link = laylink(list_gio.get(position).getMaSanPham());
-        Log.e("TAG", "onBindViewHolder: " + link);
         gioHang.tinhTong();
         if (link.isEmpty()) {
             return;
@@ -67,9 +82,66 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
         holder.kichCo.setText("Kích cỡ: " + list_gio.get(position).getKichCo() + "");
 
 
-//        holder.mua.setText("Giá: "+sp.getGia()+"");
-//        holder.xoa.setText("Giá: "+sp.getGia()+"");
+        holder.xoa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                xoa(list_gio.get(position).getMaGio());
+            }
+        });
 
+        holder.mua.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                them(position);
+            }
+        });
+
+    }
+
+    private void them(int p) {
+        List<String> listDon = new ArrayList<>();
+        listDon.add(list_gio.get(p).getMaSanPham());
+        String maDon = UUID.randomUUID().toString();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Calendar lich = Calendar.getInstance();
+        int ngay = lich.get(Calendar.DAY_OF_MONTH);
+        int thang =lich.get(Calendar.MONTH)+1;
+        int nam = lich.get(Calendar.YEAR);
+        String ngayMua = nam+"/"+thang+"/"+ngay;
+        db.collection("donHang").document(maDon).set(new DonHang(maDon,user.getUid(),listDon,new Date().getTime(),0,TongGiaSP(p),ngayMua))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isComplete()){
+                    Toast.makeText(context, "Đơn hàng đang chờ nhân viên xác nhận", Toast.LENGTH_SHORT).show();
+                    xoa(list_gio.get(p).getMaGio());
+                }else {
+                    Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private Long TongGiaSP(int p) {
+        for (SanPham g : list_sanPham){
+            if (list_gio.get(p).getMaSanPham().equals(g.getMaSp())){
+                return (list_gio.get(p).getSoLuong()*g.getGia());
+            }
+        }
+        return 0l;
+    }
+
+    private void xoa(String maGio) {
+        db.collection("gioHang").document(maGio).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isComplete()){
+                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private String getTenLoai(String maHang) {

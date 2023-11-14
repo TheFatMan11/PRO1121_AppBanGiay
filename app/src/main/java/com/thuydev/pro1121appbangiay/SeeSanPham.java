@@ -99,8 +99,9 @@ public class SeeSanPham extends AppCompatActivity {
 
     private void themGio() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        db.collection("gioHang").document(UUID.randomUUID()+"").
-                set(new GioHang(sanPham.getMaSp(), user.getUid(), sanPham.getMaSp(),kichCo, Long.parseLong(so + "")))
+        String maGio = UUID.randomUUID()+"";
+        db.collection("gioHang").document(maGio).
+                set(new GioHang(maGio, user.getUid(), sanPham.getMaSp(),kichCo, Long.parseLong(so + "")))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

@@ -50,7 +50,8 @@ Frag_cuahang fragCuahang;
                     getSupportActionBar().setTitle("Hóa đơn");
                 }
                 else if (item.getItemId() ==R.id.menu_khachhang_thongtincanhan){
-                    getSupportActionBar().setTitle("Cửa hàng");
+                    getSupportActionBar().setTitle("Thông tin cá nhân");
+                    return false;
                 }
                 return true;
             }
