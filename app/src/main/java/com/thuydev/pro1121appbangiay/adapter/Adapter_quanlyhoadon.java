@@ -72,7 +72,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         holder.tv_diaChi.setText("Địa chỉ: "+data[1]);
         holder.tv_sdt.setText("Sđt: " + data[2]);
         holder.tv_gia.setText("Giá :" +data[3]);
-//        holder.tv_soluong.setText("Số lượng sản phẩm mua: "+data[4]);
+        holder.tv_soluong.setText("Số lượng sản phẩm mua: "+data[4]);
     }
 
     private String[] getdata(int position) {
@@ -96,7 +96,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             }
         }
         a[3] = tong + "";
-        a[4] = (list_doHang.get(position).getListSP().size() + 1) + "";
+        a[4] = String.valueOf((list_doHang.get(position).getListSP().size() + 1));
         return a;
     }
 
@@ -125,7 +125,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             tv_tenKH = itemView.findViewById(R.id.tv_tenKhach);
             tv_diaChi = itemView.findViewById(R.id.tv_diaChi);
             tv_sdt = itemView.findViewById(R.id.tv_sdt);
-            tv_soluong = itemView.findViewById(R.id.tv_Soluong);
+            tv_soluong = itemView.findViewById(R.id.tv_soLuong_);
             tv_tenSP = itemView.findViewById(R.id.tv_tensp);
             tv_gia = itemView.findViewById(R.id.tv_gia);
             anh = itemView.findViewById(R.id.imgv_anhsp);
