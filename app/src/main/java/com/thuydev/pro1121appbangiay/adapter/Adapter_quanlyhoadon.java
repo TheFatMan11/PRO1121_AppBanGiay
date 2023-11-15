@@ -26,10 +26,8 @@ import java.util.List;
 
 public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoadon.viewHolder> {
     Context context;
-    List<GioHang> list_gio;
     List<SanPham> list_sanPham;
     List<User> list_Users;
-    Frg_quanLyHoaDon hoaDon;
     List<DonHang> list_doHang;
 
     FirebaseFirestore db;
@@ -90,7 +88,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         Long tong = 0l;
         for (SanPham s : list_sanPham) {
             for (int i = 0; i < list_doHang.get(position).getListSP().size(); i++) {
-                if (s.getMaSp().equals(list_doHang.get(position).getListSP().get(i))) {
+                if (s.getMaSp().equals(list_doHang.get(position).getListSP().get(i).getMaSP())) {
                     tong += s.getGia();
                 }
             }
@@ -101,14 +99,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
     }
 
 
-    private User getKhachHang(String maKH) {
-        for (User user : list_Users) {
-            if (maKH.equals(user.getMaUser())) {
-                return user;
-            }
-        }
-        return null;
-    }
+
 
     @Override
     public int getItemCount() {
