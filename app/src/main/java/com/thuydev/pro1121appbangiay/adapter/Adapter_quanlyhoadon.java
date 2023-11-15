@@ -40,10 +40,6 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
 
     FirebaseFirestore db;
 
-//    public Adapter_quanlyhoadon(Context context, List<DonHang> listDoHang) {
-//        this.context = context;
-//        list_doHang = listDoHang;
-//    }
 
 
     public Adapter_quanlyhoadon(List<SanPham> list_sanPham, List<User> list_Users, List<DonHang> list_doHang, Context context) {
@@ -69,7 +65,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         if (list_Users.size() <= 0 && list_doHang.size() <= 0 && list_sanPham.size() <= 0) {
             return;
         }
-        String[] data = getdata(position);
+        String[] data = getdata(list_Users,list_doHang.get(position));
         if (data.length <= 0) {
             return;
         }
@@ -151,25 +147,22 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         });
     }
 
-    private String[] getdata(int position) {
+    private String[] getdata(List<User> list_Users,DonHang donHang) {
         if (list_Users.size() <= 0 && list_doHang.size() <= 0 && list_sanPham.size() <= 0) {
             return new String[]{};
         }
         String[] a = new String[]{"", "", "", "", ""};
         for (User u : list_Users) {
-            if (list_doHang.get(position).getMaKhachHang()
+            if (donHang.getMaKhachHang()
                     .equals(u.getMaUser())) {
                 a[0] = u.getHoTen();
                 a[1] = u.getChonDiaCHi();
                 a[2] = u.getSDT();
             }
-            Log.e("TAG", "getdata: 1" + u.getMaUser());
-            Log.e("TAG", "getdata: 2" + list_doHang.get(position).getMaKhachHang());
         }
-
-        a[3] = list_doHang.get(position).getGiaDon() + "";
-        a[4] = String.valueOf((list_doHang.get(position).getListSP().size() + 1));
-        return a;
+                a[3] = donHang.getGiaDon() + "";
+                a[4] = String.valueOf((donHang.getListSP().size() + 1));
+                return a;
     }
 
 
