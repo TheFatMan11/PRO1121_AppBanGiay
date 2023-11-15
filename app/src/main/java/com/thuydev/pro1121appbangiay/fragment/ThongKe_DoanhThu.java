@@ -3,24 +3,38 @@ package com.thuydev.pro1121appbangiay.fragment;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
 
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class ThongKe_DoanhThu extends Fragment {
 
     EditText edt_NgayEnd, edt_NgayStart;
-    TextView tv_doanhThu,tv_ChoNgayEnd, tv_chonNgayStart;
+    TextView tv_doanhThu, tv_ChoNgayEnd, tv_chonNgayStart;
+    AppCompatButton btn_doanhthu;
 
     public ThongKe_DoanhThu() {
         // Required empty public constructor
@@ -35,6 +49,7 @@ public class ThongKe_DoanhThu extends Fragment {
         edt_NgayStart = view.findViewById(R.id.edt_ngayStart);
         tv_chonNgayStart = view.findViewById(R.id.tv_chonNgayStart);
         tv_ChoNgayEnd = view.findViewById(R.id.tv_chonNgayEnd);
+        btn_doanhthu = view.findViewById(R.id.btn_doanhThu);
 
         tv_doanhThu = view.findViewById(R.id.tv_doanhThu);
 
@@ -49,16 +64,16 @@ public class ThongKe_DoanhThu extends Fragment {
                         String thang = "";
                         if (dayOfMonth < 10) {
                             ngay = "0" + dayOfMonth;
-                        }else{
+                        } else {
                             ngay = String.valueOf(dayOfMonth);
                         }
 
-                        if(month<10){
-                            thang="0"+month;
-                        }else {
-                            thang = String.valueOf(month);
+                        if ((month + 1) < 10) {
+                            thang = "0" + (month + 1);
+                        } else {
+                            thang = String.valueOf(month + 1);
                         }
-                        edt_NgayStart.setText(year+"/"+thang+"/"+ngay);
+                        edt_NgayStart.setText(year + "/" + thang + "/" + ngay);
                     }
                 },
                         calendar.get(calendar.YEAR),
@@ -75,17 +90,17 @@ public class ThongKe_DoanhThu extends Fragment {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         String ngay = "";
                         String thang = "";
-                        if(dayOfMonth<10){
-                            ngay = "0"+dayOfMonth;
-                        }else{
+                        if (dayOfMonth < 10) {
+                            ngay = "0" + dayOfMonth;
+                        } else {
                             ngay = String.valueOf(dayOfMonth);
                         }
-                        if(month<10){
-                            thang = "0"+month;
-                        }else {
-                            thang = String.valueOf(month);
+                        if ((month + 1) < 10) {
+                            thang = "0" + (month + 1);
+                        } else {
+                            thang = String.valueOf(month + 1);
                         }
-                        edt_NgayEnd.setText(year+"/"+thang+"/"+ngay);
+                        edt_NgayEnd.setText(year + "/" + thang + "/" + ngay);
                     }
                 },
                         calendar.get(calendar.YEAR),
@@ -94,6 +109,55 @@ public class ThongKe_DoanhThu extends Fragment {
                 dialog.show();
             }
         });
+
+
+        btn_doanhthu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                String ngayStart = edt_NgayStart.getText().toString();
+                String ngayEnd = edt_NgayEnd.getText().toString();
+
+                db.collection("donHang").whereGreaterThanOrEqualTo("ngayMua", ngayStart)
+                        .whereLessThanOrEqualTo("ngayMua", ngayEnd).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                int tong = 0;
+                                for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                    double price = snapshot.getDouble("giaDon");
+                                    tong += price;
+                                    tv_doanhThu.setText(String.valueOf(tong)+"$");
+                                }
+
+                            }
+
+                        });
+
+            }
+        });
+
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        String ngayStart = edt_NgayStart.getText().toString();
+//        String ngayEnd = edt_NgayEnd.getText().toString();
+//
+//        Query query = db.collection("your_collection")
+//                .whereGreaterThanOrEqualTo("timestampField", ngayStart)
+//                .whereLessThanOrEqualTo("timestampField", ngayEnd);
+//        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    double tong = 0;
+//                    for (DocumentSnapshot snapshot : task.getResult()) {
+//                        double gia = snapshot.getDouble("giaDon");
+//                        tong += gia;
+//                    }
+//                } else {
+//                    Toast.makeText(getContext(), "Lói", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+
 
         return view;
     }
