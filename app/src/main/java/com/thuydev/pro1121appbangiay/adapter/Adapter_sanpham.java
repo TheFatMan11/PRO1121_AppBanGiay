@@ -61,11 +61,13 @@ QuanLyGiay quanLyGiay;
     String id="",linkImage="";
     private Adapter_hang adapter;
     private int change = 0;
+    int quyen = 0;
     FirebaseFirestore db;
-    public Adapter_sanpham(List<SanPham> list, Context context,QuanLyGiay quanLyGiay) {
+    public Adapter_sanpham(List<SanPham> list, Context context,QuanLyGiay quanLyGiay,int i) {
         this.list = list;
         this.context = context;
         this.quanLyGiay = quanLyGiay;
+        quyen = i;
     }
 
     @NonNull
@@ -82,6 +84,10 @@ QuanLyGiay quanLyGiay;
         holder.ten.setText(list.get(position).getTenSP());
         holder.gia.setText("Giá: "+Integer.parseInt(list.get(position).getGia()+"")+" VND");
         holder.soluong.setText("Số lượng: "+Integer.parseInt(list.get(position).getSoLuong()+"")+"");
+        if (quyen==1){
+            holder.delete.setVisibility(View.GONE);
+            holder.update.setVisibility(View.GONE);
+        }
         db = FirebaseFirestore.getInstance();
         db.collection("hang").document(list.get(position).getMaHang())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

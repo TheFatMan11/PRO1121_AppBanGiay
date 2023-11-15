@@ -1,7 +1,6 @@
 package com.thuydev.pro1121appbangiay.fragment;
 
 
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -67,6 +66,11 @@ public class QuanLyGiay extends Fragment {
     private ImageView anh;
     private String linkImage = "";
     private ProgressDialog progressDialog;
+    private int quyen = 0;
+
+    public QuanLyGiay(int i) {
+        quyen = i;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -75,15 +79,14 @@ public class QuanLyGiay extends Fragment {
         ibtn_them.setOnClickListener(v -> {
             id = UUID.randomUUID().toString();
             sanPham = new SanPham();
-            them("Thêm sản phẩm", id, sanPham,"Thêm");
+            them("Thêm sản phẩm", id, sanPham, "Thêm");
         });
 
     }
 
     private SanPham sanPham;
 
-EditText a;
-
+    EditText a;
 
 
     public void setA(String ad) {
@@ -116,16 +119,16 @@ EditText a;
         if (sanPham == null) {
             return;
         }
-        if (sanPham.getTenSP()!=null&&sanPham.getAnh()!=null&&sanPham.getKichCo()!=null&&sanPham.getGia()!=null
-        &&sanPham.getNamSX()!=null&&sanPham.getSoLuong()!=null&&list_hang!=null
-        ){
+        if (sanPham.getTenSP() != null && sanPham.getAnh() != null && sanPham.getKichCo() != null && sanPham.getGia() != null
+                && sanPham.getNamSX() != null && sanPham.getSoLuong() != null && list_hang != null
+        ) {
             linkImage = sanPham.getAnh();
             Glide.with(getContext()).load(sanPham.getAnh()).error(R.drawable.baseline_crop_original_24).into(anh);
             ten.setText(sanPham.getTenSP());
             thuongHieu.setText(sanPham.getTenHang());
-            gia.setText(sanPham.getGia()+"");
+            gia.setText(sanPham.getGia() + "");
             list_kichco.setText(hienCo(sanPham.getKichCo()));
-            soLuong.setText(sanPham.getSoLuong()+"");
+            soLuong.setText(sanPham.getSoLuong() + "");
             namSX.setText(sanPham.getNamSX());
 
         }
@@ -156,18 +159,18 @@ EditText a;
                 progressDialog.cancel();
                 return;
             }
-            upAnh(Uri.parse(linkImage), ten, gia, namSX, soLuong, list_kichco, dialog,id,sanPham);
+            upAnh(Uri.parse(linkImage), ten, gia, namSX, soLuong, list_kichco, dialog, id, sanPham);
 
         });
     }
 
     private String hienCo(List<String> list) {
-        String ma="";
-        for (String s : list){
-            ma +=s+",";
+        String ma = "";
+        for (String s : list) {
+            ma += s + ",";
         }
         StringBuilder builder = new StringBuilder(ma);
-        builder.deleteCharAt(ma.length()-1);
+        builder.deleteCharAt(ma.length() - 1);
         return ma;
     }
 
@@ -175,6 +178,7 @@ EditText a;
     private EditText edt_hang;
     private int change = 0;
     List<Hang> list_hang;
+
     private void addHang(EditText thuongHieu, SanPham sanPham) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -307,13 +311,16 @@ EditText a;
         db = FirebaseFirestore.getInstance();
         nghe();
         List<ThuongHieu> list_thuongHieu = new ArrayList<>();
-        adapterSanpham = new Adapter_sanpham(list_giay, getContext(), this);
+        adapterSanpham = new Adapter_sanpham(list_giay, getContext(), this, quyen);
         rcv_list.setAdapter(adapterSanpham);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         rcv_list.setLayoutManager(manager);
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Sẽ mất một lúc vui lòng chờ");
+        if (quyen == 1) {
+            ibtn_them.setVisibility(View.GONE);
+        }
 
     }
 
@@ -372,7 +379,7 @@ EditText a;
 
     private String linkMoi = "";
 
-    public void upAnh(Uri imageUri, EditText ten, EditText gia, EditText namSX, EditText soLuong, EditText list_kichco, Dialog dialog,String id,SanPham sanPham) {
+    public void upAnh(Uri imageUri, EditText ten, EditText gia, EditText namSX, EditText soLuong, EditText list_kichco, Dialog dialog, String id, SanPham sanPham) {
         StorageReference storageReference;
         storageReference = FirebaseStorage.getInstance().getReference("images").child(id);
         storageReference.putFile(imageUri)

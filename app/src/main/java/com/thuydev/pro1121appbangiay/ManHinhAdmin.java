@@ -68,7 +68,7 @@ public class ManHinhAdmin extends AppCompatActivity {
 
     QuanLyNhanVien quanLyNhanVien = new QuanLyNhanVien();
     QuanLyKhachHang quanLyKhachHang = new QuanLyKhachHang();
-    QuanLyGiay quanLyGiay = new QuanLyGiay();
+    QuanLyGiay quanLyGiay = new QuanLyGiay(0);
     frg_ThongKe thongKe = new frg_ThongKe();
     frg_DoiMatKhau doiMatKhau = new frg_DoiMatKhau();
     FragmentManager manager;

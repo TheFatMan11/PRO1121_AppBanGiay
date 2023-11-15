@@ -59,7 +59,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
     FragmentContainerView viewPager;
     BottomNavigationView bottomNavigationView;
 
-    QuanLyGiay quanLyGiay = new QuanLyGiay();
+    QuanLyGiay quanLyGiay = new QuanLyGiay(1);
     frg_ThongKe thongKe = new frg_ThongKe();
     Frg_quanLyHoaDon frgQuanLyHoaDon = new Frg_quanLyHoaDon();
     FragmentManager manager;
@@ -110,6 +110,10 @@ public class ManHinhNhanVien extends AppCompatActivity {
                     relaceFrg(thongKe);
                     getSupportActionBar().setTitle("Thống kê");
                 } else if (item.getItemId() == R.id.menu_nhanvien_qlhd) {
+                    list_dh = new ArrayList<>();
+                    list_User = new ArrayList<>();
+                    list_GioHang = new ArrayList<>();
+                    list_sp = new ArrayList<>();
                     relaceFrg(frgQuanLyHoaDon);
                     getSupportActionBar().setTitle("Quản Lý Hóa Đơn");
                     nghe();

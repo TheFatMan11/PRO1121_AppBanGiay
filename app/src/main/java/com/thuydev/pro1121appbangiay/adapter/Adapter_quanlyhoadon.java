@@ -85,15 +85,8 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             Log.e("TAG", "getdata: 1"+u.getMaUser() );
             Log.e("TAG", "getdata: 2"+list_doHang.get(position).getMaKhachHang() );
         }
-        Long tong = 0l;
-        for (SanPham s : list_sanPham) {
-            for (int i = 0; i < list_doHang.get(position).getListSP().size(); i++) {
-                if (s.getMaSp().equals(list_doHang.get(position).getListSP().get(i).getMaSP())) {
-                    tong += s.getGia();
-                }
-            }
-        }
-        a[3] = tong + "";
+
+        a[3] = list_doHang.get(position).getGiaDon() + "";
         a[4] = String.valueOf((list_doHang.get(position).getListSP().size() + 1));
         return a;
     }

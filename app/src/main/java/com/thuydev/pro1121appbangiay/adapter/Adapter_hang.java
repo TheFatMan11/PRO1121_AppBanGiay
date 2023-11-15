@@ -20,6 +20,7 @@ public class Adapter_hang extends BaseAdapter {
     public Adapter_hang(List<Hang> list, Context context) {
         this.list = list;
         this.context = context;
+
     }
 
     @Override
