@@ -61,7 +61,7 @@ public class QuanLyKhachHang extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_quan_ly_khach_hang, null);
+        View view = inflater.inflate(R.layout.fragment_quan_ly_khach_hang, null)
         recyclerView = view.findViewById(R.id.rcv_qlkh);
         loatData();
         firebaseAuth = FirebaseAuth.getInstance();
