@@ -139,7 +139,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
                         FirebaseAuth.getInstance().signOut();
                         Intent intent = new Intent(ManHinhNhanVien.this, DangNhap_Activity.class);
                         startActivity(intent);
-                        finish();
+                        finishAffinity();
                         Toast.makeText(ManHinhNhanVien.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
                     }
                 });

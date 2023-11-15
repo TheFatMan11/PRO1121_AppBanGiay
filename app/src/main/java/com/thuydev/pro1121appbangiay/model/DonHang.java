@@ -5,7 +5,7 @@ import java.util.List;
 public class DonHang {
     private String maDon;
     private String maKhachHang;
-    private List<String> listSP;
+    private List<Don> listSP;
     private Long time;
     private int trangThai;
     private Long giaDon;
@@ -17,7 +17,7 @@ public class DonHang {
 
 
 
-    public DonHang(String maDon, String maKhachHang, List<String> listSP, Long time, int trangThai, Long giaDon, String ngayMua) {
+    public DonHang(String maDon, String maKhachHang, List<Don> listSP, Long time, int trangThai, Long giaDon, String ngayMua) {
         this.maDon = maDon;
         this.maKhachHang = maKhachHang;
         this.listSP = listSP;
@@ -75,11 +75,11 @@ public class DonHang {
         this.maKhachHang = maKhachHang;
     }
 
-    public List<String> getListSP() {
+    public List<Don> getListSP() {
         return listSP;
     }
 
-    public void setListSP(List<String> listSP) {
+    public void setListSP(List<Don> listSP) {
         this.listSP = listSP;
     }
 }

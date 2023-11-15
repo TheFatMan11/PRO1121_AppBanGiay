@@ -212,18 +212,20 @@ public class DangNhap_Activity extends AppCompatActivity {
                         chucvu[0] = (Long) userData.get("chucVu");
                         if (chucvu[0] == 1) {
                             intent = new Intent(DangNhap_Activity.this, ManHinhAdmin.class);
-                            startActivity(intent);
                         } else if (chucvu[0] == 2) {
                             intent = new Intent(DangNhap_Activity.this, ManHinhNhanVien.class);
-                            startActivity(intent);
                         } else if (chucvu[0] == 3) {
                             intent = new Intent(DangNhap_Activity.this, ManHinhKhachHang.class);
-                            startActivity(intent);
                         } else {
                             Toast.makeText(DangNhap_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
                         }
                         progressDialog.cancel();
-                        finish();
+                        finishAffinity();
+                        if (!isFinishing()){
+                            return;
+                        }
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                         Toast.makeText(DangNhap_Activity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                     } else {
                         Log.e("TAG", "vaomanhinh: " + user.getUid());
@@ -234,5 +236,11 @@ public class DangNhap_Activity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.gc();
     }
 }

@@ -76,6 +76,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thongtintaikhoan);
         user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.e("TAG", "onCreate: "+user.getPhotoUrl() );
         adapterThongtin = new Adapter_thongtin(this);
         pager2 = findViewById(R.id.viewPage2_thongtin_khach);
         avatar = findViewById(R.id.imv_avatar);

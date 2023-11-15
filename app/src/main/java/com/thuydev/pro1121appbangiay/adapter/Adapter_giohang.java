@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_gioHang;
+import com.thuydev.pro1121appbangiay.model.Don;
 import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.Hang;
@@ -99,8 +100,8 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
     }
 
     private void them(int p) {
-        List<String> listDon = new ArrayList<>();
-        listDon.add(list_gio.get(p).getMaSanPham());
+        List<Don> listDon = new ArrayList<>();
+        listDon.add(new Don(list_gio.get(p).getMaSanPham(),list_gio.get(p).getSoLuong()));
         String maDon = UUID.randomUUID().toString();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Calendar lich = Calendar.getInstance();

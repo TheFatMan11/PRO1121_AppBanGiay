@@ -1,18 +1,24 @@
 package com.thuydev.pro1121appbangiay;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.thuydev.pro1121appbangiay.fragment.Frag_cuahang;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_gioHang;
 
@@ -59,7 +65,34 @@ Frag_cuahang fragCuahang;
                 return true;
             }
         });
+        OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
+        onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ManHinhKhachHang.this);
+                builder.setTitle("Thông báo");
+                builder.setIcon(R.drawable.user1);
+                builder.setMessage("Bạn có muốn đăng xuất");
+                builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(ManHinhKhachHang.this, DangNhap_Activity.class);
+                        startActivity(intent);
+                        finishAffinity();
+                        Toast.makeText(ManHinhKhachHang.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                });
+                builder.create().show();
+
+            }
+        });
     }
 
     @Override

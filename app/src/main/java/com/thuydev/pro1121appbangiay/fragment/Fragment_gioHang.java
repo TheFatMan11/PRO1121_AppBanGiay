@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_giohang;
+import com.thuydev.pro1121appbangiay.model.Don;
 import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.Hang;
@@ -49,7 +50,7 @@ public class Fragment_gioHang extends Fragment {
     List<SanPham> list_sanPham;
     List<Hang> list_hang;
     FirebaseFirestore db;
-    List<String> listMaSP;
+    List<Don> listMaSP;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -137,7 +138,7 @@ public class Fragment_gioHang extends Fragment {
         listMaSP = new ArrayList<>();
         for (GioHang gh : list_gio){
             listGio.add(gh.getMaGio());
-            listMaSP.add(gh.getMaSanPham());
+            listMaSP.add(new Don(gh.getMaSanPham(),gh.getSoLuong()));
         }
         return listGio;
     }

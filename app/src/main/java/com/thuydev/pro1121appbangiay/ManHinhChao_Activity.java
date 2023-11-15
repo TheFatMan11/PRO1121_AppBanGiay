@@ -34,6 +34,7 @@ public class ManHinhChao_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_man_hinh_chao);
+        Log.e("TAG", "onCreate: "+"ok " );
         preferences = getSharedPreferences("begin", MODE_PRIVATE);
         int i = preferences.getInt("only", 0);
         db = FirebaseFirestore.getInstance();
@@ -130,8 +131,10 @@ public class ManHinhChao_Activity extends AppCompatActivity {
                         if (!isFinishing()){
                             return;
                         }
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         Log.e("TAG", "onComplete: "+"có lỗi " );
+
                     } else {
                         Toast.makeText(ManHinhChao_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
                         FirebaseAuth.getInstance().signOut();
@@ -143,5 +146,12 @@ public class ManHinhChao_Activity extends AppCompatActivity {
             }
 
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("TAG", "onDestroy: "+"DMMMMMMMMMMMMM" );
+        System.gc();
     }
 }
