@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.thuydev.pro1121appbangiay.fragment.Frag_cuahang;
+import com.thuydev.pro1121appbangiay.fragment.Fragment_choxacnhan;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_gioHang;
 
 public class ManHinhKhachHang extends AppCompatActivity {
@@ -54,7 +55,7 @@ Frag_cuahang fragCuahang;
                     getSupportActionBar().setTitle("Hỗ trợ");
                 }
                 else if (item.getItemId() ==R.id.menu_khachhang_hoadon){
-
+                    manager.beginTransaction().replace(R.id.fcv_KhachHang,new Fragment_choxacnhan()).commit();
                     getSupportActionBar().setTitle("Hóa đơn");
                 }
                 else if (item.getItemId() ==R.id.menu_khachhang_thongtincanhan){

@@ -66,10 +66,10 @@ public class ManHinhNhanVien extends AppCompatActivity {
     Uri uri;
     RecyclerView recyclerView;
     Adapter_quanlyhoadon adapterQuanlyhoadon;
-    List<DonHang> list_dh = new ArrayList<>();
-    List<User> list_User = new ArrayList<>();
-    List<GioHang> list_GioHang = new ArrayList<>();
-    List<SanPham> list_sp = new ArrayList<>();
+    List<DonHang> list_dh ;
+    List<User> list_User ;
+    List<GioHang> list_GioHang ;
+    List<SanPham> list_sp ;
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override

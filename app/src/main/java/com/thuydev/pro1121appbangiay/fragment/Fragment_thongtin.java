@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +19,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.DangNhap_Activity;
 import com.thuydev.pro1121appbangiay.ManHinhAdmin;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.ThongTinTaiKhoan;
+import com.thuydev.pro1121appbangiay.adapter.Adapter_choduyet;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_diachi;
+import com.thuydev.pro1121appbangiay.adapter.Adapter_giohang;
+import com.thuydev.pro1121appbangiay.adapter.Adapter_hang;
+import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
@@ -71,7 +81,48 @@ public class Fragment_thongtin extends Fragment {
                 ManHinhAdmin.doipass(getActivity());
             }
         });
+
+        lichsu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                XemLichSu();
+            }
+        });
     }
+
+    private void XemLichSu() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_lichsu,null,false);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
+        RecyclerView rcv_list_lichsu = view.findViewById(R.id.rcv_list_lichsu);
+        List<DonHang> list = new ArrayList<>();
+        Adapter_choduyet adapterChoduyet = new Adapter_choduyet(list,getContext(),2);
+        getData(list,adapterChoduyet,rcv_list_lichsu);
+        rcv_list_lichsu.setAdapter(adapterChoduyet);
+        rcv_list_lichsu.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+    }
+
+    private void getData(List<DonHang> list,Adapter_choduyet adapterChoduyet,RecyclerView rcv_list) {
+        db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        db.collection("donHang").whereEqualTo("trangThai",1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (!task.isComplete()){
+                    return;
+                }
+                for (QueryDocumentSnapshot dc : task.getResult()){
+                    if (user.getUid().equals(dc.toObject(DonHang.class).getMaKhachHang())) {
+                        list.add(dc.toObject(DonHang.class));
+                        adapterChoduyet.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+    }
+
     private void dangxuat() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Thông báo");

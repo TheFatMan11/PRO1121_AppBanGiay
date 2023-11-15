@@ -73,7 +73,7 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
             return;
         }
         holder.tenSP.setText(sp.getTenSP());
-        holder.giaSP.setText("Giá: " + sp.getGia() + "");
+        holder.giaSP.setText("Giá: " + sp.getGia() + " đ");
         String tenHang = getTenLoai(sp.getMaHang());
         if (tenHang == null) {
             return;

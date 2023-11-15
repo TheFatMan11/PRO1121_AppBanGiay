@@ -54,6 +54,7 @@ public class ThongKe_DoanhThu extends Fragment {
         tv_doanhThu = view.findViewById(R.id.tv_doanhThu);
 
         Calendar calendar = Calendar.getInstance();
+
         tv_chonNgayStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

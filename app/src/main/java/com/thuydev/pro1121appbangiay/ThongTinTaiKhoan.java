@@ -164,6 +164,8 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                 us.setSDT(sdt.getText().toString());
                 setData();
                 seTaiKhoan(Uri.parse(linkMoi));
+                ten.setText(user.getDisplayName());
+                Glide.with(ThongTinTaiKhoan.this).load(user.getPhotoUrl()).error(R.drawable.baseline_crop_original_24).into(avatar);
                 dialog.dismiss();
             }
         });
@@ -197,7 +199,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    Toast.makeText(ThongTinTaiKhoan.this, "Thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ThongTinTaiKhoan.this, "Thay đổi sẽ được thực hiện vào lần đăng nhập sau", Toast.LENGTH_SHORT).show();
                     progressDialog.cancel();
                 } else {
                     Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
@@ -241,6 +243,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         launcher.launch(intent);
+        progressDialog.show();
     }
 
     public void yeucauquyen(Context context) {
@@ -310,6 +313,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                                     Uri uri = task.getResult();
                                     linkMoi = uri.toString();
                                     Glide.with(ThongTinTaiKhoan.this).load(linkMoi).into(anh);
+                                    progressDialog.cancel();
                                 } else {
                                     Toast.makeText(ThongTinTaiKhoan.this, "Lỗi khi lấy đường dẫn", Toast.LENGTH_SHORT).show();
                                 }
@@ -419,7 +423,6 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isComplete()) {
                                 Toast.makeText(ThongTinTaiKhoan.this, "Thêm địa chỉ thành công", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
                                 adapter.notifyDataSetChanged();
                             } else {
                                 Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
