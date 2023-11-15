@@ -51,8 +51,8 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         this.list_sanPham = list_sanPham;
         this.list_Users = list_Users;
         this.list_doHang = list_doHang;
-
         this.context = context;
+        db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -65,15 +65,20 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        if (list_Users.size() == 0 && list_doHang.size() == 0 && list_sanPham.size() == 0) {
+    public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
+        if (list_Users.size() <= 0 && list_doHang.size() <= 0 && list_sanPham.size() <= 0) {
             return;
         }
         String[] data = getdata(position);
-        Log.e("TAG", "onBindViewHolder: " + getdata(position));
         if (data.length <= 0) {
             return;
         }
+        DonHang donHang = list_doHang.get(position);
+        if (donHang==null){
+            return;
+        }
+        Long gia = Long.parseLong(data[3]);
+        String maKH = list_doHang.get(position).getMaKhachHang();
         holder.tv_tenKH.setText("Họ tên:" + data[0]);
         holder.tv_diaChi.setText("Địa chỉ: " + data[1]);
         holder.tv_sdt.setText("Sđt: " + data[2]);
@@ -82,41 +87,40 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         holder.btn_Huy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trangThai(3, list_doHang.get(position));
+                trangThai(3, donHang);
             }
         });
         holder.btn_xacNhan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trangThai(1, list_doHang.get(position));
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                db.collection("user").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                db.collection("user").document(maKH).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot snapshot = task.getResult();
                             if (snapshot.exists()) {
-                                DonHang hang = new DonHang();
-                                Long soDu = Long.parseLong(String.valueOf(snapshot.getDouble("soDu").longValue()));
-                                if (soDu!=null) {
-                                   Long newSoDu = Long.parseLong(String.valueOf(soDu - hang.getGiaDon().longValue()));
-
-                                    Toast.makeText(context, "từ thành công", Toast.LENGTH_SHORT).show();
-                                    db.collection("user").document(user.getUid()).update("soDu", newSoDu).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            Toast.makeText(context, "Tru thanh cong", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(context, "Tru that bai", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                } else {
+                                Long soDu = task.getResult().getLong("soDu");
+                                if (soDu==null) {
                                     Toast.makeText(context, "Loi long", Toast.LENGTH_SHORT).show();
+                                    return;
                                 }
+                                if (soDu<gia){
+                                    Toast.makeText(context, "Số dư khách hàng không đủ", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                Long newSoDu = soDu-gia;
+                                db.collection("user").document(maKH).update("soDu", newSoDu).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isComplete()){
+                                            Toast.makeText(context, "Đã thanh toán", Toast.LENGTH_SHORT).show();
+                                            trangThai(1, donHang);
+                                            notifyDataSetChanged();
+                                        }else {
+                                            Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                             } else {
                                 Toast.makeText(context, "Nguoi dung k ton tai", Toast.LENGTH_SHORT).show();
                             }
@@ -130,14 +134,16 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
     }
 
     private void trangThai(int i, DonHang donHang) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if (donHang==null){
+            return;
+        }
         donHang.setTrangThai(i);
-
         db.collection("donHang").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
                     Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                    notifyDataSetChanged();
                 } else {
                     Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
                 }
@@ -146,6 +152,9 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
     }
 
     private String[] getdata(int position) {
+        if (list_Users.size() <= 0 && list_doHang.size() <= 0 && list_sanPham.size() <= 0) {
+            return new String[]{};
+        }
         String[] a = new String[]{"", "", "", "", ""};
         for (User u : list_Users) {
             if (list_doHang.get(position).getMaKhachHang()

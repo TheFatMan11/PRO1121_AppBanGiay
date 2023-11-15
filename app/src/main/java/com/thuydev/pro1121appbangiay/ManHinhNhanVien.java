@@ -226,6 +226,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
                     Toast.makeText(ManHinhNhanVien.this, "Lỗi không có dữ liệu", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 if (value != null) {
                     for (DocumentChange dc : value.getDocumentChanges()) {
                         switch (dc.getType()) {
