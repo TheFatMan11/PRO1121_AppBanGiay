@@ -24,22 +24,25 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.fragment.Frg_quanLyHoaDon;
+import com.thuydev.pro1121appbangiay.model.Don;
 import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.User;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoadon.viewHolder> {
+    private static final String TAG = "TAG";
     Context context;
     List<SanPham> list_sanPham;
     List<User> list_Users;
     List<DonHang> list_doHang;
 
     FirebaseFirestore db;
-
 
 
     public Adapter_quanlyhoadon(List<SanPham> list_sanPham, List<User> list_Users, List<DonHang> list_doHang, Context context) {
@@ -65,12 +68,12 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         if (list_Users.size() <= 0 && list_doHang.size() <= 0 && list_sanPham.size() <= 0) {
             return;
         }
-        String[] data = getdata(list_Users,list_doHang.get(position));
+        String[] data = getdata(list_Users, list_doHang.get(position));
         if (data.length <= 0) {
             return;
         }
         DonHang donHang = list_doHang.get(position);
-        if (donHang==null){
+        if (donHang == null) {
             return;
         }
         Long gia = Long.parseLong(data[3]);
@@ -96,23 +99,23 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                             DocumentSnapshot snapshot = task.getResult();
                             if (snapshot.exists()) {
                                 Long soDu = task.getResult().getLong("soDu");
-                                if (soDu==null) {
+                                if (soDu == null) {
                                     Toast.makeText(context, "Loi long", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                if (soDu<gia){
+                                if (soDu < gia) {
                                     Toast.makeText(context, "Số dư khách hàng không đủ", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                Long newSoDu = soDu-gia;
+                                Long newSoDu = soDu - gia;
                                 db.collection("user").document(maKH).update("soDu", newSoDu).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isComplete()){
+                                        if (task.isComplete()) {
                                             Toast.makeText(context, "Đã thanh toán", Toast.LENGTH_SHORT).show();
                                             trangThai(1, donHang);
                                             notifyDataSetChanged();
-                                        }else {
+                                        } else {
                                             Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
                                         }
                                     }
@@ -130,7 +133,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
     }
 
     private void trangThai(int i, DonHang donHang) {
-        if (donHang==null){
+        if (donHang == null) {
             return;
         }
         donHang.setTrangThai(i);
@@ -139,24 +142,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
                     Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
-                    updataDonHang(i,donHang);
-                    notifyDataSetChanged();
-                } else {
-                    Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-    private void updataDonHang(int i, DonHang donHang) {
-        if (donHang==null){
-            return;
-        }
-        donHang.setTrangThai(i);
-        db.collection("donHang").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isComplete()) {
-                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                    updataDonHang(i, donHang);
                     notifyDataSetChanged();
                 } else {
                     Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
@@ -165,7 +151,55 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         });
     }
 
-    private String[] getdata(List<User> list_Users,DonHang donHang) {
+    private void updataDonHang(int i, DonHang donHang) {
+        if (donHang == null) {
+            return;
+        }
+        donHang.setTrangThai(i);
+        db.collection("donHang").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isComplete()) {
+                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                    setTop(donHang);
+
+                } else {
+                    Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void setTop(DonHang donHang) {
+        for (Don d : donHang.getListSP()) {
+            getTop(d.getMaSP(),d.getSoLuong());
+        }
+    }
+
+    private void getTop(String maSP,Long sl) {
+        final Long[] i = {0l};
+        db.collection("top10").document(maSP).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (!task.isComplete()) {
+                    return;
+                }
+                i[0]= task.getResult().getLong("soLuong");
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("soLuong", i[0]+sl);
+                db.collection("top10").document(maSP).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isComplete()) {
+                            Log.e(TAG, "onComplete: "+"đẩy dữ liệu thành công" );
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private String[] getdata(List<User> list_Users, DonHang donHang) {
         if (list_Users.size() <= 0 && list_doHang.size() <= 0 && list_sanPham.size() <= 0) {
             return new String[]{};
         }
@@ -178,9 +212,9 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                 a[2] = u.getSDT();
             }
         }
-                a[3] = donHang.getGiaDon() + "";
-                a[4] = String.valueOf((donHang.getListSP().size() + 1));
-                return a;
+        a[3] = donHang.getGiaDon() + "";
+        a[4] = String.valueOf((donHang.getListSP().size() + 1));
+        return a;
     }
 
 

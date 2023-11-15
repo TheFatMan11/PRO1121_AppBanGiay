@@ -124,11 +124,9 @@ public class ManHinhNhanVien extends AppCompatActivity {
                 } else {
                     Toast.makeText(ManHinhNhanVien.this, "Lỗi", Toast.LENGTH_SHORT).show();
                 }
-
                 return true;
             }
         });
-
         OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
         onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -312,7 +310,6 @@ public  void setQuanLy(){
     }
 
     public void ngheSP() {
-        db = FirebaseFirestore.getInstance();
         db.collection("sanPham").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -351,13 +348,13 @@ public  void setQuanLy(){
         });
     }
 public void nghe(){
+        db = FirebaseFirestore.getInstance();
         ngheGio();
         ngheKH();
         ngheHoaDon();
         ngheSP();
 }
     public void ngheGio() {
-        db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db.collection("gioHang").whereEqualTo("maKhachHang", user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -366,7 +363,6 @@ public void nghe(){
                     Toast.makeText(ManHinhNhanVien.this, "Lỗi không có dữ liệu", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 if (value != null) {
                     for (DocumentChange dc : value.getDocumentChanges()) {
                         switch (dc.getType()) {
@@ -396,7 +392,4 @@ public void nghe(){
         });
     }
 
-    public void setAdapterQuanlyhoadon(Adapter_quanlyhoadon adapterQuanlyhoadon) {
-        this.adapterQuanlyhoadon = adapterQuanlyhoadon;
-    }
 }
