@@ -134,6 +134,24 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             return;
         }
         donHang.setTrangThai(i);
+        db.collection("donHangDaDuyet").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isComplete()) {
+                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                    updataDonHang(i,donHang);
+                    notifyDataSetChanged();
+                } else {
+                    Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+    private void updataDonHang(int i, DonHang donHang) {
+        if (donHang==null){
+            return;
+        }
+        donHang.setTrangThai(i);
         db.collection("donHang").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

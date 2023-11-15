@@ -118,45 +118,26 @@ public class ThongKe_DoanhThu extends Fragment {
                 String ngayStart = edt_NgayStart.getText().toString();
                 String ngayEnd = edt_NgayEnd.getText().toString();
 
-                db.collection("donHang").whereGreaterThanOrEqualTo("ngayMua", ngayStart)
-                        .whereLessThanOrEqualTo("ngayMua", ngayEnd).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                db.collection("donHangDaDuyet")
+                        .whereGreaterThanOrEqualTo("ngayMua", ngayStart)
+                        .whereLessThanOrEqualTo("ngayMua", ngayEnd)
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                int tong = 0;
-                                for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                                    double price = snapshot.getDouble("giaDon");
-                                    tong += price;
-                                    tv_doanhThu.setText(String.valueOf(tong)+"$");
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isComplete()) {
+                                    for (DocumentSnapshot snapshot : task.getResult().getDocuments()) {
+                                        Long tong = 0l;
+                                        Long price = snapshot.getLong("giaDon");
+                                        tong += price;
+                                        tv_doanhThu.setText(tong + "VND");
+                                    }
+                                } else {
+                                    Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
                                 }
-
                             }
-
                         });
-
             }
         });
-
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        String ngayStart = edt_NgayStart.getText().toString();
-//        String ngayEnd = edt_NgayEnd.getText().toString();
-//
-//        Query query = db.collection("your_collection")
-//                .whereGreaterThanOrEqualTo("timestampField", ngayStart)
-//                .whereLessThanOrEqualTo("timestampField", ngayEnd);
-//        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    double tong = 0;
-//                    for (DocumentSnapshot snapshot : task.getResult()) {
-//                        double gia = snapshot.getDouble("giaDon");
-//                        tong += gia;
-//                    }
-//                } else {
-//                    Toast.makeText(getContext(), "Lói", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
 
 
         return view;
