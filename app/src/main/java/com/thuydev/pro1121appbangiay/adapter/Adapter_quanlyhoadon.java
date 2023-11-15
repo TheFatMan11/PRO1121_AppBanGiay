@@ -10,10 +10,18 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.fragment.Frg_quanLyHoaDon;
 import com.thuydev.pro1121appbangiay.model.DonHang;
@@ -62,19 +70,83 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             return;
         }
         String[] data = getdata(position);
-        Log.e("TAG", "onBindViewHolder: " +getdata(position));
-        if (data.length<=0){
+        Log.e("TAG", "onBindViewHolder: " + getdata(position));
+        if (data.length <= 0) {
             return;
         }
         holder.tv_tenKH.setText("Họ tên:" + data[0]);
-        holder.tv_diaChi.setText("Địa chỉ: "+data[1]);
+        holder.tv_diaChi.setText("Địa chỉ: " + data[1]);
         holder.tv_sdt.setText("Sđt: " + data[2]);
-        holder.tv_gia.setText("Giá :" +data[3]);
-        holder.tv_soluong.setText("Số lượng sản phẩm mua: "+data[4]);
+        holder.tv_gia.setText("Giá :" + data[3]);
+        holder.tv_soluong.setText("Số lượng sản phẩm mua: " + data[4]);
+        holder.btn_Huy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trangThai(3, list_doHang.get(position));
+            }
+        });
+        holder.btn_xacNhan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trangThai(1, list_doHang.get(position));
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("user").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot snapshot = task.getResult();
+                            if (snapshot.exists()) {
+                                DonHang hang = new DonHang();
+                                Long soDu = Long.parseLong(String.valueOf(snapshot.getDouble("soDu").longValue()));
+                                if (soDu!=null) {
+                                   Long newSoDu = Long.parseLong(String.valueOf(soDu - hang.getGiaDon().longValue()));
+
+                                    Toast.makeText(context, "từ thành công", Toast.LENGTH_SHORT).show();
+                                    db.collection("user").document(user.getUid()).update("soDu", newSoDu).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Toast.makeText(context, "Tru thanh cong", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(context, "Tru that bai", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(context, "Loi long", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(context, "Nguoi dung k ton tai", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(context, "Loi truy van", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void trangThai(int i, DonHang donHang) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        donHang.setTrangThai(i);
+
+        db.collection("donHang").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isComplete()) {
+                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private String[] getdata(int position) {
-        String[] a = new String[]{"","","","",""};
+        String[] a = new String[]{"", "", "", "", ""};
         for (User u : list_Users) {
             if (list_doHang.get(position).getMaKhachHang()
                     .equals(u.getMaUser())) {
@@ -82,8 +154,8 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                 a[1] = u.getChonDiaCHi();
                 a[2] = u.getSDT();
             }
-            Log.e("TAG", "getdata: 1"+u.getMaUser() );
-            Log.e("TAG", "getdata: 2"+list_doHang.get(position).getMaKhachHang() );
+            Log.e("TAG", "getdata: 1" + u.getMaUser());
+            Log.e("TAG", "getdata: 2" + list_doHang.get(position).getMaKhachHang());
         }
         Long tong = 0l;
         for (SanPham s : list_sanPham) {
@@ -97,8 +169,6 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         a[4] = String.valueOf((list_doHang.get(position).getListSP().size() + 1));
         return a;
     }
-
-
 
 
     @Override
