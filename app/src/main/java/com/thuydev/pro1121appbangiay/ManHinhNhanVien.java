@@ -60,7 +60,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
 
     QuanLyGiay quanLyGiay = new QuanLyGiay(1);
-    frg_ThongKe thongKe = new frg_ThongKe();
+
     Frg_quanLyHoaDon frgQuanLyHoaDon = new Frg_quanLyHoaDon();
     FragmentManager manager;
     Uri uri;
@@ -107,7 +107,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
                     relaceFrg(quanLyGiay);
                     getSupportActionBar().setTitle("Quản Lý Sản Phẩm");
                 } else if (item.getItemId() == R.id.menu_nhanvien_thongke) {
-                    relaceFrg(thongKe);
+                    relaceFrg(new frg_ThongKe());
                     getSupportActionBar().setTitle("Thống kê");
                 } else if (item.getItemId() == R.id.menu_nhanvien_qlhd) {
                     list_dh = new ArrayList<>();
