@@ -20,6 +20,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Map;
@@ -28,13 +29,14 @@ public class ManHinhChao_Activity extends AppCompatActivity {
     private SharedPreferences preferences;
     private FirebaseFirestore db;
     private DocumentReference reference;
+    private ListenerRegistration registration;
     private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_man_hinh_chao);
-        Log.e("TAG", "onCreate: "+"ok " );
+        Log.e("TAG", "onCreate: " + "Đang mở activity");
         preferences = getSharedPreferences("begin", MODE_PRIVATE);
         int i = preferences.getInt("only", 0);
         db = FirebaseFirestore.getInstance();
@@ -76,7 +78,7 @@ public class ManHinhChao_Activity extends AppCompatActivity {
 
     private void checkBan(FirebaseUser user) {
         reference = db.collection("user").document(user.getUid());
-        db.collection("user").whereEqualTo("trangThai", 1).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        registration = db.collection("user").whereEqualTo("trangThai", 1).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (value == null) {
@@ -89,7 +91,7 @@ public class ManHinhChao_Activity extends AppCompatActivity {
                 int i = 0;
                 for (DocumentSnapshot dc : value.getDocuments()) {
                     if (user.getUid().equals(dc.get("maUser"))) {
-                        chay(user);
+                        DangNhap(user);
                         i = 1;
                         return;
                     }
@@ -103,9 +105,8 @@ public class ManHinhChao_Activity extends AppCompatActivity {
         });
     }
 
-    private void chay(FirebaseUser user) {
+    private void DangNhap(FirebaseUser user) {
         final Long[] chucvu = new Long[]{0L};
-        reference = db.collection("user").document(user.getUid());
         reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -128,13 +129,13 @@ public class ManHinhChao_Activity extends AppCompatActivity {
                             Toast.makeText(ManHinhChao_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
                         }
                         finishAffinity();
-                        if (!isFinishing()){
+                        if (!isFinishing()) {
                             return;
                         }
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        Log.e("TAG", "onComplete: "+"có lỗi " );
-
+                        Log.e("TAG", "onComplete: " + "đã mở activity mới");
+                        registration.remove();
                     } else {
                         Toast.makeText(ManHinhChao_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
                         FirebaseAuth.getInstance().signOut();
@@ -151,7 +152,7 @@ public class ManHinhChao_Activity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e("TAG", "onDestroy: "+"DMMMMMMMMMMMMM" );
+        Log.e("TAG", "onDestroy: " + "đã kết thúc activity");
         System.gc();
     }
 }

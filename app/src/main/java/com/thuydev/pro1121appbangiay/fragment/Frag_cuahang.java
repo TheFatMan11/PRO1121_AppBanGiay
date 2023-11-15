@@ -1,7 +1,6 @@
 package com.thuydev.pro1121appbangiay.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,9 @@ import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_cuahang;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
-import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 public class Frag_cuahang extends Fragment {
@@ -75,14 +72,14 @@ public class Frag_cuahang extends Fragment {
                 list_sp.clear();
                 list_hang.clear();
                 for (DocumentSnapshot dc : value.getDocuments()) {
-                    nghe2(dc.getString("maHang"), dc.getString("tenHang"));
+                    AddListSP(dc.getString("maHang"), dc.getString("tenHang"));
                 }
 
             }
         });
     }
 
-    private void nghe2(String maHang, String name) {
+    private void AddListSP(String maHang, String name) {
         db.collection("sanPham").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -94,10 +91,12 @@ public class Frag_cuahang extends Fragment {
                 }
                 for (DocumentChange dc : value.getDocumentChanges()) {
                     if (maHang.equals(dc.getDocument().get("maHang").toString())) {
+                        //lấy được sản phẩm
                         list_sp.add(dc.getDocument().toObject(SanPham.class));
                     }
                         switch (dc.getType()){
                             case MODIFIED:
+
                                return;
                     }
                 }

@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Map;
@@ -39,6 +40,7 @@ public class DangNhap_Activity extends AppCompatActivity {
     private FirebaseFirestore db;
     private DocumentReference reference;
     private Intent intent;
+    private ListenerRegistration registration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +157,7 @@ public class DangNhap_Activity extends AppCompatActivity {
         reference = db.collection("user").document(user.getUid());
 
 
-        db.collection("user").whereEqualTo("trangThai", 1).addSnapshotListener(new EventListener<QuerySnapshot>() {
+       registration= db.collection("user").whereEqualTo("trangThai", 1).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (value == null) {
@@ -226,6 +228,7 @@ public class DangNhap_Activity extends AppCompatActivity {
                         }
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
+                        registration.remove();
                         Toast.makeText(DangNhap_Activity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                     } else {
                         Log.e("TAG", "vaomanhinh: " + user.getUid());
