@@ -11,7 +11,7 @@
         />
     <item android:id="@+id/menu_khachhang_hotro"
         android:title=""
-        android:icon="@drawable/conversation"
+        android:icon="@drawable/agent"
         />
 
     <item android:id="@+id/menu_khachhang_hoadon"

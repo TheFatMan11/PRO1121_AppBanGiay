@@ -6,28 +6,40 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.fragment.Frag_cuahang;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_choxacnhan;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_gioHang;
+import com.thuydev.pro1121appbangiay.model.DonHang;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManHinhKhachHang extends AppCompatActivity {
 Frag_cuahang fragCuahang;
+String TAG = "TAG";
     Toolbar toolbar;
     BottomNavigationView bottomNavigationView;
     FragmentManager manager;
+    FirebaseFirestore db;
+    FirebaseUser user;
+    List<DonHang> list ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +47,14 @@ Frag_cuahang fragCuahang;
         fragCuahang = new Frag_cuahang();
         bottomNavigationView = findViewById(R.id.bnv_khachhang);
         toolbar = findViewById(R.id.toolbar_khachhang);
+        db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Cửa hàng");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         manager = getSupportFragmentManager();
         manager.beginTransaction().add(R.id.fcv_KhachHang,fragCuahang).commit();
-
+        list = new ArrayList<>();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -52,7 +66,8 @@ Frag_cuahang fragCuahang;
                     manager.beginTransaction().replace(R.id.fcv_KhachHang,new Fragment_gioHang()).commit();
                 }
                 else if (item.getItemId() ==R.id.menu_khachhang_hotro){
-                    getSupportActionBar().setTitle("Hỗ trợ");
+                    hotro();
+                   return false;
                 }
                 else if (item.getItemId() ==R.id.menu_khachhang_hoadon){
                     manager.beginTransaction().replace(R.id.fcv_KhachHang,new Fragment_choxacnhan()).commit();
@@ -95,19 +110,41 @@ Frag_cuahang fragCuahang;
             }
         });
     }
-
+MenuItem item;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        this.item = item;
         if (item.getItemId() == R.id.menu_toolbar) {
             item.setIcon(R.drawable.bell);
         }
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_toolbar, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void hotro() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater layoutInflater = getLayoutInflater();
+        View view = layoutInflater.inflate(R.layout.dialog_hotro, null, false);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
+        EditText email = view.findViewById(R.id.edt_sdt_hotro);
+        Button gui = view.findViewById(R.id.btn_hotro);
+
+        gui.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
     }
 }
