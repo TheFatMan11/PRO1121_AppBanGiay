@@ -1,6 +1,7 @@
 package com.thuydev.pro1121appbangiay.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.thuydev.pro1121appbangiay.ManHinhKhachHang;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_cuahang;
 import com.thuydev.pro1121appbangiay.model.Hang;
@@ -32,6 +34,8 @@ public class Frag_cuahang extends Fragment {
     private FirebaseFirestore db;
     List<Hang> list_hang;
     List<SanPham> list_sp;
+    String TAG = "TAG";
+    ManHinhKhachHang manHinhKhachHang;
 
     @Nullable
     @Override
@@ -49,11 +53,13 @@ public class Frag_cuahang extends Fragment {
         rcv_list = view.findViewById(R.id.rcv_cuaHang);
         list_hang = new ArrayList<>();
         list_sp = new ArrayList<>();
+        manHinhKhachHang = (ManHinhKhachHang) getActivity();
         nghe();
         adapterCuahang = new Adapter_cuahang(list_hang, getContext());
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcv_list.setAdapter(adapterCuahang);
         rcv_list.setLayoutManager(manager);
+
 
 
     }
@@ -94,12 +100,13 @@ public class Frag_cuahang extends Fragment {
                         //lấy được sản phẩm
                         list_sp.add(dc.getDocument().toObject(SanPham.class));
                     }
-                        switch (dc.getType()){
-                            case MODIFIED:
-
-                               return;
+                    switch (dc.getType()) {
+                        case MODIFIED:
+                            manHinhKhachHang.getSupportFragmentManager().beginTransaction().replace(R.id.fcv_KhachHang, new Frag_cuahang()).commit();
+                            return;
                     }
                 }
+                Log.e(TAG, "onEvent:2 " + list_sp.size());
                 list_hang.add(new Hang(maHang, name, list_sp));
                 list_hang.sort(new Comparator<Hang>() {
                     @Override
