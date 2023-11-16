@@ -51,7 +51,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         this.list_Users = list_Users;
         this.list_doHang = list_doHang;
         this.context = context;
-        db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance()
     }
 
     @NonNull
