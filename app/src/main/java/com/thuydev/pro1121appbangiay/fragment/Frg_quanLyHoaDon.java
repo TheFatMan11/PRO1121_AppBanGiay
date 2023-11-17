@@ -2,6 +2,7 @@ package com.thuydev.pro1121appbangiay.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_quanlyhoadon;
@@ -60,22 +64,37 @@ public class Frg_quanLyHoaDon extends Fragment {
         list_gioHang = new ArrayList<>();
         list_dh = new ArrayList<>();
         getAll();
-        adapterQuanlyhoadon = new Adapter_quanlyhoadon(list_sp,list_User,list_dh,getContext());
+        adapterQuanlyhoadon = new Adapter_quanlyhoadon(list_sp, list_User, list_dh, getContext());
         recyclerView.setAdapter(adapterQuanlyhoadon);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
 
     }
 
 
+    public void getSp() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("sanPham").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isComplete()) {
+                    for (QueryDocumentSnapshot snapshot: task.getResult()){
+                        list_sp.add(snapshot.toObject(SanPham.class));
+                    }
+                    adapterQuanlyhoadon.notifyDataSetChanged();
+                }
+            }
+        });
+    }
 
-
-private  void getAll(){
-    db = FirebaseFirestore.getInstance();
+    private void getAll() {
+        db = FirebaseFirestore.getInstance();
         getSP();
         getKH();
-    getHoaDon();
-}
+        getHoaDon();
+        getSp();
+
+    }
 
     public void getHoaDon() {
 

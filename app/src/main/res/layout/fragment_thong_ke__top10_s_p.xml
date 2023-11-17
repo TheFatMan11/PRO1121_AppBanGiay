@@ -9,6 +9,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_Top10sp"
         android:layout_width="match_parent"
+        android:layout_margin="10dp"
         android:layout_height="match_parent" />
 
 </LinearLayout>

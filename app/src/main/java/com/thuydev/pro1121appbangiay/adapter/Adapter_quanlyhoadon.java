@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -82,6 +83,9 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         if (donHang == null) {
             return;
         }
+        SanPham sp = getmaSP(list_sanPham.get(position).getMaSp());
+        Glide.with(context).load(sp.getAnh()).error(R.drawable.baseline_crop_original_24).into(holder.anh);
+
         Long gia = Long.parseLong(data[3]);
         String maKH = list_doHang.get(position).getMaKhachHang();
         holder.tv_tenKH.setText("Họ tên:" + data[0]);
@@ -139,6 +143,14 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         });
     }
 
+    public SanPham getmaSP(String masp) {
+        SanPham sanPham = new SanPham();
+        if (masp.equals(sanPham.getMaSp())) {
+            return sanPham;
+        }
+        return sanPham;
+    }
+
     private void trangThai(int i, DonHang donHang) {
         if (donHang == null) {
             return;
@@ -149,7 +161,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
                     Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
-                    if (i==1){
+                    if (i == 1) {
                         updataDonHang(i, donHang);
                         progressDialog.cancel();
                     }
@@ -171,7 +183,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                        setTop(donHang);
+                    setTop(donHang);
 
                 } else {
                     Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
@@ -182,11 +194,11 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
 
     private void setTop(DonHang donHang) {
         for (Don d : donHang.getListSP()) {
-            getTop(d.getMaSP(),d.getSoLuong());
+            getTop(d.getMaSP(), d.getSoLuong());
         }
     }
 
-    private void getTop(String maSP,Long sl) {
+    private void getTop(String maSP, Long sl) {
         final Long[] i = {0l};
         db.collection("top10").document(maSP).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -194,18 +206,18 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                 if (!task.isComplete()) {
                     return;
                 }
-                i[0]= task.getResult().getLong("soLuong");
-                if (i[0]==null){
-                    i[0]=0l;
+                i[0] = task.getResult().getLong("soLuong");
+                if (i[0] == null) {
+                    i[0] = 0l;
                 }
                 HashMap<String, Object> map = new HashMap<>();
-                map.put("soLuong", i[0]+sl);
-                map.put("maSP",maSP);
+                map.put("soLuong", i[0] + sl);
+                map.put("maSP", maSP);
                 db.collection("top10").document(maSP).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isComplete()) {
-                            Log.e(TAG, "onComplete: "+"đẩy dữ liệu thành công" );
+                            Log.e(TAG, "onComplete: " + "đẩy dữ liệu thành công");
                         }
                     }
                 });
@@ -228,8 +240,8 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         }
         a[3] = donHang.getGiaDon() + "";
         Long soluong = 0l;
-        for (Don d : donHang.getListSP()){
-            soluong+=d.getSoLuong();
+        for (Don d : donHang.getListSP()) {
+            soluong += d.getSoLuong();
         }
         a[4] = String.valueOf((soluong));
         return a;

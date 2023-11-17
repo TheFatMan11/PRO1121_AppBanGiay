@@ -2,6 +2,7 @@ package com.thuydev.pro1121appbangiay.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,30 +12,35 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Adapter_Top10 extends RecyclerView.Adapter<Adapter_Top10.viewHolder> {
-    List<DonHang> list_donHang;
+
     Context context;
-    List<Hang> list_hang;
     List<SanPham> list_sanPham;
     FirebaseFirestore db;
+    List<HashMap<String, Object>> list_top10;
 
-    public Adapter_Top10(List<DonHang> listDonHang, List<Hang> list_hang, List<SanPham> list_sanPham, Context context) {
-        this.list_donHang = listDonHang;
-        this.list_hang = list_hang;
-        this.list_sanPham = list_sanPham;
+    public Adapter_Top10(Context context, List<SanPham> list_sanPham, List<HashMap<String, Object>> list_top10) {
         this.context = context;
-        db=FirebaseFirestore.getInstance();
-
+        this.list_sanPham = list_sanPham;
+        this.list_top10 = list_top10;
     }
-
 
     @NonNull
     @Override
@@ -46,26 +52,33 @@ public class Adapter_Top10 extends RecyclerView.Adapter<Adapter_Top10.viewHolder
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-
+        SanPham sanPham = maSP(list_top10.get(position).get("maSP").toString());
+        Log.e("TAG",""+sanPham.getAnh());
+        if (sanPham==null){
+            return;
+        }
+        Log.e("TAG",""+sanPham.getTenSP());
+        Glide.with(context).load(sanPham.getAnh()).error(R.drawable.baseline_crop_original_24).into(holder.anh);
+        holder.tv_tenSp.setText("Tên sản phẩm: "+sanPham.getTenSP());
+        holder.tv_thuonghieu.setText("Hãng: "+sanPham.getTenHang());
+        holder.tv_soLuong.setText("Số lượng: "+list_top10.get(position).get("soLuong").toString());
     }
 
-    private String[] getData(List<SanPham> list_sanPham, DonHang hang) {
-        if (list_sanPham.size() <= 0 && list_hang.size() <= 0 && list_donHang.size()<=0) {
-            return new String[]{};
-        }
-        String[] a = new String[]{"", "", ""};
-        for (SanPham sp : list_sanPham){
-            if(hang.getMaDon().equals(sp.getMaSp())){
-                a[0] = sp.getTenSP();
-                a[1] = sp.getTenHang();
+    public SanPham maSP(String masp) {
+        SanPham sanPham = new SanPham();
+        for (SanPham sp : list_sanPham) {
+            if (masp.equals(sp.getMaSp())) {
+                return sp;
             }
+
         }
-        return a;
+        return sanPham;
     }
+
 
     @Override
     public int getItemCount() {
-        return list_sanPham.size();
+        return list_top10.size();
     }
 
     public class viewHolder extends RecyclerView.ViewHolder {
