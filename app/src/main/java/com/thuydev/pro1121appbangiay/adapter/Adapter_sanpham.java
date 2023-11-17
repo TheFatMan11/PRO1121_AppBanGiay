@@ -143,13 +143,8 @@ holder.update.setOnClickListener(new View.OnClickListener() {
     private void Update(int position) {
         SanPham sanPham = list.get(position);
         sanPham.tenHang(quanLyGiay);
-        quanLyGiay.them("Sửa sản phẩm",list.get(position).getMaSp(),sanPham,"Sửa");
+        quanLyGiay.them("Sửa sản phẩm",list.get(position).getMaSp(),sanPham,"Sửa","Sửa thành công");
     }
-
-
-
-
-
 
     @Override
     public int getItemCount() {

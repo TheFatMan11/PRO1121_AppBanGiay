@@ -79,7 +79,7 @@ public class QuanLyGiay extends Fragment {
         ibtn_them.setOnClickListener(v -> {
             id = UUID.randomUUID().toString();
             sanPham = new SanPham();
-            them("Thêm sản phẩm", id, sanPham, "Thêm");
+            them("Thêm sản phẩm", id, sanPham, "Thêm","Thêm thành công");
         });
 
     }
@@ -94,7 +94,7 @@ public class QuanLyGiay extends Fragment {
     }
 
     @SuppressLint({"UseRequireInsteadOfGet", "SetTextI18n"})
-    public void them(String name, String id, SanPham sanPham, String tennut) {
+    public void them(String name, String id, SanPham sanPham, String tennut,String thongBao) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         @SuppressLint("UseRequireInsteadOfGet") LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_themsp, null, false);
@@ -159,7 +159,7 @@ public class QuanLyGiay extends Fragment {
                 progressDialog.cancel();
                 return;
             }
-            upAnh(Uri.parse(linkImage), ten, gia, namSX, soLuong, list_kichco, dialog, id, sanPham);
+            upAnh(Uri.parse(linkImage), ten, gia, namSX, soLuong, list_kichco, dialog, id, sanPham,thongBao);
 
         });
     }
@@ -309,7 +309,7 @@ public class QuanLyGiay extends Fragment {
         ibtn_them = view.findViewById(R.id.ibtn_them_sp);
         list_giay = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
-        nghe();
+        getSP();
         List<ThuongHieu> list_thuongHieu = new ArrayList<>();
         adapterSanpham = new Adapter_sanpham(list_giay, getContext(), this, quyen);
         rcv_list.setAdapter(adapterSanpham);
@@ -324,7 +324,7 @@ public class QuanLyGiay extends Fragment {
 
     }
 
-    private void nghe() {
+    private void getSP() {
         db.collection("sanPham").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -379,7 +379,7 @@ public class QuanLyGiay extends Fragment {
 
     private String linkMoi = "";
 
-    public void upAnh(Uri imageUri, EditText ten, EditText gia, EditText namSX, EditText soLuong, EditText list_kichco, Dialog dialog, String id, SanPham sanPham) {
+    public void upAnh(Uri imageUri, EditText ten, EditText gia, EditText namSX, EditText soLuong, EditText list_kichco, Dialog dialog, String id, SanPham sanPham,String thongbao) {
         StorageReference storageReference;
         storageReference = FirebaseStorage.getInstance().getReference("images").child(id);
         storageReference.putFile(imageUri)
@@ -391,8 +391,12 @@ public class QuanLyGiay extends Fragment {
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
                                     Uri uri = task.getResult();
-                                    linkMoi = uri.toString();
-                                    sanPham.setAnh(linkMoi);
+                                   if (linkMoi.isEmpty()){
+                                       linkMoi = uri.toString();
+                                   } else {
+                                       linkMoi = sanPham.getAnh();
+                                   }
+                                   sanPham.setAnh(linkMoi);
                                     sanPham.setMaSp(id);
                                     sanPham.setTenSP(ten.getText().toString().trim());
                                     sanPham.setGia(Long.parseLong(gia.getText().toString()));
@@ -405,9 +409,10 @@ public class QuanLyGiay extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getContext(), thongbao, Toast.LENGTH_SHORT).show();
                                                 progressDialog.cancel();
                                                 dialog.dismiss();
+                                                adapterSanpham.notifyDataSetChanged();
                                             } else {
                                                 Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
                                             }
