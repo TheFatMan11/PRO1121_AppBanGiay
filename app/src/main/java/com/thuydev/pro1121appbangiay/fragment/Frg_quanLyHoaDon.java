@@ -65,7 +65,6 @@ public class Frg_quanLyHoaDon extends Fragment {
     public void loatData() {
         ManHinhNhanVien nhanVien = (ManHinhNhanVien) getContext();
         nhanVien.setRecyclerView(recyclerView);
-
     }
 
 

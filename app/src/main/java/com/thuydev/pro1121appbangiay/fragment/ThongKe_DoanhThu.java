@@ -126,12 +126,12 @@ public class ThongKe_DoanhThu extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isComplete()) {
+                                    Long tong = 0l;
                                     for (DocumentSnapshot snapshot : task.getResult().getDocuments()) {
-                                        Long tong = 0l;
                                         Long price = snapshot.getLong("giaDon");
                                         tong += price;
-                                        tv_doanhThu.setText(tong + "VND");
                                     }
+                                    tv_doanhThu.setText(tong + "VND");
                                 } else {
                                     Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
                                 }

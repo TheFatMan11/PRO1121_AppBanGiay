@@ -62,6 +62,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
     QuanLyGiay quanLyGiay = new QuanLyGiay(1);
 
     Frg_quanLyHoaDon frgQuanLyHoaDon = new Frg_quanLyHoaDon();
+    frg_ThongKe thongKe = new frg_ThongKe();
     FragmentManager manager;
     Uri uri;
     RecyclerView recyclerView;

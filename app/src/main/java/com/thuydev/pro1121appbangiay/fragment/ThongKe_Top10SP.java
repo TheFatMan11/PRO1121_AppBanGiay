@@ -2,65 +2,101 @@ package com.thuydev.pro1121appbangiay.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.thuydev.pro1121appbangiay.ManHinhNhanVien;
 import com.thuydev.pro1121appbangiay.R;
+import com.thuydev.pro1121appbangiay.adapter.Adapter_Top10;
+import com.thuydev.pro1121appbangiay.model.DonHang;
+import com.thuydev.pro1121appbangiay.model.Hang;
+import com.thuydev.pro1121appbangiay.model.SanPham;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ThongKe_Top10SP#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class ThongKe_Top10SP extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    RecyclerView recyclerView;
+    List<SanPham> list_SanPham;
+    List<DonHang> list_DonHang;
+    List<Hang> list_Hang;
+    Adapter_Top10 adapterTop10;
+    FirebaseFirestore db;
 
     public ThongKe_Top10SP() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ThongKe_Top10SP.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ThongKe_Top10SP newInstance(String param1, String param2) {
-        ThongKe_Top10SP fragment = new ThongKe_Top10SP();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_thong_ke__top10_s_p, container, false);
+        View view = inflater.inflate(R.layout.fragment_thong_ke__top10_s_p, container, false);
+        recyclerView = view.findViewById(R.id.rcv_Top10sp);
+        list_SanPham = new ArrayList<>();
+        list_DonHang = new ArrayList<>();
+        list_Hang = new ArrayList<>();
+        adapterTop10 = new Adapter_Top10(list_DonHang,list_Hang, list_SanPham, getContext());
+        recyclerView.setAdapter(adapterTop10);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(manager);
+        db = FirebaseFirestore.getInstance();
+        ngheSP();
+        return view;
     }
+
+    private void ngheSP() {
+        db.collection("sanPham").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Toast.makeText(getContext(), "Lỗi không có dữ liệu", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (value != null) {
+                    for (DocumentChange dc : value.getDocumentChanges()) {
+                        switch (dc.getType()) {
+                            case ADDED:
+                                dc.getDocument().toObject(SanPham.class);
+                                list_SanPham.add(dc.getDocument().toObject(SanPham.class));
+                                adapterTop10.notifyDataSetChanged();
+                                break;
+                            case MODIFIED:
+                                SanPham dtoq = dc.getDocument().toObject(SanPham.class);
+                                if (dc.getOldIndex() == dc.getNewIndex()) {
+                                    list_SanPham.set(dc.getOldIndex(), dtoq);
+                                } else {
+                                    list_SanPham.remove(dc.getOldIndex());
+                                    list_SanPham.add(dtoq);
+                                }
+                                adapterTop10.notifyDataSetChanged();
+                                break;
+                            case REMOVED:
+                                dc.getDocument().toObject(SanPham.class);
+                                list_SanPham.remove(dc.getOldIndex());
+                                adapterTop10.notifyDataSetChanged();
+                                break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
 }
