@@ -2,6 +2,7 @@ package com.thuydev.pro1121appbangiay.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.fragment.Frg_quanLyHoaDon;
 import com.thuydev.pro1121appbangiay.model.Don;
 import com.thuydev.pro1121appbangiay.model.DonHang;
+import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.User;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.model.GioHang;
@@ -43,6 +45,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
     List<DonHang> list_doHang;
 
     FirebaseFirestore db;
+    ProgressDialog progressDialog;
 
 
     public Adapter_quanlyhoadon(List<SanPham> list_sanPham, List<User> list_Users, List<DonHang> list_doHang, Context context) {
@@ -52,6 +55,9 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         this.list_doHang = list_doHang;
         this.context = context;
         db = FirebaseFirestore.getInstance();
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Sẽ mất một lúc vui lòng chờ");
     }
 
     @NonNull
@@ -92,6 +98,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         holder.btn_xacNhan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 db.collection("user").document(maKH).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -105,6 +112,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                                 }
                                 if (soDu < gia) {
                                     Toast.makeText(context, "Số dư khách hàng không đủ", Toast.LENGTH_SHORT).show();
+                                    progressDialog.cancel();
                                     return;
                                 }
                                 Long newSoDu = soDu - gia;
@@ -114,7 +122,6 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                                         if (task.isComplete()) {
                                             Toast.makeText(context, "Đã thanh toán", Toast.LENGTH_SHORT).show();
                                             trangThai(1, donHang);
-                                            notifyDataSetChanged();
                                         } else {
                                             Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
                                         }
@@ -137,13 +144,17 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             return;
         }
         donHang.setTrangThai(i);
-        db.collection("donHangDaDuyet").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
+        db.collection("donHang").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
                     Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
-                    updataDonHang(i, donHang);
-                    notifyDataSetChanged();
+                    if (i==1){
+                        updataDonHang(i, donHang);
+                        progressDialog.cancel();
+                    }
+
+
                 } else {
                     Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
                 }
@@ -156,12 +167,11 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             return;
         }
         donHang.setTrangThai(i);
-        db.collection("donHang").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
+        db.collection("donHangDaDuyet").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
-                    setTop(donHang);
+                        setTop(donHang);
 
                 } else {
                     Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
@@ -185,6 +195,9 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                     return;
                 }
                 i[0]= task.getResult().getLong("soLuong");
+                if (i[0]==null){
+                    return;
+                }
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("soLuong", i[0]+sl);
                 db.collection("top10").document(maSP).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -213,7 +226,11 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             }
         }
         a[3] = donHang.getGiaDon() + "";
-        a[4] = String.valueOf((donHang.getListSP().size() + 1));
+        Long soluong = 0l;
+        for (Don d : donHang.getListSP()){
+            soluong+=d.getSoLuong();
+        }
+        a[4] = String.valueOf((soluong));
         return a;
     }
 
@@ -224,7 +241,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
     }
 
     public class viewHolder extends RecyclerView.ViewHolder {
-        TextView tv_tenKH, tv_tenSP, tv_gia, tv_diaChi, tv_sdt, tv_soluong;
+        TextView tv_tenKH, tv_gia, tv_diaChi, tv_sdt, tv_soluong;
         ImageButton btn_Huy, btn_xacNhan;
         ImageView anh;
 
@@ -234,7 +251,6 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             tv_diaChi = itemView.findViewById(R.id.tv_diaChi);
             tv_sdt = itemView.findViewById(R.id.tv_sdt);
             tv_soluong = itemView.findViewById(R.id.tv_soLuong_);
-            tv_tenSP = itemView.findViewById(R.id.tv_tensp);
             tv_gia = itemView.findViewById(R.id.tv_gia);
             anh = itemView.findViewById(R.id.imgv_anhsp);
 

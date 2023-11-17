@@ -423,6 +423,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isComplete()) {
                                 Toast.makeText(ThongTinTaiKhoan.this, "Thêm địa chỉ thành công", Toast.LENGTH_SHORT).show();
+                                edt_diachi.setText("");
                                 adapter.notifyDataSetChanged();
                             } else {
                                 Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();

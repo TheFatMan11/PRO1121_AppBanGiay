@@ -91,8 +91,8 @@ public class Fragment_gioHang extends Fragment {
 
     private void mua() {
         List<String> listMaGio = getListMa();
-        if (listMaGio.size()<0) {
-            Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+        if (listMaGio.size()<=0) {
+            Toast.makeText(getContext(), "Vui lòng thêm sản phẩm vào giỏ", Toast.LENGTH_SHORT).show();
             return;
         }
         String maDon = UUID.randomUUID().toString();
