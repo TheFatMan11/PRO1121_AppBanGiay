@@ -375,6 +375,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isComplete()) {
                                     Toast.makeText(ThongTinTaiKhoan.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                                    adapter.notifyDataSetChanged();
                                 } else {
                                     Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
                                 }
