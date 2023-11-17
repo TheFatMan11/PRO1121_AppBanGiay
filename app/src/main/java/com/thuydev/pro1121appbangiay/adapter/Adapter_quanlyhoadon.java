@@ -196,10 +196,11 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                 }
                 i[0]= task.getResult().getLong("soLuong");
                 if (i[0]==null){
-                    return;
+                    i[0]=0l;
                 }
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("soLuong", i[0]+sl);
+                map.put("maSP",maSP);
                 db.collection("top10").document(maSP).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

@@ -62,8 +62,6 @@ public class Fragment_gioHang extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         anhXa(view);
-
-
     }
 
     private void anhXa(View view) {

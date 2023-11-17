@@ -79,7 +79,7 @@ public class QuanLyGiay extends Fragment {
         ibtn_them.setOnClickListener(v -> {
             id = UUID.randomUUID().toString();
             sanPham = new SanPham();
-            them("Thêm sản phẩm", id, sanPham, "Thêm","Thêm thành công");
+            them("Thêm sản phẩm", id, sanPham, "Thêm", "Thêm thành công");
         });
 
     }
@@ -94,7 +94,7 @@ public class QuanLyGiay extends Fragment {
     }
 
     @SuppressLint({"UseRequireInsteadOfGet", "SetTextI18n"})
-    public void them(String name, String id, SanPham sanPham, String tennut,String thongBao) {
+    public void them(String name, String id, SanPham sanPham, String tennut, String thongBao) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         @SuppressLint("UseRequireInsteadOfGet") LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_themsp, null, false);
@@ -130,7 +130,6 @@ public class QuanLyGiay extends Fragment {
             list_kichco.setText(hienCo(sanPham.getKichCo()));
             soLuong.setText(sanPham.getSoLuong() + "");
             namSX.setText(sanPham.getNamSX());
-
         }
 
         them.setText(tennut);
@@ -142,9 +141,9 @@ public class QuanLyGiay extends Fragment {
 
         them.setOnClickListener(v -> {
             progressDialog.show();
-            if (ten.getText().toString().isEmpty() && thuongHieu.getText().toString().isEmpty()
-                    && gia.getText().toString().isEmpty() && list_kichco.getText().toString().isEmpty()
-                    && namSX.getText().toString().isEmpty() && soLuong.getText().toString().isEmpty()) {
+            if (ten.getText().toString().isEmpty() || thuongHieu.getText().toString().isEmpty()
+                    || gia.getText().toString().isEmpty() || list_kichco.getText().toString().isEmpty()
+                    || namSX.getText().toString().isEmpty() || soLuong.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "Không được để trống", Toast.LENGTH_SHORT).show();
                 progressDialog.cancel();
                 return;
@@ -159,7 +158,7 @@ public class QuanLyGiay extends Fragment {
                 progressDialog.cancel();
                 return;
             }
-            upAnh(Uri.parse(linkImage), ten, gia, namSX, soLuong, list_kichco, dialog, id, sanPham,thongBao);
+            upAnh(Uri.parse(linkImage), ten, gia, namSX, soLuong, list_kichco, dialog, id, sanPham, thongBao);
 
         });
     }
@@ -379,7 +378,7 @@ public class QuanLyGiay extends Fragment {
 
     private String linkMoi = "";
 
-    public void upAnh(Uri imageUri, EditText ten, EditText gia, EditText namSX, EditText soLuong, EditText list_kichco, Dialog dialog, String id, SanPham sanPham,String thongbao) {
+    public void upAnh(Uri imageUri, EditText ten, EditText gia, EditText namSX, EditText soLuong, EditText list_kichco, Dialog dialog, String id, SanPham sanPham, String thongbao) {
         StorageReference storageReference;
         storageReference = FirebaseStorage.getInstance().getReference("images").child(id);
         storageReference.putFile(imageUri)
@@ -391,13 +390,11 @@ public class QuanLyGiay extends Fragment {
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
                                     Uri uri = task.getResult();
-                                   if (linkMoi.isEmpty()){
-                                       linkMoi = uri.toString();
-                                   } else {
-                                       linkMoi = sanPham.getAnh();
-                                   }
-                                   sanPham.setAnh(linkMoi);
+                                    linkMoi = uri.toString();
+
+                                    sanPham.setAnh(linkMoi);
                                     sanPham.setMaSp(id);
+                                    sanPham.setTenHang(a.getText().toString());
                                     sanPham.setTenSP(ten.getText().toString().trim());
                                     sanPham.setGia(Long.parseLong(gia.getText().toString()));
                                     sanPham.setNamSX(namSX.getText().toString());
