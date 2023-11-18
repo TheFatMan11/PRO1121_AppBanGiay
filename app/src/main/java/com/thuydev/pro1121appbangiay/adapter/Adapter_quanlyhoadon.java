@@ -79,7 +79,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         if (data.length <= 0) {
             return;
         }
-        DonHang donHang = list_doHang.get(position)
+        DonHang donHang = list_doHang.get(position);
         if (donHang == null) {
             return;
         }
