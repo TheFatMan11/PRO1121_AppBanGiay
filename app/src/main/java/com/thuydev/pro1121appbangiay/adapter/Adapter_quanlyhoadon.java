@@ -79,11 +79,12 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         if (data.length <= 0) {
             return;
         }
-        DonHang donHang = list_doHang.get(position);
+        DonHang donHang = list_doHang.get(position)
         if (donHang == null) {
             return;
         }
-        SanPham sp = getmaSP(list_sanPham.get(position).getMaSp());
+
+        SanPham sp = getmaSP(list_sanPham.get(position).getMaSp().toString());
         Glide.with(context).load(sp.getAnh()).error(R.drawable.baseline_crop_original_24).into(holder.anh);
 
         Long gia = Long.parseLong(data[3]);

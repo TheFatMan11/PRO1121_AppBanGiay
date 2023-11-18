@@ -72,7 +72,7 @@ public class Frg_quanLyHoaDon extends Fragment {
     }
 
 
-    public void getSp() {
+    public void getAnh() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("sanPham").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -92,7 +92,7 @@ public class Frg_quanLyHoaDon extends Fragment {
         getSP();
         getKH();
         getHoaDon();
-        getSp();
+        getAnh();
 
     }
 
