@@ -102,7 +102,7 @@ public class Frag_cuahang extends Fragment {
                     }
                     switch (dc.getType()) {
                         case MODIFIED:
-                            manHinhKhachHang.getSupportFragmentManager().beginTransaction().replace(R.id.fcv_KhachHang, new Frag_cuahang()).commit();
+//                            manHinhKhachHang.getSupportFragmentManager().beginTransaction().replace(R.id.fcv_KhachHang, new Frag_cuahang()).commit();
                             return;
                     }
                 }

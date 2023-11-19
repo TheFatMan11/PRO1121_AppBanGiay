@@ -4,21 +4,38 @@ public class ThongBao {
     private String maThongBao;
     private String maKhachHang;
     private String noiDung;
-    private String chucVu;
+    private int chucVu;
+    private Long time;
 
 
     public ThongBao() {
     }
 
-    public ThongBao(String maThongBao, String maKhachHang, String noiDung, String chucVu) {
+    public ThongBao(String maThongBao, String maKhachHang, String noiDung, int chucVu) {
         this.maThongBao = maThongBao;
         this.maKhachHang = maKhachHang;
         this.noiDung = noiDung;
         this.chucVu = chucVu;
     }
 
+    public ThongBao(String maThongBao, String maKhachHang, String noiDung, int chucVu, Long time) {
+        this.maThongBao = maThongBao;
+        this.maKhachHang = maKhachHang;
+        this.noiDung = noiDung;
+        this.chucVu = chucVu;
+        this.time = time;
+    }
+
     public String getMaThongBao() {
         return maThongBao;
+    }
+
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time) {
+        this.time = time;
     }
 
     public void setMaThongBao(String maThongBao) {
@@ -41,11 +58,11 @@ public class ThongBao {
         this.noiDung = noiDung;
     }
 
-    public String getChucVu() {
+    public int getChucVu() {
         return chucVu;
     }
 
-    public void setChucVu(String chucVu) {
+    public void setChucVu(int chucVu) {
         this.chucVu = chucVu;
     }
 }

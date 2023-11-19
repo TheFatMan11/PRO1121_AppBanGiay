@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/menu_toolbar"
+        android:id="@+id/menu_thongBao"
         android:icon="@drawable/belldis"
         app:showAsAction="always"
         tools:ignore="MenuTitle" />
