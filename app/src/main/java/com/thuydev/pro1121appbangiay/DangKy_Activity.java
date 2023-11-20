@@ -102,7 +102,6 @@ private FirebaseFirestore db ;
             public void onSuccess(Void unused) {
                 Toast.makeText(DangKy_Activity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                 progressDialog.cancel();
-                finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
