@@ -23,12 +23,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.model.Don;
 import com.thuydev.pro1121appbangiay.model.DonHang;
+import com.thuydev.pro1121appbangiay.model.ThongBao;
 import com.thuydev.pro1121appbangiay.model.User;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoadon.viewHolder> {
     private static final String TAG = "TAG";
@@ -219,7 +222,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                             return;
                         }
                         Toast.makeText(context, "Hoàn thành", Toast.LENGTH_SHORT).show();
-
+                        guiThongBao();
                         Log.e(TAG, "onComplete: " + "trừ hàng thành công");
                     }
                 });
@@ -227,6 +230,22 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             }
         });
 
+    }
+
+    private void guiThongBao() {
+        String id = UUID.randomUUID().toString();
+        db.collection("thongBao").document(id)
+                .set(new ThongBao(id,user.getMaUser(),"Đơn hàng của bạn đang được giao",3,new Date().getTime())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isComplete()){
+                            Log.e(TAG, "onComplete: "+"Lỗi 241" );
+                            return;
+                        }
+                        Log.e(TAG, "onComplete: "+"thong bao thanh cong" );
+                        progressDialog.cancel();
+                    }
+                });
     }
 
     private void huyDon(DonHang donHang, User user) {
