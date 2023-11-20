@@ -154,7 +154,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         sua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (us == null || user == null) {
+                if (us == null || user == null || email.getText().toString().isEmpty() || ten.getText().toString().isEmpty() || sdt.getText().toString().isEmpty()||linkMoi==null) {
                     Toast.makeText(ThongTinTaiKhoan.this, "Không được để trống", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -415,9 +415,13 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                     edt_diachi.setVisibility(View.VISIBLE);
                     change[0] = 1;
                 } else {
+
+                    if(edt_diachi.getText().toString().isEmpty()){
+                        Toast.makeText(ThongTinTaiKhoan.this, "Người dùng không được để trống", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     edt_diachi.setVisibility(View.GONE);
                     change[0] = 0;
-
                     list_diaChi.add(edt_diachi.getText().toString());
                     us.setDiachi(list_diaChi);
                     db.collection("user").document(us.getMaUser()).set(us).addOnCompleteListener(new OnCompleteListener<Void>() {

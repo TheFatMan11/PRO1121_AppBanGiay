@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,6 +41,7 @@ LocalDate dateEnd= LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 String ngayStart = formatter.format(dateStart);
 String ngayEnd=formatter.format(dateEnd);
+FirebaseUser user ;
 Long tong=0l;
     @Nullable
     @Override
@@ -56,6 +59,7 @@ Long tong=0l;
         rcv_list = view.findViewById(R.id.rcv_list_khoanchi);
         tongGia = view.findViewById(R.id.tv_tonggia_khoanchi);
         list = new ArrayList<>();
+        user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
         getData();
         adapterChoduyet = new Adapter_choduyet(list,getContext(),2);
@@ -74,10 +78,12 @@ Long tong=0l;
                         }
                         list.clear();
                         for (QueryDocumentSnapshot dc : task.getResult()){
-                            list.add(dc.toObject(DonHang.class));
-                            tong+=dc.toObject(DonHang.class).getGiaDon();
-                            tongGia.setText("Giá: "+tong+" đ");
-                            adapterChoduyet.notifyDataSetChanged();
+                            if (user.getUid().equals(dc.toObject(DonHang.class).getMaKhachHang())){
+                                list.add(dc.toObject(DonHang.class));
+                                tong+=dc.toObject(DonHang.class).getGiaDon();
+                                tongGia.setText("Giá: "+tong+" đ");
+                                adapterChoduyet.notifyDataSetChanged();
+                            }
                         }
                     }
                 });
