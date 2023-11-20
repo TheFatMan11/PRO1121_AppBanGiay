@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_giohang;
@@ -34,6 +35,7 @@ import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 import com.thuydev.pro1121appbangiay.model.ThongBao;
+import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,6 +51,7 @@ public class Fragment_gioHang extends Fragment {
     Adapter_giohang adapterGiohang;
     List<GioHang> list_gio;
     List<SanPham> list_sanPham;
+    ArrayList<User> list_User;
     List<Hang> list_hang;
     FirebaseFirestore db;
     List<Don> listMaSP;
@@ -85,15 +88,43 @@ public class Fragment_gioHang extends Fragment {
         mua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mua();
+                User user1 = getThongTin();
+                if (user1 == null) {
+                    Toast.makeText(getContext(), "Lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (user1.getHoTen().isEmpty() || user1.getSDT().isEmpty() || user1.getChonDiaCHi().isEmpty()) {
+                    Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin để đặt hàng ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (user1.getSoDu() >= Long.parseLong(String.valueOf(tongGia))) {
+                    mua();
+                } else {
+                    Toast.makeText(getContext(), "Số dư tài khoản của bạn không đủ", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
     }
 
+    public User getThongTin() {
+        final User[] user1 = new User[1];
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("user").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isComplete()) {
+
+                }
+                user1[0] = task.getResult().toObject(User.class);
+            }
+        });
+        return user1[0];
+    }
+
     private void mua() {
         List<String> listMaGio = getListMa();
-        if (listMaGio.size()<=0) {
+        if (listMaGio.size() <= 0) {
             Toast.makeText(getContext(), "Vui lòng thêm sản phẩm vào giỏ", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -101,44 +132,44 @@ public class Fragment_gioHang extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Calendar lich = Calendar.getInstance();
         int ngay = lich.get(Calendar.DAY_OF_MONTH);
-        int thang = lich.get(Calendar.MONTH)+1;
+        int thang = lich.get(Calendar.MONTH) + 1;
         int nam = lich.get(Calendar.YEAR);
-        String ngayMua = nam+"/"+thang+"/"+ngay;
-        db.collection("donHang").document(maDon).set(new DonHang(maDon,user.getUid(),listMaSP,new Date().getTime(),0,tinhTong(),ngayMua))
+        String ngayMua = nam + "/" + thang + "/" + ngay;
+        db.collection("donHang").document(maDon).set(new DonHang(maDon, user.getUid(), listMaSP, new Date().getTime(), 0, tinhTong(), ngayMua))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isComplete()){
-                    Toast.makeText(getContext(), "Đơn hàng đang chờ nhân viên xác nhận", Toast.LENGTH_SHORT).show();
-                    guiThongBao();
-                }else {
-                    Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        for (String s : listMaGio){
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isComplete()) {
+                            Toast.makeText(getContext(), "Đơn hàng đang chờ nhân viên xác nhận", Toast.LENGTH_SHORT).show();
+                            guiThongBao();
+                        } else {
+                            Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+        for (String s : listMaGio) {
             db.collection("gioHang").document(s).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isComplete()){
+                    if (task.isComplete()) {
                         adapterGiohang.notifyDataSetChanged();
-                    }else {
+                    } else {
                         Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }
         Toast.makeText(getContext(), "Thành công", Toast.LENGTH_SHORT).show();
-        
+
     }
 
     private void guiThongBao() {
         String id = UUID.randomUUID().toString();
-        db.collection("thongBao").document(id).set(new ThongBao(id,user.getUid(),"Có đơn hàng mới của "+user.getUid(),2,new Date().getTime())).addOnCompleteListener(new OnCompleteListener<Void>() {
+        db.collection("thongBao").document(id).set(new ThongBao(id, user.getUid(), "Có đơn hàng mới của " + user.getUid(), 2, new Date().getTime())).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isComplete()){
-                    Log.e(TAG, "onComplete: "+"Thành công" );
+                if (task.isComplete()) {
+                    Log.e(TAG, "onComplete: " + "Thành công");
                 }
             }
         });
@@ -148,9 +179,9 @@ public class Fragment_gioHang extends Fragment {
     private List<String> getListMa() {
         List<String> listGio = new ArrayList<>();
         listMaSP = new ArrayList<>();
-        for (GioHang gh : list_gio){
+        for (GioHang gh : list_gio) {
             listGio.add(gh.getMaGio());
-            listMaSP.add(new Don(gh.getMaSanPham(),gh.getSoLuong()));
+            listMaSP.add(new Don(gh.getMaSanPham(), gh.getSoLuong()));
         }
         return listGio;
     }
