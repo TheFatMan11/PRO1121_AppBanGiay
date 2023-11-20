@@ -61,6 +61,7 @@ public class Adapter_choduyet extends RecyclerView.Adapter<Adapter_choduyet.View
         if (list_donHang.get(position).getTrangThai() == 0) {
             holder.trangthai.setText("Đang chờ xác nhận");
             holder.trangthai.setTextColor(Color.parseColor(Cam));
+            holder.xoa.setVisibility(View.VISIBLE);
         } else if (list_donHang.get(position).getTrangThai() == 1) {
             holder.trangthai.setText("Đã xác nhận đơn");
             holder.xoa.setVisibility(View.GONE);
@@ -68,6 +69,7 @@ public class Adapter_choduyet extends RecyclerView.Adapter<Adapter_choduyet.View
         } else if (list_donHang.get(position).getTrangThai() == 3) {
             holder.trangthai.setText("Đơn hàng bị từ chối");
             holder.trangthai.setTextColor(Color.parseColor(Do));
+            holder.xoa.setVisibility(View.VISIBLE);
         } else {
             holder.trangthai.setText("Lỗi");
         }

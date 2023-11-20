@@ -33,6 +33,7 @@ import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
+import com.thuydev.pro1121appbangiay.model.ThongBao;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,6 +52,8 @@ public class Fragment_gioHang extends Fragment {
     List<Hang> list_hang;
     FirebaseFirestore db;
     List<Don> listMaSP;
+    FirebaseUser user;
+    String TAG = "TAG";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,6 +75,7 @@ public class Fragment_gioHang extends Fragment {
         rcv_list = view.findViewById(R.id.rcv_listgio);
         tongGia = view.findViewById(R.id.tv_gio_gia);
         mua = view.findViewById(R.id.ll_themgio);
+        user = FirebaseAuth.getInstance().getCurrentUser();
         adapterGiohang = new Adapter_giohang(list_gio, list_sanPham, list_hang, getContext(), this);
         rcv_list.setAdapter(adapterGiohang);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -106,6 +110,7 @@ public class Fragment_gioHang extends Fragment {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()){
                     Toast.makeText(getContext(), "Đơn hàng đang chờ nhân viên xác nhận", Toast.LENGTH_SHORT).show();
+                    guiThongBao();
                 }else {
                     Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
                 }
@@ -127,8 +132,17 @@ public class Fragment_gioHang extends Fragment {
         
     }
 
-
-
+    private void guiThongBao() {
+        String id = UUID.randomUUID().toString();
+        db.collection("thongBao").document(id).set(new ThongBao(id,user.getUid(),"Có đơn hàng mới của "+user.getUid(),2,new Date().getTime())).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isComplete()){
+                    Log.e(TAG, "onComplete: "+"Thành công" );
+                }
+            }
+        });
+    }
 
 
     private List<String> getListMa() {

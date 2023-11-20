@@ -18,25 +18,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.thuydev.pro1121appbangiay.fragment.Frg_quanLyHoaDon;
 import com.thuydev.pro1121appbangiay.model.Don;
 import com.thuydev.pro1121appbangiay.model.DonHang;
-import com.thuydev.pro1121appbangiay.model.Hang;
+import com.thuydev.pro1121appbangiay.model.ThongBao;
 import com.thuydev.pro1121appbangiay.model.User;
 import com.thuydev.pro1121appbangiay.R;
-import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
 public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoadon.viewHolder> {
     private static final String TAG = "TAG";
@@ -47,6 +42,9 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
 
     FirebaseFirestore db;
     ProgressDialog progressDialog;
+    Long tienHoan = 0l;
+    DonHang donHangHoan = null;
+    User user = null;
 
 
     public Adapter_quanlyhoadon(List<SanPham> list_sanPham, List<User> list_Users, List<DonHang> list_doHang, Context context) {
@@ -83,11 +81,12 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         if (donHang == null) {
             return;
         }
-
-        SanPham sp = getmaSP(list_sanPham.get(position).getMaSp().toString());
+        donHangHoan = donHang;
+        SanPham sp = getmaSP(list_sanPham.get(position).getMaSp());
         Glide.with(context).load(sp.getAnh()).error(R.drawable.baseline_crop_original_24).into(holder.anh);
 
         Long gia = Long.parseLong(data[3]);
+        tienHoan = gia;
         String maKH = list_doHang.get(position).getMaKhachHang();
         holder.tv_tenKH.setText("Họ tên:" + data[0]);
         holder.tv_diaChi.setText("Địa chỉ: " + data[1]);
@@ -121,11 +120,12 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                                     return;
                                 }
                                 Long newSoDu = soDu - gia;
+                                user = task.getResult().toObject(User.class);
                                 db.collection("user").document(maKH).update("soDu", newSoDu).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isComplete()) {
-                                            Toast.makeText(context, "Đã thanh toán", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "Đang chạy bước 1", Toast.LENGTH_SHORT).show();
                                             trangThai(1, donHang);
                                         } else {
                                             Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
@@ -161,12 +161,10 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Đang chạy bước 2", Toast.LENGTH_SHORT).show();
                     if (i == 1) {
                         updataDonHang(i, donHang);
-                        progressDialog.cancel();
                     }
-
 
                 } else {
                     Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
@@ -184,6 +182,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
+                    Toast.makeText(context, "Đang chạy bước 3", Toast.LENGTH_SHORT).show();
                     setTop(donHang);
 
                 } else {
@@ -196,8 +195,88 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
     private void setTop(DonHang donHang) {
         for (Don d : donHang.getListSP()) {
             getTop(d.getMaSP(), d.getSoLuong());
+
         }
     }
+
+    private void capnhatSoluong(String maSP, Long soLuong) {
+        final SanPham[] sp = {new SanPham()};
+        db.collection("sanPham").document(maSP).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (!task.isComplete()) {
+                    return;
+                }
+                sp[0] = task.getResult().toObject(SanPham.class);
+                if (sp[0].getSoLuong() < soLuong) {
+                    Toast.makeText(context, "Số lượng trong kho không đủ", Toast.LENGTH_SHORT).show();
+                    huyDon(donHangHoan, user);
+                    return;
+                }
+                sp[0] = task.getResult().toObject(SanPham.class);
+                sp[0].setSoLuong(sp[0].getSoLuong() - soLuong);
+                db.collection("sanPham").document(maSP).set(sp[0]).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isComplete()) {
+                            return;
+                        }
+                        Toast.makeText(context, "Hoàn thành", Toast.LENGTH_SHORT).show();
+                        guiThongBao();
+                        Log.e(TAG, "onComplete: " + "trừ hàng thành công");
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    private void guiThongBao() {
+        String id = UUID.randomUUID().toString();
+        db.collection("thongBao").document(id)
+                .set(new ThongBao(id,user.getMaUser(),"Đơn hàng của bạn đang được giao",3,new Date().getTime())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isComplete()){
+                            Log.e(TAG, "onComplete: "+"Lỗi 241" );
+                            return;
+                        }
+                        Log.e(TAG, "onComplete: "+"thong bao thanh cong" );
+                        progressDialog.cancel();
+                    }
+                });
+    }
+
+    private void huyDon(DonHang donHang, User user) {
+        donHang.setTrangThai(3);
+        db.collection("donHang").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isComplete()) {
+                    Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                hoanTien(user, tienHoan);
+            }
+        });
+    }
+
+    private void hoanTien(User user, Long tienHoan) {
+        
+        db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isComplete()) {
+                    Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                progressDialog.cancel();
+                Toast.makeText(context, "Hoàn tiền thành công", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void getTop(String maSP, Long sl) {
         final Long[] i = {0l};
@@ -218,6 +297,8 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isComplete()) {
+                            Toast.makeText(context, "Đang chạy bước 4", Toast.LENGTH_SHORT).show();
+                            capnhatSoluong(maSP, sl);
                             Log.e(TAG, "onComplete: " + "đẩy dữ liệu thành công");
                         }
                     }

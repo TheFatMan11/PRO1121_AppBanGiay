@@ -26,6 +26,7 @@ import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
+import com.thuydev.pro1121appbangiay.model.ThongBao;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,7 +41,7 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
     Context context;
     Fragment_gioHang gioHang;
     FirebaseFirestore db;
-
+    FirebaseUser user ;
 
     public Adapter_giohang(List<GioHang> list_gio, List<SanPham> list_sanPham, List<Hang> list_hang, Context context, Fragment_gioHang gioHang) {
         this.list_gio = list_gio;
@@ -49,6 +50,7 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
         this.context = context;
         this.gioHang = gioHang;
         db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @NonNull
@@ -103,7 +105,6 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
         List<Don> listDon = new ArrayList<>();
         listDon.add(new Don(list_gio.get(p).getMaSanPham(),list_gio.get(p).getSoLuong()));
         String maDon = UUID.randomUUID().toString();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Calendar lich = Calendar.getInstance();
         int ngay = lich.get(Calendar.DAY_OF_MONTH);
         int thang =lich.get(Calendar.MONTH)+1;
@@ -138,13 +139,23 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()){
                     Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
+                    guiThongBao();
                 }else {
                     Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-
+    private void guiThongBao() {
+        String id = UUID.randomUUID().toString();
+        db.collection("thongBao").document(id).set(new ThongBao(id,user.getUid(),"Có đơn hàng mới của "+user.getUid(),2,new Date().getTime())).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isComplete()){
+                }
+            }
+        });
+    }
     private String getTenLoai(String maHang) {
         for (Hang s : list_hang) {
             if (maHang.equals(s.getMaHang())) {

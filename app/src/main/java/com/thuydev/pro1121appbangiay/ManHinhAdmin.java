@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -25,12 +26,16 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,11 +46,21 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.thuydev.pro1121appbangiay.adapter.Adapter_thongbao;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyKhachHang;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyNhanVien;
 import com.thuydev.pro1121appbangiay.fragment.frg_DoiMatKhau;
 import com.thuydev.pro1121appbangiay.fragment.frg_ThongKe;
+import com.thuydev.pro1121appbangiay.model.ThongBao;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManHinhAdmin extends AppCompatActivity {
 
@@ -60,6 +75,10 @@ public class ManHinhAdmin extends AppCompatActivity {
     frg_DoiMatKhau doiMatKhau = new frg_DoiMatKhau();
     FragmentManager manager;
     Uri uri;
+    List<ThongBao> list_thongBao;
+    Adapter_thongbao adapterThongbao;
+    String TAG = "TAG";
+    FirebaseUser user;
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -89,6 +108,9 @@ public class ManHinhAdmin extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         manager = getSupportFragmentManager();
         manager.beginTransaction().add(R.id.fcv_Admin, quanLyNhanVien).commit();
+        list_thongBao = new ArrayList<>();
+        getThongBao();
+        adapterThongbao = new Adapter_thongbao(list_thongBao,ManHinhAdmin.this);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -146,18 +168,19 @@ public class ManHinhAdmin extends AppCompatActivity {
 
     }
 
-    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_toolbar) {
-            item.setIcon(R.drawable.bell);
+        if (item.getItemId() == R.id.menu_thongBao) {
+            item.setIcon(R.drawable.belldis);
+            xemThongBao();
         }
         return super.onOptionsItemSelected(item);
     }
-
+    Menu menu_thongBao;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_toolbar, menu);
+        menu_thongBao = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -260,4 +283,78 @@ public class ManHinhAdmin extends AppCompatActivity {
             }
         });
     }
+
+    private void xemThongBao() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_them_hang,null,false);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
+
+        ListView listView = view.findViewById(R.id.list_hang);
+        TextView tittle = view.findViewById(R.id.tv_tittle2);
+        EditText editText = view.findViewById(R.id.edt_themhang_);
+        ImageButton imageButton = view.findViewById(R.id.ibtn_addhang);
+
+        editText.setVisibility(View.GONE);
+        imageButton.setVisibility(View.GONE);
+        tittle.setText("Thông báo");
+        listView.setAdapter(adapterThongbao);
+    }
+
+    public void doiIcon(){
+        if (menu_thongBao==null){
+            return;
+        }
+        MenuItem item = menu_thongBao.findItem(R.id.menu_thongBao);
+        if (item==null){
+            return;
+        }
+        item.setIcon(R.drawable.bell_dis_);
+
+    }
+
+    private void getThongBao() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("thongBao").whereEqualTo("chucVu",2).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e(TAG, "onEvent: "+1 );
+                    return;
+                }
+                if (value == null) {
+                    Log.e(TAG, "onEvent: "+2 );
+                    return;
+                }
+                for (DocumentChange dc : value.getDocumentChanges()) {
+                    switch (dc.getType()) {
+                        case ADDED:
+                            list_thongBao.add(dc.getDocument().toObject(ThongBao.class));
+                            doiIcon();
+                            adapterThongbao.notifyDataSetChanged();
+                            break;
+                        case MODIFIED:
+                            ThongBao tb = dc.getDocument().toObject(ThongBao.class);
+                            if (dc.getOldIndex() == dc.getNewIndex()) {
+                                list_thongBao.set(dc.getOldIndex(), tb);
+
+                            } else {
+                                list_thongBao.remove(dc.getOldIndex());
+                                list_thongBao.add(tb);
+                            }
+                            adapterThongbao.notifyDataSetChanged();
+                            break;
+                        case REMOVED:
+                            list_thongBao.remove(dc.getOldIndex());
+                            adapterThongbao.notifyDataSetChanged();
+                            break;
+                    }
+
+                }
+            }
+        });
+    }
+
+
 }
