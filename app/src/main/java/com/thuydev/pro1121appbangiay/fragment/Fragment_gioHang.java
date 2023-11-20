@@ -88,20 +88,8 @@ public class Fragment_gioHang extends Fragment {
         mua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User user1 = getThongTin();
-                if (user1 == null) {
-                    Toast.makeText(getContext(), "Lỗi xảy ra", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (user1.getHoTen().isEmpty() || user1.getSDT().isEmpty() || user1.getChonDiaCHi().isEmpty()) {
-                    Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin để đặt hàng ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (user1.getSoDu() >= Long.parseLong(String.valueOf(tongGia))) {
-                    mua();
-                } else {
-                    Toast.makeText(getContext(), "Số dư tài khoản của bạn không đủ", Toast.LENGTH_SHORT).show();
-                }
+                getThongTin();
+
             }
         });
 
@@ -113,10 +101,24 @@ public class Fragment_gioHang extends Fragment {
         db.collection("user").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isComplete()) {
-
+                if (!task.isComplete()) {
+                    return;
                 }
                 user1[0] = task.getResult().toObject(User.class);
+                if (user1[0] == null) {
+                    Toast.makeText(getContext(), "Lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (user1[0].getHoTen()==null || user1[0].getSDT()==null || user1[0].getChonDiaCHi()==null) {
+                    Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin để đặt hàng ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (user1[0].getSoDu() >= tinhTong()) {
+                    mua();
+                } else {
+                    Toast.makeText(getContext(), "Số dư tài khoản của bạn không đủ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
         return user1[0];
