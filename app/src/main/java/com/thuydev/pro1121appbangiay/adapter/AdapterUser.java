@@ -65,9 +65,13 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
         if (user.getTrangThai() == 0) {
             holder.tvTrangThai.setText("Không hoạt động");
             holder.tvTrangThai.setTextColor(ContextCompat.getColor(context, R.color.xam));
+            holder.ibtn_xoa.setBackgroundResource(R.drawable.remove);
+            holder.ibtn_xoa.setEnabled(true);
         } else if (user.getTrangThai() == 1) {
             holder.tvTrangThai.setText("Đang hoạt động");
             holder.tvTrangThai.setTextColor(ContextCompat.getColor(context, R.color.xanhla));
+            holder.ibtn_xoa.setBackgroundResource(R.drawable.remove_dis);
+            holder.ibtn_xoa.setEnabled(false);
         }
         holder.ibtn_xoa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +107,7 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
             }
         });
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.tvTrangThai.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);

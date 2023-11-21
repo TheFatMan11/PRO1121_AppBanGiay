@@ -31,6 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15dp"
+            android:textColor="@color/black"
             android:text="Tên sản phẩm: "/>
         <TextView
             android:id="@+id/tv_Gia"
@@ -38,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textSize="15dp"
+            android:textColor="@color/black"
             android:text="Giá: "/>
         <TextView
             android:id="@+id/tv_Soluong"
@@ -45,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textSize="15dp"
+            android:textColor="@color/black"
             android:text="Số lượng: "/>
         <TextView
             android:id="@+id/tv_Thuonghieu"
@@ -52,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textSize="15dp"
+            android:textColor="@color/black"
             android:text="Thương hiệu: "/>
         <TextView
             android:id="@+id/tv_Namsx"
@@ -59,6 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textSize="15dp"
+            android:textColor="@color/black"
             android:text="Năm sản xuất: "/>
         <ImageButton
             android:id="@+id/ibtn_xoa"
