@@ -297,7 +297,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
         Notification notification = new NotificationCompat.Builder(this, MyNotification.CHANNEL_ID)
                 .setContentTitle("Thông báo")
                 .setContentText("Có đơn hàng mới cần xác định")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.logo3)
                 .setColor(getColor(R.color.xanhla))
                 .build();
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
