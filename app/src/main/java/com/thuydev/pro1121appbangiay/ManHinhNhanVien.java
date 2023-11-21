@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
@@ -29,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -114,6 +116,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
         manager.beginTransaction().add(R.id.fcv_Nhanvien, quanLyGiay).commit();
         list_thongBao = new ArrayList<>();
         getThongBao();
+        yeuCauMoThongBao();
         adapterThongbao = new Adapter_thongbao(list_thongBao, ManHinhNhanVien.this);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -256,6 +259,38 @@ public class ManHinhNhanVien extends AppCompatActivity {
 
         item.setIcon(R.drawable.bell_dis_);
         sendNotifi();
+    }
+    private void yeuCauMoThongBao(){
+        boolean notificationEnabled = kiemTra();
+        if(notificationEnabled){
+
+        }else {
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ManHinhNhanVien.this);
+            builder.setTitle("Thông báo");
+            builder.setMessage("Bạn có muốn bật thông báo không?");
+            builder.setPositiveButton("Cài đặt", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Chuyển đến màn hình cài đặt thông báo
+                    Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+                    startActivity(intent);
+                }
+            });
+            builder.setNegativeButton("Bỏ qua", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            android.app.AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    }
+    private boolean kiemTra() {
+        // Kiểm tra trạng thái thông báo hiện tại
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        return notificationManager.areNotificationsEnabled();
     }
 
     private void sendNotifi() {

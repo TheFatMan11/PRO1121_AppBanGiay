@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.app.Dialog;
@@ -17,6 +18,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -80,6 +82,7 @@ public class ManHinhKhachHang extends AppCompatActivity {
         list = new ArrayList<>();
         list_thongBao = new ArrayList<>();
         getThongBao();
+        yeuCauMoThongBao();
         adapterThongbao = new Adapter_thongbao(list_thongBao, ManHinhKhachHang.this);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -184,6 +187,38 @@ public class ManHinhKhachHang extends AppCompatActivity {
         item.setIcon(R.drawable.bell_dis_);
         sendNotifi();
     }
+    private void yeuCauMoThongBao(){
+        boolean notificationEnabled = kiemTra();
+        if(notificationEnabled){
+
+        }else {
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ManHinhKhachHang.this);
+            builder.setTitle("Thông báo");
+            builder.setMessage("Bạn có muốn bật thông báo không?");
+            builder.setPositiveButton("Cài đặt", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Chuyển đến màn hình cài đặt thông báo
+                    Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+                    startActivity(intent);
+                }
+            });
+            builder.setNegativeButton("Bỏ qua", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            android.app.AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    }
+    private boolean kiemTra() {
+        // Kiểm tra trạng thái thông báo hiện tại
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        return notificationManager.areNotificationsEnabled();
+    }
 
     private void sendNotifi() {
         Notification notification = new NotificationCompat.Builder(this, MyNotification.CHANNEL_ID)
@@ -218,6 +253,7 @@ public class ManHinhKhachHang extends AppCompatActivity {
             }
         });
     }
+
 
     private void getThongBao() {
         db.collection("thongBao").whereEqualTo("chucVu", 3).whereEqualTo("maKhachHang", user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
