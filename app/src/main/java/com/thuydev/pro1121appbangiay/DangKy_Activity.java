@@ -81,7 +81,6 @@ private FirebaseFirestore db ;
                         if (task.isSuccessful()) {
                             Intent intent = new Intent(DangKy_Activity.this,ManHinhKhachHang.class);
                             startActivity(intent);
-                            finishAffinity();
                             taoUser();
                         } else {
                             Toast.makeText(DangKy_Activity.this, "Đăng ký tài khoản thất bại", Toast.LENGTH_SHORT).show();
@@ -102,6 +101,7 @@ private FirebaseFirestore db ;
             public void onSuccess(Void unused) {
                 Toast.makeText(DangKy_Activity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                 progressDialog.cancel();
+                finishAffinity();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
