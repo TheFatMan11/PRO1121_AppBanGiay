@@ -189,7 +189,7 @@ public class ManHinhKhachHang extends AppCompatActivity {
         Notification notification = new NotificationCompat.Builder(this, MyNotification.CHANNEL_ID)
                 .setContentTitle("Thông báo")
                 .setContentText("Đơn hàng đã được xác nhận")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.logo3)
                 .setColor(getColor(R.color.xanhla))
                 .build();
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
