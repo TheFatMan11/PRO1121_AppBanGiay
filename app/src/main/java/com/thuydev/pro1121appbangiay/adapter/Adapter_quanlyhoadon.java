@@ -2,21 +2,23 @@ package com.thuydev.pro1121appbangiay.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,6 +30,7 @@ import com.thuydev.pro1121appbangiay.model.User;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -82,17 +85,23 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             return;
         }
         donHangHoan = donHang;
-        SanPham sp = getmaSP(list_sanPham.get(position).getMaSp());
-        Glide.with(context).load(sp.getAnh()).error(R.drawable.baseline_crop_original_24).into(holder.anh);
 
         Long gia = Long.parseLong(data[3]);
         tienHoan = gia;
         String maKH = list_doHang.get(position).getMaKhachHang();
+        holder.id.setText("Mã đơn: "+list_doHang.get(position).getMaDon());
         holder.tv_tenKH.setText("Họ tên:" + data[0]);
         holder.tv_diaChi.setText("Địa chỉ: " + data[1]);
         holder.tv_sdt.setText("Sđt: " + data[2]);
         holder.tv_gia.setText("Giá :" + data[3]);
         holder.tv_soluong.setText("Số lượng sản phẩm mua: " + data[4]);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chiTietSanPhamMua(list_doHang.get(position).getListSP());
+            }
+        });
         holder.btn_Huy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,11 +153,43 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         });
     }
 
+    private void chiTietSanPhamMua(List<Don> list_don) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View view = ((Activity)context).getLayoutInflater().inflate(R.layout.dialog_them_hang,null,false);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
+        TextView tittle = view.findViewById(R.id.tv_tittle2);
+        EditText edt = view.findViewById(R.id.edt_themhang_);
+        ImageButton imv = view.findViewById(R.id.ibtn_addhang);
+        edt.setVisibility(View.GONE);
+        imv.setVisibility(View.GONE);
+        tittle.setText("Sản phẩm chi tiết");
+        ListView lv_list = view.findViewById(R.id.list_hang);
+        List<SanPham> Listsp = getListmaSP(list_don);
+        if (Listsp.size()<=0){
+            return;
+        }
+        Adapter_chiTietHangMua adapterChiTietHangMua = new Adapter_chiTietHangMua(Listsp,list_don,context);
+        lv_list.setAdapter(adapterChiTietHangMua);
+    }
+
+    private List<SanPham> getListmaSP(List<Don> list_don) {
+        List<SanPham> list = new ArrayList<>();
+
+        for (Don a : list_don){
+            list.add(getmaSP(a.getMaSP()));
+        }
+        return  list;
+    }
+
     public SanPham getmaSP(String masp) {
         SanPham sanPham = new SanPham();
-        if (masp.equals(sanPham.getMaSp())) {
-            return sanPham;
-        }
+       for (SanPham sp : list_sanPham){
+           if (masp.equals(sp.getMaSp())) {
+               return sp;
+           }
+       }
         return sanPham;
     }
 
@@ -336,9 +377,8 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
     }
 
     public class viewHolder extends RecyclerView.ViewHolder {
-        TextView tv_tenKH, tv_gia, tv_diaChi, tv_sdt, tv_soluong;
+        TextView tv_tenKH, tv_gia, tv_diaChi, tv_sdt, tv_soluong,id;
         ImageButton btn_Huy, btn_xacNhan;
-        ImageView anh;
 
         public viewHolder(@NonNull View itemView) {
             super(itemView);
@@ -347,7 +387,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             tv_sdt = itemView.findViewById(R.id.tv_sdt);
             tv_soluong = itemView.findViewById(R.id.tv_soLuong_);
             tv_gia = itemView.findViewById(R.id.tv_gia);
-            anh = itemView.findViewById(R.id.imgv_anhsp);
+            id = itemView.findViewById(R.id.tv_idDon);
 
             btn_Huy = itemView.findViewById(R.id.ibtn_Huy);
             btn_xacNhan = itemView.findViewById(R.id.ibtn_XacNhan);

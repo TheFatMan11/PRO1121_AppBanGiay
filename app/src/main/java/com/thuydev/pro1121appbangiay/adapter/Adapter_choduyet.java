@@ -49,7 +49,7 @@ public class Adapter_choduyet extends RecyclerView.Adapter<Adapter_choduyet.View
     @SuppressLint({"RecyclerView", "ResourceAsColor"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String Xanh = "#89FF00";
+        String Xanh = "#44cc00";
         String Do = "#FF0000";
         String Cam = "#FFC107";
 

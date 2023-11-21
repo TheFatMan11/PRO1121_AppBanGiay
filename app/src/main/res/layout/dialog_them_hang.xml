@@ -29,6 +29,7 @@
             android:background="#FFFFFF" />
 
         <ListView
+            android:padding="10dp"
             android:id="@+id/list_hang"
             android:layout_width="match_parent"
             android:layout_height="230dp" />
