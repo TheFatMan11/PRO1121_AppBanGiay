@@ -164,7 +164,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         ImageButton imv = view.findViewById(R.id.ibtn_addhang);
         edt.setVisibility(View.GONE);
         imv.setVisibility(View.GONE);
-        tittle.setText("Sản phẩm chi tiết");
+        tittle.setText("Đơn hàng chi tiết");
         ListView lv_list = view.findViewById(R.id.list_hang);
         List<SanPham> Listsp = getListmaSP(list_don);
         if (Listsp.size()<=0){
