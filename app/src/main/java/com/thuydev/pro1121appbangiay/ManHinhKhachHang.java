@@ -7,9 +7,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,6 +40,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_thongbao;
+import com.thuydev.pro1121appbangiay.adapter.MyNotification;
 import com.thuydev.pro1121appbangiay.fragment.Frag_cuahang;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_choxacnhan;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_gioHang;
@@ -43,6 +48,7 @@ import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.ThongBao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ManHinhKhachHang extends AppCompatActivity {
@@ -74,7 +80,7 @@ public class ManHinhKhachHang extends AppCompatActivity {
         list = new ArrayList<>();
         list_thongBao = new ArrayList<>();
         getThongBao();
-        adapterThongbao = new Adapter_thongbao(list_thongBao,ManHinhKhachHang.this);
+        adapterThongbao = new Adapter_thongbao(list_thongBao, ManHinhKhachHang.this);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -129,16 +135,13 @@ public class ManHinhKhachHang extends AppCompatActivity {
     }
 
 
+    Menu menu_thongBao;
 
-
-
-
-Menu menu_thongBao;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         menu_thongBao = menu;
-        Log.e(TAG, "onCreateOptionsMenu: "+menu_thongBao );
+        Log.e(TAG, "onCreateOptionsMenu: " + menu_thongBao);
         return true;
     }
 
@@ -154,7 +157,7 @@ Menu menu_thongBao;
 
     private void xemThongBao() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_them_hang,null,false);
+        View view = getLayoutInflater().inflate(R.layout.dialog_them_hang, null, false);
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
@@ -170,17 +173,33 @@ Menu menu_thongBao;
         listView.setAdapter(adapterThongbao);
     }
 
-    public void doiIcon(){
-        if (menu_thongBao==null){
+    public void doiIcon() {
+        if (menu_thongBao == null) {
             return;
         }
         MenuItem item = menu_thongBao.findItem(R.id.menu_thongBao);
-        if (item==null){
+        if (item == null) {
             return;
         }
         item.setIcon(R.drawable.bell_dis_);
-
+        sendNotifi();
     }
+
+    private void sendNotifi() {
+        Notification notification = new NotificationCompat.Builder(this, MyNotification.CHANNEL_ID)
+                .setContentTitle("Thông báo")
+                .setContentText("Đơn hàng đã được xác nhận")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setColor(getColor(R.color.xanhla))
+                .build();
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(getNotificationId(), notification);
+    }
+
+    private int getNotificationId() {
+        return (int) new Date().getTime();
+    }
+
     private void hotro() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater layoutInflater = getLayoutInflater();
@@ -201,16 +220,16 @@ Menu menu_thongBao;
     }
 
     private void getThongBao() {
-        db.collection("thongBao").whereEqualTo("chucVu",3).whereEqualTo("maKhachHang",user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("thongBao").whereEqualTo("chucVu", 3).whereEqualTo("maKhachHang", user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
-                    Log.e(TAG, "onEvent: "+1 );
-                        return;
+                    Log.e(TAG, "onEvent: " + 1);
+                    return;
                 }
                 if (value == null) {
-                    Log.e(TAG, "onEvent: "+2 );
-                        return;
+                    Log.e(TAG, "onEvent: " + 2);
+                    return;
                 }
                 for (DocumentChange dc : value.getDocumentChanges()) {
                     switch (dc.getType()) {
