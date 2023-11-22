@@ -48,7 +48,7 @@ import java.util.UUID;
 
 public class QuanLyNhanVien extends Fragment {
     List<User> list ;
-    EditText edt_maNV, edt_Email, edt_matKhau, edt_hoTen, edt_sdt, edt_cv;
+    EditText edt_maNV, edt_Email, edt_hoTen, edt_sdt, edt_cv;
     AppCompatButton btn_Luu, btn_Huy;
     RecyclerView recyclerView;
     ImageButton button;
@@ -86,7 +86,6 @@ public class QuanLyNhanVien extends Fragment {
                 dialog.show();
 
                 edt_Email = view1.findViewById(R.id.edt_email);
-                edt_matKhau = view1.findViewById(R.id.edt_matKhau);
                 edt_hoTen = view1.findViewById(R.id.edt_hoTen);
                 edt_sdt = view1.findViewById(R.id.edt_sdt);
                 btn_Luu = view1.findViewById(R.id.btn_Luu);
@@ -97,7 +96,6 @@ public class QuanLyNhanVien extends Fragment {
                     public void onClick(View v) {
 
                         email = edt_Email.getText().toString();
-                        matkhau = edt_matKhau.getText().toString();
                         hoten = edt_hoTen.getText().toString();
                         sdt = edt_sdt.getText().toString();
                         id = UUID.randomUUID().toString();
@@ -152,7 +150,7 @@ public class QuanLyNhanVien extends Fragment {
     }
 
     public void themTK() {
-        firebaseAuth.createUserWithEmailAndPassword(email, matkhau).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(email, UUID.randomUUID().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
                     FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
@@ -166,7 +164,8 @@ public class QuanLyNhanVien extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isComplete()) {
-                                Toast.makeText(getContext(), "Them thanh công", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
+                                guiMail(user.getEmail());
                                 FirebaseAuth.getInstance().signOut();
                                 dialog.dismiss();
                             } else {
@@ -184,6 +183,24 @@ public class QuanLyNhanVien extends Fragment {
             }
         });
     }
+
+
+        private void guiMail(String email) {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            String emailAddress = email;
+            if (emailAddress.isEmpty()) {
+                return;
+            }
+            auth.sendPasswordResetEmail(emailAddress)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                            }
+                        }
+                    });
+        }
+
 
 
 

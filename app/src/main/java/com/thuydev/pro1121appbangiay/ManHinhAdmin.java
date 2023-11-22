@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentManager;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -72,13 +73,13 @@ public class ManHinhAdmin extends AppCompatActivity {
     QuanLyKhachHang quanLyKhachHang = new QuanLyKhachHang();
     QuanLyGiay quanLyGiay = new QuanLyGiay(0);
     frg_ThongKe thongKe = new frg_ThongKe();
-    frg_DoiMatKhau doiMatKhau = new frg_DoiMatKhau();
     FragmentManager manager;
     Uri uri;
     List<ThongBao> list_thongBao;
     Adapter_thongbao adapterThongbao;
     String TAG = "TAG";
     FirebaseUser user;
+
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -241,10 +242,13 @@ public class ManHinhAdmin extends AppCompatActivity {
         edt_passMoi = view.findViewById(R.id.edt_nhapmkmoi);
         edt_xacNhan = view.findViewById(R.id.edt_xacnhanmk);
         btn_doiMK = view.findViewById(R.id.btn_doiMK);
-
+        ProgressDialog progressDialog = new ProgressDialog(activity);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Sẽ mất một lúc vui lòng chờ");
         btn_doiMK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 String pasCu = edt_passCu.getText().toString();
                 String pasMoi = edt_passMoi.getText().toString();
                 String xacNhan = edt_xacNhan.getText().toString();
@@ -252,14 +256,14 @@ public class ManHinhAdmin extends AppCompatActivity {
                 if (pasCu.isEmpty() || pasMoi.isEmpty() || xacNhan.isEmpty()) {
                     Toast.makeText(activity, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 } else if (xacNhan.equals(pasMoi)) {
-                    doiMK(pasCu, pasMoi,dialog,activity);
+                    doiMK(pasCu, pasMoi,dialog,activity,progressDialog);
                 } else {
                     Toast.makeText(activity, "Xác nhận mật khẩu mới sai", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-    public static void doiMK(String pasCu, String pasMoi, Dialog dialog,Context context) {
+    public static void doiMK(String pasCu, String pasMoi, Dialog dialog,Context context,ProgressDialog progressDialog) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         AuthCredential authenticator = EmailAuthProvider.getCredential(user.getEmail(), pasCu);
         user.reauthenticate(authenticator).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -272,6 +276,7 @@ public class ManHinhAdmin extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(context, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
+                                progressDialog.cancel();
                             } else {
                                 Toast.makeText(context, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
                             }
