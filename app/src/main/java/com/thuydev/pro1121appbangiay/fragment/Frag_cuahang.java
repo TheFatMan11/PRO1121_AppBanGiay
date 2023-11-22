@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +52,7 @@ public class Frag_cuahang extends Fragment {
 
     private void anhXa(View view) {
         rcv_list = view.findViewById(R.id.rcv_cuaHang);
+        SearchView searchView = view.findViewById(R.id.seach_sp_KH);
         list_hang = new ArrayList<>();
         list_sp = new ArrayList<>();
         manHinhKhachHang = (ManHinhKhachHang) getActivity();
@@ -59,10 +61,21 @@ public class Frag_cuahang extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcv_list.setAdapter(adapterCuahang);
         rcv_list.setLayoutManager(manager);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-
-
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapterCuahang.getFilter().filter(newText);
+                return true;
+            }
+        });
+        Log.e("TAG", "List hang" + list_hang);
     }
+
 
     private void nghe() {
         db = FirebaseFirestore.getInstance();
