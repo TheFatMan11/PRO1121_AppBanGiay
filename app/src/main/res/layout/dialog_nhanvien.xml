@@ -38,6 +38,7 @@
         android:hint="Nhập số điện thoại"
         android:textColorHint="@color/vang"
         android:maxLength="10"
+        android:inputType="number"
         android:textColor="#E6903B"
         android:padding="10dp" />
 

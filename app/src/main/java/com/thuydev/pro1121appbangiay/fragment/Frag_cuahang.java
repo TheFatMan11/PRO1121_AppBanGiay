@@ -70,6 +70,7 @@ public class Frag_cuahang extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapterCuahang.getFilter().filter(newText);
+                adapterCuahang.notifyDataSetChanged();
                 return true;
             }
         });
@@ -93,7 +94,6 @@ public class Frag_cuahang extends Fragment {
                 for (DocumentSnapshot dc : value.getDocuments()) {
                     AddListSP(dc.getString("maHang"), dc.getString("tenHang"));
                 }
-
             }
         });
     }
@@ -120,6 +120,9 @@ public class Frag_cuahang extends Fragment {
                     }
                 }
                 Log.e(TAG, "onEvent:2 " + list_sp.size());
+                if (list_sp.size()==0){
+                    return;
+                }
                 list_hang.add(new Hang(maHang, name, list_sp));
                 list_hang.sort(new Comparator<Hang>() {
                     @Override
@@ -129,14 +132,10 @@ public class Frag_cuahang extends Fragment {
                 });
                 adapterCuahang.notifyDataSetChanged();
                 list_sp = new ArrayList<>();
+
             }
         });
-        for (Hang h : list_hang) {
-            if (h.getSanPham().size() <= 0) {
-                list_hang.remove(h);
-                adapterCuahang.notifyDataSetChanged();
-            }
-        }
+
     }
 
 }

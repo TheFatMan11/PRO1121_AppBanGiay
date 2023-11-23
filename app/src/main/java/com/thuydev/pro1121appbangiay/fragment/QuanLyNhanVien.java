@@ -101,12 +101,10 @@ public class QuanLyNhanVien extends Fragment {
                         id = UUID.randomUUID().toString();
 
 
-                        if (email.isEmpty() || matkhau.isEmpty() || hoten.isEmpty() || sdt.isEmpty() ) {
+                        if (email.isEmpty() || hoten.isEmpty() || sdt.isEmpty()) {
                             Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                         } else if (!isValidateEmail(email)) {
                             Toast.makeText(getContext(), "Không đúng định dạng của email", Toast.LENGTH_SHORT).show();
-                        } else if (matkhau.length() < 8) {
-                            Toast.makeText(getContext(), "Mật khẩu phải từ 8 chữ số", Toast.LENGTH_SHORT).show();
                         } else if (!isValidatePhone(sdt) || sdt.length() <10) {
                             Toast.makeText(getContext(), "Số điện thoại không đúng", Toast.LENGTH_SHORT).show();
                         } else {

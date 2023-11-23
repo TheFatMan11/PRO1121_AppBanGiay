@@ -10,7 +10,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -158,6 +160,10 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                     Toast.makeText(ThongTinTaiKhoan.this, "Không được để trống", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (!isValidatePhone(sdt.getText().toString())||sdt.getText().toString().length()<10){
+                    Toast.makeText(ThongTinTaiKhoan.this, "Số điện thoại không đúng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 progressDialog.show();
                 us.setEmail(email.getText().toString());
                 us.setHoTen(ten.getText().toString());
@@ -172,7 +178,9 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
 
 
     }
-
+    public boolean isValidatePhone(CharSequence e) {
+        return !TextUtils.isEmpty(e) && Patterns.PHONE.matcher(e).matches();
+    }
     public User getUser(){
         return us;
     }
