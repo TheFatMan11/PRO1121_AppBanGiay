@@ -11,8 +11,8 @@
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_NV"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginBottom="10dp" />
+        android:layout_height="50dp"
+        android:layout_marginBottom="15dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_nhanVien"
