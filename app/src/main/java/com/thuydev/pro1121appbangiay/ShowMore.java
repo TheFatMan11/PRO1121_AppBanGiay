@@ -2,6 +2,7 @@ package com.thuydev.pro1121appbangiay;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +30,8 @@ public class ShowMore extends AppCompatActivity {
     RecyclerView rcv_list;
     Adapter_itemCuaHang itemCuaHang;
     List<SanPham> list;
+    List<SanPham> list_Moi;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,9 @@ public class ShowMore extends AppCompatActivity {
 
         nghe(a[0]);
         list = new ArrayList<>();
+        list_Moi = new ArrayList<>();
         rcv_list = findViewById(R.id.rcv_list_sanPham_more);
+        searchView = findViewById(R.id.seach_sp_KH);
         TextView tenhang = findViewById(R.id.tv_ten_hang_show);
         ImageView close = findViewById(R.id.iv_close);
         tenhang.setText(a[1]);
@@ -51,6 +56,19 @@ public class ShowMore extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+              itemCuaHang.getFilter().filter(newText);
+              itemCuaHang.notifyDataSetChanged();
+                return true;
             }
         });
     }

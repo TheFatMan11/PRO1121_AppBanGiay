@@ -4,35 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".ShowMore">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:padding="10dp"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:padding="10dp">
+
         <TextView
+            android:id="@+id/tv_ten_hang_show"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="sdfs"
             android:textColor="#E6903B"
-            android:textStyle="bold"
             android:textSize="30dp"
-            android:id="@+id/tv_ten_hang_show"/>
+            android:textStyle="bold" />
+
         <ImageView
+            android:id="@+id/iv_close"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/cancel"
             android:layout_gravity="right"
-            android:id="@+id/iv_close"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/cancel" />
     </LinearLayout>
 
-<androidx.recyclerview.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:id="@+id/rcv_list_sanPham_more"/>
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/seach_sp_KH"
+        android:hint="Nhập tên sản phẩm cần tìm"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="20dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_list_sanPham_more"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 </LinearLayout>

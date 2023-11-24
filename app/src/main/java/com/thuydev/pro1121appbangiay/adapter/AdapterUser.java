@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,12 +40,14 @@ import java.util.List;
 
 public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
     private final Context context;
-    private final List<User> list;
+    private List<User> list;
+    List<User> list_nvMoi;
     FirebaseFirestore db;
 
     public AdapterUser(Context context, List list) {
         this.context = context;
         this.list = list;
+        this.list_nvMoi = list;
         db = FirebaseFirestore.getInstance();
     }
 
@@ -58,6 +61,7 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
+        Log.e("TAG","size"+list.size());
         User user = list.get(position);
         holder.tvTen.setText("Tên: " + list.get(position).getHoTen());
         holder.tvEmail.setText("Email: " + list.get(position).getEmail());
@@ -86,10 +90,10 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
                         db.collection("user").document(list.get(position).getMaUser()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isComplete()){
+                                if (task.isComplete()) {
                                     Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
                                     dialog.dismiss();
-                                }else {
+                                } else {
                                     Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -117,13 +121,13 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
                 builder.setPositiveButton("Tắt trạng thái", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                       changeTT(0,list.get(position));
+                        changeTT(0, list.get(position));
                     }
                 });
                 builder.setNegativeButton("Mở trạng thái", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        changeTT(1,list.get(position));
+                        changeTT(1, list.get(position));
                     }
                 });
                 builder.create().show();
@@ -131,21 +135,55 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
             }
         });
     }
-    private void changeTT(int i,User user) {
+
+    public Filter getTen() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                if (constraint.toString().isEmpty()) {
+                    list = list_nvMoi;
+                } else {
+                    List<User> list1_nv = new ArrayList<>();
+                    for (User user : list_nvMoi) {
+                        if (user.getHoTen().toLowerCase().trim().contains(constraint.toString().toLowerCase().trim())) {
+                            list1_nv.add(user);
+                        }
+                    }
+                    list =list1_nv;
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = list;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                list = (List<User>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+
+    private void changeTT(int i, User user) {
         user.setTrangThai(i);
         db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isComplete()){
+                if (task.isComplete()) {
                     Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(context, "Lỗi cụ rồi bảo dev fix đi", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
     @Override
     public int getItemCount() {
+
+
         return list.size();
     }
 

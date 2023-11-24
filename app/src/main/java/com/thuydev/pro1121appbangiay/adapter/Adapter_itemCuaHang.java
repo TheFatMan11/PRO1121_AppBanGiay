@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,17 +17,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.SeeSanPham;
+import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Adapter_itemCuaHang extends RecyclerView.Adapter<Adapter_itemCuaHang.ViewHolder> {
     List<SanPham> list;
+    List<SanPham> list_search;
     Context context;
 
     public Adapter_itemCuaHang(List<SanPham> list, Context context) {
         this.list = list;
         this.context = context;
+        this.list_search = list;
     }
 
     @NonNull
@@ -53,6 +58,35 @@ public class Adapter_itemCuaHang extends RecyclerView.Adapter<Adapter_itemCuaHan
         });
     }
 
+    public Filter getFilter(){
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                if (constraint.toString().isEmpty()) {
+                    list = list_search;
+                } else {
+                    List<SanPham> list1_spMoi = new ArrayList<>();
+                    for (SanPham sp : list_search) {
+                        if (sp.getTenSP().toLowerCase().trim().contains(constraint.toString().toLowerCase().trim())) {
+                            list1_spMoi.add(sp);
+                        }
+
+                    }
+                    list = list1_spMoi;
+                }
+                FilterResults results = new FilterResults();
+                results.values = list;
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                list = (List<SanPham>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
     @Override
     public int getItemCount() {
         return list.size();

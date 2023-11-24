@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,18 +49,20 @@ import java.util.UUID;
 
 
 public class QuanLyNhanVien extends Fragment {
-    List<User> list ;
+    List<User> list;
     EditText edt_maNV, edt_Email, edt_hoTen, edt_sdt, edt_cv;
     AppCompatButton btn_Luu, btn_Huy;
     RecyclerView recyclerView;
     ImageButton button;
     AdapterUser adapterUser;
+    SearchView searchView;
     String id;
     User user = new User();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth firebaseAuth;
-    String email,matkhau,hoten,sdt,cv;
+    String email, matkhau, hoten, sdt, cv;
     Dialog dialog;
+
     public QuanLyNhanVien() {
         // Required empty public constructor
     }
@@ -70,10 +74,25 @@ public class QuanLyNhanVien extends Fragment {
         View view = inflater.inflate(R.layout.fragment_quan_ly_nhan_vien, null);
         recyclerView = view.findViewById(R.id.rcv_nhanVien);
         button = view.findViewById(R.id.ibtn_them_nv);
+        searchView = view.findViewById(R.id.search_NV);
         loatData();
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapterUser.getTen().filter(newText);
+                adapterUser.notifyDataSetChanged();
+                return true;
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +124,7 @@ public class QuanLyNhanVien extends Fragment {
                             Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                         } else if (!isValidateEmail(email)) {
                             Toast.makeText(getContext(), "Không đúng định dạng của email", Toast.LENGTH_SHORT).show();
-                        } else if (!isValidatePhone(sdt) || sdt.length() <10) {
+                        } else if (!isValidatePhone(sdt) || sdt.length() < 10) {
                             Toast.makeText(getContext(), "Số điện thoại không đúng", Toast.LENGTH_SHORT).show();
                         } else {
                             themTK();
@@ -139,10 +158,9 @@ public class QuanLyNhanVien extends Fragment {
     }
 
     public void loatData() {
-        nghe();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        list =new ArrayList<>();
-        recyclerView.setAdapter(new AdapterUser(getContext(), list));
+        list = new ArrayList<>();
+        nghe();
         adapterUser = new AdapterUser(getContext(), list);
         recyclerView.setAdapter(adapterUser);
     }
@@ -151,27 +169,27 @@ public class QuanLyNhanVien extends Fragment {
         firebaseAuth.createUserWithEmailAndPassword(email, UUID.randomUUID().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                    FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
-                    user.setMaUser(user1.getUid());
-                    user.setEmail(email);
-                    user.setHoTen(hoten);
-                    user.setSDT(sdt);
-                    user.setChucVu(2);
-                    user.setTrangThai(1);
-                    db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isComplete()) {
-                                Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
-                                guiMail(user.getEmail());
-                                FirebaseAuth.getInstance().signOut();
-                                dialog.dismiss();
-                            } else {
-                                Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
-                            }
+                FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+                user.setMaUser(user1.getUid());
+                user.setEmail(email);
+                user.setHoTen(hoten);
+                user.setSDT(sdt);
+                user.setChucVu(2);
+                user.setTrangThai(1);
+                db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isComplete()) {
+                            Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
+                            guiMail(user.getEmail());
+                            FirebaseAuth.getInstance().signOut();
+                            dialog.dismiss();
+                        } else {
+                            Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
                         }
-                    });
-                    Toast.makeText(getContext(), "Thanh cong", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                Toast.makeText(getContext(), "Thanh cong", Toast.LENGTH_SHORT).show();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -183,23 +201,21 @@ public class QuanLyNhanVien extends Fragment {
     }
 
 
-        private void guiMail(String email) {
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            String emailAddress = email;
-            if (emailAddress.isEmpty()) {
-                return;
-            }
-            auth.sendPasswordResetEmail(emailAddress)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                            }
-                        }
-                    });
+    private void guiMail(String email) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String emailAddress = email;
+        if (emailAddress.isEmpty()) {
+            return;
         }
-
-
+        auth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                        }
+                    }
+                });
+    }
 
 
     private void nghe() {
@@ -211,13 +227,13 @@ public class QuanLyNhanVien extends Fragment {
                 }
                 if (value != null) {
                     for (DocumentChange dc : value.getDocumentChanges()) {
-                        Log.e("TAG", "onEvent: "+ dc.getType() );
+                        Log.e("TAG", "onEvent: " + dc.getType());
                         switch (dc.getType()) {
                             case ADDED:
                                 dc.getDocument().toObject(User.class);
                                 list.add(dc.getDocument().toObject(User.class));
                                 adapterUser.notifyDataSetChanged();
-                                Log.e("TAG","loi"+dc.getDocument().toObject(User.class));
+                                Log.e("TAG", "loi" + dc.getDocument().toObject(User.class));
                                 break;
                             case MODIFIED:
                                 User user1 = dc.getDocument().toObject(User.class);

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,11 +43,11 @@ import java.util.UUID;
 
 public class QuanLyKhachHang extends Fragment {
     List<User> list ;
-    EditText edt_maNV, edt_Email, edt_matKhau, edt_hoTen, edt_sdt, edt_cv;
     AppCompatButton btn_Luu, btn_Huy;
     RecyclerView recyclerView;
     ImageButton button;
     AdapterUser adapterUser;
+    SearchView searchView;
     String id;
     User user = new User();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -63,26 +64,36 @@ public class QuanLyKhachHang extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_quan_ly_khach_hang, null);
         recyclerView = view.findViewById(R.id.rcv_qlkh);
+        searchView = view.findViewById(R.id.search_KH);
         loatData();
         firebaseAuth = FirebaseAuth.getInstance();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.e("TAG","ap"+list);
+                adapterUser.getTen().filter(newText);
+                return true;
+            }
+        });
         return view;
     }
 
-    public boolean isValidateEmail(CharSequence e) {
-        return !TextUtils.isEmpty(e) && Patterns.EMAIL_ADDRESS.matcher(e).matches();
-    }
-
-    public boolean isValidatePhone(CharSequence e) {
-        return !TextUtils.isEmpty(e) && Patterns.PHONE.matcher(e).matches();
-    }
 
     public void loatData() {
-        nghe();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         list =new ArrayList<>();
-        recyclerView.setAdapter(new AdapterUser(getContext(), list));
+        nghe();
         adapterUser = new AdapterUser(getContext(), list);
         recyclerView.setAdapter(adapterUser);
+
+
+
+
     }
 
 

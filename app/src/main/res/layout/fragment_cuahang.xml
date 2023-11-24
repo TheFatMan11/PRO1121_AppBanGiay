@@ -5,7 +5,7 @@
     android:background="@color/white"
     android:layout_height="match_parent">
    <androidx.appcompat.widget.SearchView
-       android:id="@+id/seach_sp_KH"
+       android:id="@+id/seach_Hang_KH"
        android:layout_width="match_parent"
        android:layout_height="50dp"/>
 <androidx.recyclerview.widget.RecyclerView

@@ -24,6 +24,14 @@ public class User {
         this.maUser = maUser;
     }
 
+    public User(String maUser, String email, String hoTen, int trangThai, Long soDu, int chucVu) {
+        this.maUser = maUser;
+        Email = email;
+        this.hoTen = hoTen;
+        this.trangThai = trangThai;
+        this.soDu = soDu;
+        this.chucVu = chucVu;
+    }
 
     public User(String maUser, String email, String hoTen, String SDT, int trangThai, Long soDu, int chucVu) {
         this.maUser = maUser;

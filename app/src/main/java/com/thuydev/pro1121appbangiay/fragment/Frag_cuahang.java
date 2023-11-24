@@ -52,7 +52,7 @@ public class Frag_cuahang extends Fragment {
 
     private void anhXa(View view) {
         rcv_list = view.findViewById(R.id.rcv_cuaHang);
-        SearchView searchView = view.findViewById(R.id.seach_sp_KH);
+        SearchView searchView = view.findViewById(R.id.seach_Hang_KH);
         list_hang = new ArrayList<>();
         list_sp = new ArrayList<>();
         manHinhKhachHang = (ManHinhKhachHang) getActivity();
