@@ -110,7 +110,6 @@ public class Frag_cuahang extends Fragment {
                 }
                 for (DocumentChange dc : value.getDocumentChanges()) {
                     if (maHang.equals(dc.getDocument().get("maHang").toString())) {
-                        //lấy được sản phẩm
                         list_sp.add(dc.getDocument().toObject(SanPham.class));
                     }
                     switch (dc.getType()) {
@@ -119,7 +118,6 @@ public class Frag_cuahang extends Fragment {
                             return;
                     }
                 }
-                Log.e(TAG, "onEvent:2 " + list_sp.size());
                 if (list_sp.size()==0){
                     return;
                 }
