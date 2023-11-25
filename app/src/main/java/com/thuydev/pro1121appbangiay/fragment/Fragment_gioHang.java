@@ -323,7 +323,7 @@ public class Fragment_gioHang extends Fragment {
                 }
             }
         }
-        tongGia.setText(tong + " đ");
+        tongGia.setText(tong + " VND");
         return tong;
     }
 }

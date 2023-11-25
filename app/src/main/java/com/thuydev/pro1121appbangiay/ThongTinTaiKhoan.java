@@ -240,7 +240,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                     return;
                 }
                 ten.setText(us.getHoTen());
-                tien.setText("Số dư: " + us.getSoDu() + " đ");
+                tien.setText("Số dư: " + us.getSoDu() + " VND");
             }
         });
     }

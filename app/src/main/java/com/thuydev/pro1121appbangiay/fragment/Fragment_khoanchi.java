@@ -81,7 +81,7 @@ Long tong=0l;
                             if (user.getUid().equals(dc.toObject(DonHang.class).getMaKhachHang())){
                                 list.add(dc.toObject(DonHang.class));
                                 tong+=dc.toObject(DonHang.class).getGiaDon();
-                                tongGia.setText("Giá: "+tong+" đ");
+                                tongGia.setText("Giá: "+tong+" VND");
                                 adapterChoduyet.notifyDataSetChanged();
                             }
                         }
