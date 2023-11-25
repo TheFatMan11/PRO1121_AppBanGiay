@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:orientation="vertical"
     android:padding="10dp">
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
+        android:orientation="vertical"
         android:padding="10dp">
 
         <LinearLayout
@@ -22,13 +23,14 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 app:cardCornerRadius="15dp">
 
                 <ImageView
                     android:id="@+id/imv_anh_sp_lon"
                     android:layout_width="match_parent"
                     android:layout_height="500dp"
-
+                    android:background="@color/white"
                     android:src="#E6903B" />
             </androidx.cardview.widget.CardView>
 
@@ -75,60 +77,65 @@
                     android:textSize="20dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_listco"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:id="@+id/rcv_listco"/>
+                    android:layout_weight="1" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Số lượng: "/>
+                    android:text="Số lượng: " />
+
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/bnt_tru_soluong"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:background="#FEC389"
                     android:text="-"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
                     android:textSize="20dp"
-                    android:background="#FEC389"
-                    android:id="@+id/bnt_tru_soluong"/>
+                    android:textStyle="bold" />
+
                 <EditText
+                    android:id="@+id/edt_soluong_show"
                     android:layout_width="70dp"
                     android:layout_height="40dp"
-                    android:text="0"
                     android:inputType="number"
-                    android:id="@+id/edt_soluong_show"/>
+                    android:text="0" />
+
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/bnt_cong_soluong"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:background="#FEC389"
                     android:text="+"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
                     android:textSize="20dp"
-                    android:background="#FEC389"
-                    android:id="@+id/bnt_cong_soluong"/>
+                    android:textStyle="bold" />
 
             </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
+
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_themgio"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="#E6903B"
-                android:textColor="@color/white"
-                android:text="Thêm vào giỏ hàng"
-                android:textSize="20dp"
-                android:textStyle="bold"
                 android:layout_marginTop="?actionBarSize"
-                android:id="@+id/btn_themgio"
-                />
+                android:background="#E6903B"
+                android:text="Thêm vào giỏ hàng"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
