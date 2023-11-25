@@ -170,8 +170,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                 us.setSDT(sdt.getText().toString());
                 setData();
                 seTaiKhoan(Uri.parse(linkMoi));
-                ten.setText(user.getDisplayName());
-                Glide.with(ThongTinTaiKhoan.this).load(user.getPhotoUrl()).error(R.drawable.baseline_crop_original_24).into(avatar);
+
                 dialog.dismiss();
             }
         });
@@ -198,7 +197,10 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isComplete()){
+                                Log.e("TAG", "onComplete: "+task.getException() );
                                 Toast.makeText(ThongTinTaiKhoan.this, "Hoàn tất", Toast.LENGTH_SHORT).show();
+                                ten.setText(user.getDisplayName());
+                                Glide.with(ThongTinTaiKhoan.this).load(user.getPhotoUrl()).error(R.drawable.baseline_crop_original_24).into(avatar);
                             }else {
                                 Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
                             }
@@ -456,7 +458,5 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 }

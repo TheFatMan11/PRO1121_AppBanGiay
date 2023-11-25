@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -397,53 +398,78 @@ public class QuanLyGiay extends Fragment {
     public void upAnh(Uri imageUri, EditText ten, EditText gia, EditText namSX, EditText soLuong, EditText list_kichco, Dialog dialog, String id, SanPham sanPham, String thongbao) {
         StorageReference storageReference;
         storageReference = FirebaseStorage.getInstance().getReference("images").child(id);
-        storageReference.putFile(imageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    Uri uri = task.getResult();
-                                    linkMoi = uri.toString();
-
-                                    sanPham.setAnh(linkMoi);
-                                    sanPham.setMaSp(id);
-                                    sanPham.setTenHang(a.getText().toString());
-                                    sanPham.setTenSP(ten.getText().toString().trim());
-                                    sanPham.setGia(Long.parseLong(gia.getText().toString()));
-                                    sanPham.setNamSX(namSX.getText().toString());
-                                    sanPham.setTime(new Date().getTime());
-                                    sanPham.setSoLuong(Long.parseLong(soLuong.getText().toString()));
-                                    List<String> kichCo = Arrays.asList(list_kichco.getText().toString().trim().split(","));
-                                    sanPham.setKichCo(kichCo);
-                                    db.collection("sanPham").document(id).set(sanPham).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(getContext(), thongbao, Toast.LENGTH_SHORT).show();
-                                                progressDialog.cancel();
-                                                dialog.dismiss();
-                                                adapterSanpham.notifyDataSetChanged();
-                                            } else {
-                                                Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+        Log.e("TAG", "upAnh: "+imageUri );
+        if (!imageUri.toString().contains("https://firebasestorage.googleapis.com")){
+            storageReference.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri uri = task.getResult();
+                                        linkMoi = uri.toString();
+                                        sanPham.setAnh(linkMoi);
+                                        sanPham.setMaSp(id);
+                                        sanPham.setTenHang(a.getText().toString());
+                                        sanPham.setTenSP(ten.getText().toString().trim());
+                                        sanPham.setGia(Long.parseLong(gia.getText().toString()));
+                                        sanPham.setNamSX(namSX.getText().toString());
+                                        sanPham.setTime(new Date().getTime());
+                                        sanPham.setSoLuong(Long.parseLong(soLuong.getText().toString()));
+                                        List<String> kichCo = Arrays.asList(list_kichco.getText().toString().trim().split(","));
+                                        sanPham.setKichCo(kichCo);
+                                        db.collection("sanPham").document(id).set(sanPham).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(getContext(), thongbao, Toast.LENGTH_SHORT).show();
+                                                    progressDialog.cancel();
+                                                    dialog.dismiss();
+                                                    adapterSanpham.notifyDataSetChanged();
+                                                } else {
+                                                    Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
-                                        }
-                                    });
-                                } else {
-                                    Toast.makeText(getContext(), "Lỗi khi lấy đường dẫn", Toast.LENGTH_SHORT).show();
+                                        });
+                                    } else {
+                                        Toast.makeText(getContext(), "Lỗi khi lấy đường dẫn", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            return;
+        }
+        sanPham.setMaSp(id);
+        sanPham.setTenHang(a.getText().toString());
+        sanPham.setTenSP(ten.getText().toString().trim());
+        sanPham.setGia(Long.parseLong(gia.getText().toString()));
+        sanPham.setNamSX(namSX.getText().toString());
+        sanPham.setTime(new Date().getTime());
+        sanPham.setSoLuong(Long.parseLong(soLuong.getText().toString()));
+        List<String> kichCo = Arrays.asList(list_kichco.getText().toString().trim().split(","));
+        sanPham.setKichCo(kichCo);
+        db.collection("sanPham").document(id).set(sanPham).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), thongbao, Toast.LENGTH_SHORT).show();
+                    progressDialog.cancel();
+                    dialog.dismiss();
+                    adapterSanpham.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public Adapter_sanpham getAdapter() {
