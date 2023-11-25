@@ -7,7 +7,10 @@
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".fragment.QuanLyGiay">
-
+    <androidx.appcompat.widget.SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sv_timsp"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_qlsp"
         android:layout_width="match_parent"

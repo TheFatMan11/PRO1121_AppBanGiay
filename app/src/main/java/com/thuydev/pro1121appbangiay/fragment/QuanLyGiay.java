@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,6 +68,7 @@ public class QuanLyGiay extends Fragment {
     private String linkImage = "";
     private ProgressDialog progressDialog;
     private int quyen = 0;
+    SearchView searchView;
 
     public QuanLyGiay(int i) {
         quyen = i;
@@ -80,6 +82,19 @@ public class QuanLyGiay extends Fragment {
             id = UUID.randomUUID().toString();
             sanPham = new SanPham();
             them("Thêm sản phẩm", id, sanPham, "Thêm", "Thêm thành công");
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapterSanpham.getFilter().filter(newText);
+                return true;
+            }
         });
 
     }
@@ -306,6 +321,7 @@ public class QuanLyGiay extends Fragment {
     private void anhxa(View view) {
         RecyclerView rcv_list = view.findViewById(R.id.rcv_qlsp);
         ibtn_them = view.findViewById(R.id.ibtn_them_sp);
+        searchView = view.findViewById(R.id.sv_timsp);
         list_giay = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
         getSP();

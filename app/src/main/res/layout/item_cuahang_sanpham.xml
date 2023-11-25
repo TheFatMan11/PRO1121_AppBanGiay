@@ -26,6 +26,7 @@
             android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="20dp"
+            android:maxLength="12"
             android:id="@+id/tv_tensp_cuahang"/>
         <TextView
             android:layout_width="match_parent"

@@ -141,10 +141,9 @@ public class SeeSanPham extends AppCompatActivity {
                     sanPham.setTenSP(task.getResult().toObject(SanPham.class).getTenSP());
                     sanPham.setKichCo(task.getResult().toObject(SanPham.class).getKichCo());
                     sanPham.setNamSX(task.getResult().toObject(SanPham.class).getNamSX());
-                    Log.e("TAG", "onComplete: " + sanPham.getKichCo().get(0));
                     ten.setText(sanPham.getTenSP());
                     nam.setText("Năm sản xuất: " + sanPham.getNamSX());
-                    gia.setText("Giá: " + sanPham.getGia());
+                    gia.setText("Giá: " + sanPham.getGia()+" VND");
                     Glide.with(SeeSanPham.this).load(sanPham.getAnh()).error(R.drawable.baseline_crop_original_24).into(anh);
                     list_co = sanPham.getKichCo();
                     adapterKichco = new Adapter_kichco(list_co, SeeSanPham.this);

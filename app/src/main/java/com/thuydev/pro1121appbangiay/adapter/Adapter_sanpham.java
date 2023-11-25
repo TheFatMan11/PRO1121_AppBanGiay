@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -50,21 +52,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class Adapter_sanpham extends RecyclerView.Adapter<Adapter_sanpham.ViewDolder>{
-List<SanPham> list;
-Context context;
-QuanLyGiay quanLyGiay;
-    Dialog dialog;
-    private EditText thuongHieu,ten,gia,list_kichco,namSX,soLuong,edt_hang;
-    private ImageView anh;
-    private SanPham sanPham;
-    String id="",linkImage="";
-    private Adapter_hang adapter;
+public class Adapter_sanpham extends RecyclerView.Adapter<Adapter_sanpham.ViewDolder> implements Filterable {
+    List<SanPham> list;
+    List<SanPham> list2;
+    Context context;
+    QuanLyGiay quanLyGiay;
     private int change = 0;
     int quyen = 0;
     FirebaseFirestore db;
-    public Adapter_sanpham(List<SanPham> list, Context context,QuanLyGiay quanLyGiay,int i) {
+
+    public Adapter_sanpham(List<SanPham> list, Context context, QuanLyGiay quanLyGiay, int i) {
         this.list = list;
+        this.list2 = list;
         this.context = context;
         this.quanLyGiay = quanLyGiay;
         quyen = i;
@@ -73,8 +72,8 @@ QuanLyGiay quanLyGiay;
     @NonNull
     @Override
     public ViewDolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-        return new ViewDolder(inflater.inflate(R.layout.item_quan_ly_giay,parent,false));
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+        return new ViewDolder(inflater.inflate(R.layout.item_quan_ly_giay, parent, false));
     }
 
     @SuppressLint("RecyclerView")
@@ -82,9 +81,9 @@ QuanLyGiay quanLyGiay;
     public void onBindViewHolder(@NonNull ViewDolder holder, int position) {
         Glide.with(context).load(list.get(position).getAnh()).error(R.drawable.logo3).into(holder.anh);
         holder.ten.setText(list.get(position).getTenSP());
-        holder.gia.setText("Giá: "+Integer.parseInt(list.get(position).getGia()+"")+" VND");
-        holder.soluong.setText("Số lượng: "+Integer.parseInt(list.get(position).getSoLuong()+"")+"");
-        if (quyen==1){
+        holder.gia.setText("Giá: " + Integer.parseInt(list.get(position).getGia() + "") + " VND");
+        holder.soluong.setText("Số lượng: " + Integer.parseInt(list.get(position).getSoLuong() + "") + "");
+        if (quyen == 1) {
             holder.delete.setVisibility(View.GONE);
             holder.update.setVisibility(View.GONE);
         }
@@ -93,14 +92,14 @@ QuanLyGiay quanLyGiay;
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()==false){
+                        if (documentSnapshot.exists() == false) {
                             return;
                         }
-                        holder.thuonghieu.setText("Thương hiệu: "+documentSnapshot.getString("tenHang"));
+                        holder.thuonghieu.setText("Thương hiệu: " + documentSnapshot.getString("tenHang"));
                     }
                 });
 
-        holder.namxuatban.setText("Năm sản xuất: "+list.get(position).getNamSX());
+        holder.namxuatban.setText("Năm sản xuất: " + list.get(position).getNamSX());
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,15 +114,15 @@ QuanLyGiay quanLyGiay;
                 builder1.setPositiveButton("Có", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        
+
                         db.collection("sanPham").document(list.get(position).getMaSp()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                           if (task.isComplete()){
-                               Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
-                           }else {
-                               Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
-                           }
+                                if (task.isComplete()) {
+                                    Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Lỗi", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
                     }
@@ -132,18 +131,18 @@ QuanLyGiay quanLyGiay;
             }
         });
 
-holder.update.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-    Update(position);
-    }
-});
+        holder.update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Update(position);
+            }
+        });
     }
 
     private void Update(int position) {
         SanPham sanPham = list.get(position);
         sanPham.tenHang(quanLyGiay);
-        quanLyGiay.them("Sửa sản phẩm",list.get(position).getMaSp(),sanPham,"Sửa","Sửa thành công");
+        quanLyGiay.them("Sửa sản phẩm", list.get(position).getMaSp(), sanPham, "Sửa", "Sửa thành công");
     }
 
     @Override
@@ -151,10 +150,42 @@ holder.update.setOnClickListener(new View.OnClickListener() {
         return list.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                if (constraint.toString().isEmpty()) {
+                    list = list2;
+                } else {
+                    List<SanPham> list1_hangMoi = new ArrayList<>();
+                    for (SanPham hang : list2) {
+                        if (hang.getTenSP().toLowerCase().trim().contains(constraint.toString().toLowerCase().trim())) {
+                            list1_hangMoi.add(hang);
+                        }
+
+                    }
+                    list = list1_hangMoi;
+                }
+                FilterResults results = new FilterResults();
+                results.values = list;
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                list = (List<SanPham>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
     public class ViewDolder extends RecyclerView.ViewHolder {
-ImageView anh;
-TextView ten,gia,soluong,thuonghieu,namxuatban;
-ImageButton update,delete;
+        ImageView anh;
+        TextView ten, gia, soluong, thuonghieu, namxuatban;
+        ImageButton update, delete;
+
         public ViewDolder(@NonNull View itemView) {
             super(itemView);
             anh = itemView.findViewById(R.id.imv_anhsp);
@@ -167,9 +198,8 @@ ImageButton update,delete;
             delete = itemView.findViewById(R.id.ibtn_delete);
         }
     }
+
     List<Hang> list_Hang;
-
-
 
 
 }
