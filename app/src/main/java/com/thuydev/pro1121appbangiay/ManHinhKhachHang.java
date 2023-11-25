@@ -32,11 +32,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -48,6 +51,7 @@ import com.thuydev.pro1121appbangiay.fragment.Fragment_choxacnhan;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_gioHang;
 import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.ThongBao;
+import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,6 +68,7 @@ public class ManHinhKhachHang extends AppCompatActivity {
     List<DonHang> list;
     List<ThongBao> list_thongBao;
     Adapter_thongbao adapterThongbao;
+    User user1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,11 +192,12 @@ public class ManHinhKhachHang extends AppCompatActivity {
         item.setIcon(R.drawable.bell_dis_);
         sendNotifi();
     }
-    private void yeuCauMoThongBao(){
-        boolean notificationEnabled = kiemTra();
-        if(notificationEnabled){
 
-        }else {
+    private void yeuCauMoThongBao() {
+        boolean notificationEnabled = kiemTra();
+        if (notificationEnabled) {
+
+        } else {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ManHinhKhachHang.this);
             builder.setTitle("Thông báo");
             builder.setMessage("Bạn có muốn bật thông báo không?");
@@ -214,6 +220,7 @@ public class ManHinhKhachHang extends AppCompatActivity {
             dialog.show();
         }
     }
+
     private boolean kiemTra() {
         // Kiểm tra trạng thái thông báo hiện tại
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
@@ -242,17 +249,42 @@ public class ManHinhKhachHang extends AppCompatActivity {
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
-        EditText email = view.findViewById(R.id.edt_sdt_hotro);
+        EditText sdt = view.findViewById(R.id.edt_sdt_hotro);
         Button gui = view.findViewById(R.id.btn_hotro);
 
         gui.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                guiHotro(sdt.getText().toString());
+                dialog.dismiss();
             }
         });
     }
+
+    private void guiHotro(String sdt) {
+        db.collection("user").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                user1 = documentSnapshot.toObject(User.class);
+                user1.setSDT(sdt);
+                user1.setTrangThai(0);
+                db.collection("hoTro").document(user.getUid()).set(user1).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isComplete()) {
+                            Toast.makeText(ManHinhKhachHang.this, "Gửi hỗ trợ thành công", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ManHinhKhachHang.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+
+
+    }
+
+
 
 
     private void getThongBao() {
@@ -267,7 +299,9 @@ public class ManHinhKhachHang extends AppCompatActivity {
                     Log.e(TAG, "onEvent: " + 2);
                     return;
                 }
+
                 for (DocumentChange dc : value.getDocumentChanges()) {
+                    user1=dc.getDocument().toObject(User.class);
                     switch (dc.getType()) {
                         case ADDED:
                             list_thongBao.add(dc.getDocument().toObject(ThongBao.class));

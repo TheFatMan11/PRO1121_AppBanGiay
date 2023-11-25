@@ -60,6 +60,7 @@ import com.thuydev.pro1121appbangiay.fragment.QuanLyKhachHang;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyNhanVien;
 import com.thuydev.pro1121appbangiay.fragment.frg_DoiMatKhau;
 import com.thuydev.pro1121appbangiay.fragment.frg_ThongKe;
+import com.thuydev.pro1121appbangiay.fragment.frg_hotro;
 import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
@@ -134,6 +135,9 @@ public class ManHinhNhanVien extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.menu_nhanvien_resetpass) {
                     ManHinhAdmin.doipass(ManHinhNhanVien.this);
                     return false;
+                } else if (item.getItemId() == R.id.menu_nhanvien_hotro) {
+                    relaceFrg(new frg_hotro());
+                    getSupportActionBar().setTitle("Hỗ trợ khách hàng");
                 } else {
                     Toast.makeText(ManHinhNhanVien.this, "Lỗi", Toast.LENGTH_SHORT).show();
                 }
@@ -260,11 +264,12 @@ public class ManHinhNhanVien extends AppCompatActivity {
         item.setIcon(R.drawable.bell_dis_);
         sendNotifi();
     }
-    private void yeuCauMoThongBao(){
-        boolean notificationEnabled = kiemTra();
-        if(notificationEnabled){
 
-        }else {
+    private void yeuCauMoThongBao() {
+        boolean notificationEnabled = kiemTra();
+        if (notificationEnabled) {
+
+        } else {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ManHinhNhanVien.this);
             builder.setTitle("Thông báo");
             builder.setMessage("Bạn có muốn bật thông báo không?");
@@ -287,6 +292,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
             dialog.show();
         }
     }
+
     private boolean kiemTra() {
         // Kiểm tra trạng thái thông báo hiện tại
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);

@@ -16,6 +16,10 @@
         android:icon="@drawable/bill"
         />
 
+    <item android:id="@+id/menu_nhanvien_hotro"
+        android:title=""
+        android:icon="@drawable/agent"
+        />
     <item android:id="@+id/menu_nhanvien_resetpass"
         android:title=""
         android:icon="@drawable/resetpassword"
