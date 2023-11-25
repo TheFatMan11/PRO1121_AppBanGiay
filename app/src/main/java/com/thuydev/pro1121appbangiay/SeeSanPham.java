@@ -70,7 +70,7 @@ public class SeeSanPham extends AppCompatActivity {
         them.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (so==0){
+                if (Integer.parseInt(hienThi.getText().toString())==0){
                     Toast.makeText(SeeSanPham.this, "Bạn phải chọn ít nhất 1 sản phẩm ", Toast.LENGTH_SHORT).show();
                     return;
                 }
