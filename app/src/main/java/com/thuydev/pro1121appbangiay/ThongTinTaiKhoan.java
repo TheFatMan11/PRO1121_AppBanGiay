@@ -194,7 +194,16 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    Toast.makeText(ThongTinTaiKhoan.this, "Hoàn tất", Toast.LENGTH_SHORT).show();
+                    user.updateEmail(us.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isComplete()){
+                                Toast.makeText(ThongTinTaiKhoan.this, "Hoàn tất", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 } else {
                     Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
                 }
