@@ -56,7 +56,7 @@ public class Adapter_hoTro extends BaseAdapter {
         btn_xao = view.findViewById(R.id.ibtn_xoa);
         btn_xao.setVisibility(View.GONE);
 
-        ten.setText("Họ tên" + list_us.get(position).getHoTen());
+        ten.setText("Họ tên: " + list_us.get(position).getHoTen());
         sdt.setText("SDT: " + list_us.get(position).getSDT());
         if (list_us.get(position).getTrangThai() == 0) {
             trangThai.setText("Chưa hỗ trợ");
@@ -81,7 +81,6 @@ public class Adapter_hoTro extends BaseAdapter {
                     }
                 });
                 builder.create().show();
-
             }
         });
 

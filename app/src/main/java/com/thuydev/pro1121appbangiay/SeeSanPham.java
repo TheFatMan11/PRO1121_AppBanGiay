@@ -7,12 +7,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +31,9 @@ import com.thuydev.pro1121appbangiay.adapter.Adapter_kichco;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class SeeSanPham extends AppCompatActivity {
@@ -43,6 +49,7 @@ public class SeeSanPham extends AppCompatActivity {
     FirebaseFirestore db;
     int so = 0;
     String kichCo="";
+    GestureDetector gestureDetector;
 
     public void setKichCo(String kichCo) {
         this.kichCo = kichCo;
@@ -66,6 +73,8 @@ public class SeeSanPham extends AppCompatActivity {
         tru = findViewById(R.id.bnt_tru_soluong);
         cong = findViewById(R.id.bnt_cong_soluong);
         hienThi = findViewById(R.id.edt_soluong_show);
+        ScrollView scv = findViewById(R.id.scv_xem);
+
         hienThi.setText(so + "");
         them.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +152,7 @@ public class SeeSanPham extends AppCompatActivity {
                     sanPham.setNamSX(task.getResult().toObject(SanPham.class).getNamSX());
                     ten.setText(sanPham.getTenSP());
                     nam.setText("Năm sản xuất: " + sanPham.getNamSX());
-                    gia.setText("Giá: " + sanPham.getGia()+" VND");
+                    gia.setText("Giá: " +  NumberFormat.getNumberInstance(Locale.getDefault()).format(sanPham.getGia())+" VND");
                     Glide.with(SeeSanPham.this).load(sanPham.getAnh()).error(R.drawable.baseline_crop_original_24).into(anh);
                     list_co = sanPham.getKichCo();
                     adapterKichco = new Adapter_kichco(list_co, SeeSanPham.this);

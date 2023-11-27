@@ -30,10 +30,12 @@ import com.thuydev.pro1121appbangiay.model.SanPham;
 import com.thuydev.pro1121appbangiay.model.ThongBao;
 import com.thuydev.pro1121appbangiay.model.User;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHolder> {
@@ -78,7 +80,7 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
             return;
         }
         holder.tenSP.setText(sp.getTenSP());
-        holder.giaSP.setText("Giá: " + sp.getGia() + " VND");
+        holder.giaSP.setText("Giá: " +  NumberFormat.getNumberInstance(Locale.getDefault()).format(sp.getGia()) + " VND");
         String tenHang = getTenLoai(sp.getMaHang());
         if (tenHang == null) {
             return;

@@ -20,8 +20,10 @@ import com.thuydev.pro1121appbangiay.SeeSanPham;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Adapter_itemCuaHang extends RecyclerView.Adapter<Adapter_itemCuaHang.ViewHolder> {
     List<SanPham> list;
@@ -46,7 +48,7 @@ public class Adapter_itemCuaHang extends RecyclerView.Adapter<Adapter_itemCuaHan
         Glide.with(context).load(list.get(position).getAnh()).
                 error(R.drawable.baseline_crop_original_24).into(holder.anh);
         holder.ten.setText(list.get(position).getTenSP());
-        holder.gia.setText("Giá: " + list.get(position).getGia()+" VND");
+        holder.gia.setText("Giá: " + NumberFormat.getNumberInstance(Locale.getDefault()).format(list.get(position).getGia()) +" VND");
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

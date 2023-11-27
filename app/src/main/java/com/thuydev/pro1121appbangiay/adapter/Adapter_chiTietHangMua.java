@@ -15,7 +15,9 @@ import com.thuydev.pro1121appbangiay.model.Don;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class Adapter_chiTietHangMua extends BaseAdapter {
     List<SanPham> list;
@@ -60,7 +62,7 @@ public class Adapter_chiTietHangMua extends BaseAdapter {
                 .getAnh()).error(R.drawable.baseline_crop_original_24).into(Anh);
         Ma.setText("Mã sản phẩm: "+list.get(position).getMaSp());
         Ten.setText("Tên: "+list.get(position).getTenSP());
-        Gia.setText("Giá: "+list.get(position).getGia()+" VND");
+        Gia.setText("Giá: "+ NumberFormat.getNumberInstance(Locale.getDefault()).format(list.get(position).getGia())+" VND");
         SoLuong.setText("Số Lượng mua: "+list_don.get(position).getSoLuong());
         SoLuong_kho.setText("Số Lượng trong kho: "+list.get(position).getSoLuong());
 

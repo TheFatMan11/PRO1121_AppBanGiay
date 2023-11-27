@@ -46,10 +46,12 @@ import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class Adapter_sanpham extends RecyclerView.Adapter<Adapter_sanpham.ViewDolder> implements Filterable {
@@ -81,7 +83,7 @@ public class Adapter_sanpham extends RecyclerView.Adapter<Adapter_sanpham.ViewDo
     public void onBindViewHolder(@NonNull ViewDolder holder, int position) {
         Glide.with(context).load(list.get(position).getAnh()).error(R.drawable.logo3).into(holder.anh);
         holder.ten.setText(list.get(position).getTenSP());
-        holder.gia.setText("Giá: " + Integer.parseInt(list.get(position).getGia() + "") + " VND");
+        holder.gia.setText("Giá: " +  NumberFormat.getNumberInstance(Locale.getDefault()).format(list.get(position).getGia()) + " VND");
         holder.soluong.setText("Số lượng: " + Integer.parseInt(list.get(position).getSoLuong() + "") + "");
         if (quyen == 1) {
             holder.delete.setVisibility(View.GONE);

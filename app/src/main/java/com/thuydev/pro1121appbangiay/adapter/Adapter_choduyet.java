@@ -23,7 +23,9 @@ import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class Adapter_choduyet extends RecyclerView.Adapter<Adapter_choduyet.ViewHolder> {
     List<DonHang> list_donHang;
@@ -55,7 +57,7 @@ public class Adapter_choduyet extends RecyclerView.Adapter<Adapter_choduyet.View
 
         Long soluong = TongGiaSP(position);
         holder.tenSP.setText("Mã hàng: " + list_donHang.get(position).getMaDon());
-        holder.giaSP.setText("Tổng giá: " + list_donHang.get(position).getGiaDon() + "đ");
+        holder.giaSP.setText("Tổng giá: " +  NumberFormat.getNumberInstance(Locale.getDefault()).format(list_donHang.get(position).getGiaDon()) + "đ");
         holder.soLuong.setText("Số lượng: " + soluong + " SP");
         holder.ngay.setText("Ngày mua: " + list_donHang.get(position).getNgayMua());
         if (list_donHang.get(position).getTrangThai() == 0) {

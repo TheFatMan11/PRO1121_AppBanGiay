@@ -30,10 +30,12 @@ import com.thuydev.pro1121appbangiay.model.User;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.model.SanPham;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoadon.viewHolder> {
@@ -93,7 +95,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
         holder.tv_tenKH.setText("Họ tên:" + data[0]);
         holder.tv_diaChi.setText("Địa chỉ: " + data[1]);
         holder.tv_sdt.setText("Sđt: " + data[2]);
-        holder.tv_gia.setText("Giá :" + data[3]);
+        holder.tv_gia.setText("Giá :" +  NumberFormat.getNumberInstance(Locale.getDefault()).format(Long.parseLong(data[3]))+" VND");
         holder.tv_soluong.setText("Số lượng sản phẩm mua: " + data[4]);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -357,6 +359,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             if (donHang.getMaKhachHang()
                     .equals(u.getMaUser())) {
                 a[0] = u.getHoTen();
+                Log.e(TAG, "getdata: 12TAG "+a[0] );
                 a[1] = u.getChonDiaCHi();
                 a[2] = u.getSDT();
             }

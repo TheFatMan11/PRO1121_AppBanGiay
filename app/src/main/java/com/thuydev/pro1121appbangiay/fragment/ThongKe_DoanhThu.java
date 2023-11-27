@@ -26,8 +26,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
 
+import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class ThongKe_DoanhThu extends Fragment {
@@ -131,7 +133,7 @@ public class ThongKe_DoanhThu extends Fragment {
                                         Long price = snapshot.getLong("giaDon");
                                         tong += price;
                                     }
-                                    tv_doanhThu.setText(tong + " VND");
+                                    tv_doanhThu.setText( NumberFormat.getNumberInstance(Locale.getDefault()).format(tong) + " VND");
                                 } else {
                                     Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
                                 }
