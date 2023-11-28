@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -117,6 +119,7 @@ public class QuanLyGiay extends Fragment {
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         EditText thuongHieu, ten, gia, list_kichco, namSX, soLuong;
         TextView tittle = view.findViewById(R.id.tv_themsanpham);
         tittle.setText(name);
@@ -202,6 +205,7 @@ public class QuanLyGiay extends Fragment {
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         ListView listView = view.findViewById(R.id.list_hang);
         edt_hang = view.findViewById(R.id.edt_themhang_);
         ImageButton themHang = view.findViewById(R.id.ibtn_addhang);

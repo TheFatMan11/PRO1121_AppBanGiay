@@ -3,6 +3,8 @@ package com.thuydev.pro1121appbangiay.fragment;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -96,6 +98,7 @@ public class Fragment_thongtin extends Fragment {
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         RecyclerView rcv_list_lichsu = view.findViewById(R.id.rcv_list_lichsu);
         List<DonHang> list = new ArrayList<>();
         Adapter_choduyet adapterChoduyet = new Adapter_choduyet(list,getContext(),2);

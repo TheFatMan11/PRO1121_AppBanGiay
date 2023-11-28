@@ -17,6 +17,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -169,7 +171,7 @@ public class ManHinhKhachHang extends AppCompatActivity {
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
-
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         ListView listView = view.findViewById(R.id.list_hang);
         TextView tittle = view.findViewById(R.id.tv_tittle2);
         EditText editText = view.findViewById(R.id.edt_themhang_);
@@ -249,6 +251,7 @@ public class ManHinhKhachHang extends AppCompatActivity {
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         EditText sdt = view.findViewById(R.id.edt_sdt_hotro);
         Button gui = view.findViewById(R.id.btn_hotro);
 

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -123,7 +125,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
-
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         anh = view.findViewById(R.id.imv_addAnh_edit);
         EditText ten = view.findViewById(R.id.edt_hoten_edit);
         EditText email = view.findViewById(R.id.edt_email_edit);
@@ -351,6 +353,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         ListView listView = view.findViewById(R.id.list_hang);
         EditText edt_diachi = view.findViewById(R.id.edt_themhang_);
         TextView tv = view.findViewById(R.id.tv_tittle2);

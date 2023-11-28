@@ -2,6 +2,8 @@ package com.thuydev.pro1121appbangiay.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -103,6 +105,7 @@ public class QuanLyNhanVien extends Fragment {
                 builder.setView(view1);
                 dialog = builder.create();
                 dialog.show();
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
                 edt_Email = view1.findViewById(R.id.edt_email);
                 edt_hoTen = view1.findViewById(R.id.edt_hoTen);
