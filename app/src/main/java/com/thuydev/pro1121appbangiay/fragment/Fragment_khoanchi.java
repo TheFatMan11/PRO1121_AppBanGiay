@@ -23,12 +23,14 @@ import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_choduyet;
 import com.thuydev.pro1121appbangiay.model.DonHang;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Fragment_khoanchi extends Fragment {
 RecyclerView rcv_list;
@@ -81,7 +83,7 @@ Long tong=0l;
                             if (user.getUid().equals(dc.toObject(DonHang.class).getMaKhachHang())){
                                 list.add(dc.toObject(DonHang.class));
                                 tong+=dc.toObject(DonHang.class).getGiaDon();
-                                tongGia.setText("Giá: "+tong+" VND");
+                                tongGia.setText("Giá: "+ NumberFormat.getNumberInstance(Locale.getDefault()).format(tong)+" VND");
                                 adapterChoduyet.notifyDataSetChanged();
                             }
                         }
