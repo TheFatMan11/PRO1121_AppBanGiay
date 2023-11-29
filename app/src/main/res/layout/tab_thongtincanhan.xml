@@ -171,7 +171,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Lịch sử"
+                    android:text="Lịch sử nạp"
                     android:textColor="#E6903B"
                     android:textSize="14dp"
                     android:textStyle="bold" />

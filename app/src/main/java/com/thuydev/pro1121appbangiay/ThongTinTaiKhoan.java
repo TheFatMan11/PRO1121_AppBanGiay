@@ -55,8 +55,11 @@ import com.thuydev.pro1121appbangiay.model.User;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -73,19 +76,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
     FirebaseUser user;
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==0&&resultCode==RESULT_OK){
-            suaProFile();
-            return;
-        }
-        if (requestCode==1&&resultCode==RESULT_OK){
-            addDiaChi();
-            return;
-        }
 
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -140,14 +131,81 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
 
         mediator.attach();
     }
-
+    String maGG = "";
+    ImageView anhGG;
     private void naptien() {
+        kiemtra = 2;
+        linkAnhGiaoDich="";
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_naptien, null, false);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        EditText email,sotien;
+        Button gui,huy;
 
+        email = view.findViewById(R.id.edt_email_naptien);
+        sotien = view.findViewById(R.id.edt_sotien);
+        anhGG = view.findViewById(R.id.imv_anhchupmanhinh);
+        gui = view.findViewById(R.id.btn_gui);
+        huy = view.findViewById(R.id.btn_Huy_yc);
+        maGG = UUID.randomUUID().toString();
+
+        anhGG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                yeucauquyen(ThongTinTaiKhoan.this);
+            }
+        });
+      gui.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              if (email.getText().toString().trim().isEmpty()){
+                  Toast.makeText(ThongTinTaiKhoan.this, "Không được để trống Email", Toast.LENGTH_SHORT).show();
+                  return;
+              }
+              if (sotien.getText().toString().trim().isEmpty()){
+                  Toast.makeText(ThongTinTaiKhoan.this, "Không được để trống số tiền", Toast.LENGTH_SHORT).show();
+                  return;
+              }
+              if (linkAnhGiaoDich.isEmpty()){
+                  Toast.makeText(ThongTinTaiKhoan.this, "Vui lòng thêm ảnh", Toast.LENGTH_SHORT).show();
+                  return;
+              }
+              HashMap<String , Object> map = new HashMap<>();
+              map.put("maGG",maGG);
+              map.put("email",email.getText().toString().trim());
+              map.put("sotien",sotien.getText().toString().trim());
+              map.put("anh",linkAnhGiaoDich);
+
+              db.collection("naptien").document(maGG).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                  @Override
+                  public void onComplete(@NonNull Task<Void> task) {
+                      if (task.isComplete()){
+                          Toast.makeText(ThongTinTaiKhoan.this, "Vui lòng đợi vài phút để hệ thống kiểm tra", Toast.LENGTH_SHORT).show();
+                          linkAnhGiaoDich="";
+                          dialog.dismiss();
+                      }else {
+                          Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                      }
+                  }
+              });
+          }
+      });
+huy.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        linkAnhGiaoDich="";
+        dialog.dismiss();
+    }
+});
     }
 
     ImageView anh;
 
     public void suaProFile() {
+        kiemtra = 1;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.dialog_updateprofile, null, false);
         builder.setView(view);
@@ -336,6 +394,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
     }
 
     Uri uri;
+    int kiemtra = 0;
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -346,7 +405,11 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                             return;
                         }
                         uri = intent.getData();
-                        upAnh(uri);
+                       if (kiemtra == 1){
+                           upAnh(uri);
+                       }else {
+                          anhManhinh(uri,maGG,anhGG);
+                       }
 
                     }
 
@@ -496,5 +559,35 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                 }
             }
         });
+    }
+String linkAnhGiaoDich="";
+    public void anhManhinh(Uri imageUri,String magiaodich,ImageView anhGG) {
+        StorageReference storageReference;
+        storageReference = FirebaseStorage.getInstance().getReference("images").child(magiaodich);
+        storageReference.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri uri = task.getResult();
+                                    linkAnhGiaoDich = uri.toString();
+                                    Glide.with(ThongTinTaiKhoan.this).load(linkAnhGiaoDich).into(anhGG);
+                                    progressDialog.cancel();
+                                } else {
+                                    Toast.makeText(ThongTinTaiKhoan.this, "Lỗi khi lấy đường dẫn", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ThongTinTaiKhoan.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

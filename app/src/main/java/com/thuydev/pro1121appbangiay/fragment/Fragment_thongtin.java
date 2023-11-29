@@ -6,16 +6,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,9 +30,6 @@ import com.thuydev.pro1121appbangiay.ManHinhAdmin;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.ThongTinTaiKhoan;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_choduyet;
-import com.thuydev.pro1121appbangiay.adapter.Adapter_diachi;
-import com.thuydev.pro1121appbangiay.adapter.Adapter_giohang;
-import com.thuydev.pro1121appbangiay.adapter.Adapter_hang;
 import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.User;
 
@@ -46,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Fragment_thongtin extends Fragment {
-    LinearLayout thongtin, diachi, lichsu, doimatkhau, dangxuat;
+    LinearLayout thongtin, diachi, lichsu, doimatkhau, dangxuat, lichuGG;
     FirebaseFirestore db;
     User us;
     @Nullable
@@ -90,6 +81,22 @@ public class Fragment_thongtin extends Fragment {
                 XemLichSu();
             }
         });
+        lichuGG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lichuGG();
+            }
+        });
+    }
+
+    private void lichuGG() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_lichsu,null,false);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
     }
 
     private void XemLichSu() {
@@ -158,6 +165,7 @@ public class Fragment_thongtin extends Fragment {
         lichsu = view.findViewById(R.id.ll_lichsumua);
         doimatkhau = view.findViewById(R.id.ll_doimatkhau);
         dangxuat = view.findViewById(R.id.ll_dangxuat);
+        lichuGG = view.findViewById(R.id.ll_lichnap);
         db = FirebaseFirestore.getInstance();
     }
 

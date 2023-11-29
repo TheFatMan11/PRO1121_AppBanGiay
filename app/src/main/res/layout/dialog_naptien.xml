@@ -100,18 +100,18 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_Luu"
+            android:id="@+id/btn_gui"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@drawable/shape_btn"
             android:padding="10dp"
-            android:text="Yêu cầu"
+            android:text="Nạp"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_Huy"
+            android:id="@+id/btn_Huy_yc"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
