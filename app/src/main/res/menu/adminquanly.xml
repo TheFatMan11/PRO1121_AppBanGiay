@@ -16,7 +16,10 @@
         android:title=""
         android:icon="@drawable/sportshoe"
         />
-
+    <item android:id="@+id/menu_admin_lichsunap"
+        android:title=""
+        android:icon="@drawable/history"
+        />
     <item android:id="@+id/menu_admin_resetpass"
         android:title=""
         android:icon="@drawable/resetpassword"

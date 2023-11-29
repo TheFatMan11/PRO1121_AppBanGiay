@@ -130,6 +130,8 @@ public class ManHinhAdmin extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.menu_admin_resetpass) {
                     doipass(ManHinhAdmin.this);
                     return false;
+                } else if (item.getItemId()==R.id.menu_admin_lichsunap) {
+                    // viweet
                 } else {
                     Toast.makeText(ManHinhAdmin.this, "Lỗi", Toast.LENGTH_SHORT).show();
                 }

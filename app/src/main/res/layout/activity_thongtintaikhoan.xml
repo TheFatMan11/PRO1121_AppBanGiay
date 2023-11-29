@@ -49,14 +49,27 @@
                         android:layout_marginLeft="10dp"
                         android:id="@+id/imv_updatethongtin"/>
                 </LinearLayout>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Số tiền"
-                    android:textStyle="bold"
-                    android:textColor="#FEC389"
-                    android:textSize="14dp"
-                    android:id="@+id/tv_sodu_khach"/>
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Số tiền"
+                       android:textStyle="bold"
+                       android:textColor="#FEC389"
+                       android:textSize="14dp"
+                       android:gravity="center"
+                       android:drawableLeft="@drawable/baseline_account_balance_wallet_24"
+                       android:id="@+id/tv_sodu_khach"/>
+                   <ImageView
+                       android:layout_width="20dp"
+                       android:layout_height="20dp"
+                       android:background="@drawable/baseline_add_card_24"
+                       android:layout_gravity="center"
+                       android:layout_marginLeft="20dp"/>
+               </LinearLayout>
+
 
             </LinearLayout>
         <ImageView
