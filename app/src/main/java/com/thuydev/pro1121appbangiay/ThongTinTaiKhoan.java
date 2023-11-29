@@ -107,6 +107,13 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         nghe();
         pager2.setAdapter(adapterThongtin);
         tabLayout = findViewById(R.id.tabLayout_thongtinkhach);
+
+        tien.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                naptien();
+            }
+        });
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +139,10 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         });
 
         mediator.attach();
+    }
+
+    private void naptien() {
+
     }
 
     ImageView anh;
