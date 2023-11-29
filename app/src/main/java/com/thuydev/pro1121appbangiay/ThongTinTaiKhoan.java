@@ -55,6 +55,8 @@ import com.thuydev.pro1121appbangiay.model.User;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -173,11 +175,18 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                   Toast.makeText(ThongTinTaiKhoan.this, "Vui lòng thêm ảnh", Toast.LENGTH_SHORT).show();
                   return;
               }
+              String time = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"/"
+                      +(Calendar.getInstance().get(Calendar.MONTH)+1)+"/"+
+                      Calendar.getInstance().get(Calendar.YEAR)+"/ - "+
+                      new Date().getHours()+":"+new Date().getMinutes()+":"+new Date().getSeconds();
+
               HashMap<String , Object> map = new HashMap<>();
               map.put("maGG",maGG);
+              map.put("maND",us.getMaUser());
               map.put("email",email.getText().toString().trim());
               map.put("sotien",sotien.getText().toString().trim());
               map.put("anh",linkAnhGiaoDich);
+              map.put("time",time);
 
               db.collection("naptien").document(maGG).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                   @Override

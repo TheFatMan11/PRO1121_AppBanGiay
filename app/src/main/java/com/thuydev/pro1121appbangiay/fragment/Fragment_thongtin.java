@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,10 +32,12 @@ import com.thuydev.pro1121appbangiay.ManHinhAdmin;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.ThongTinTaiKhoan;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_choduyet;
+import com.thuydev.pro1121appbangiay.adapter.Adapter_naptien;
 import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Fragment_thongtin extends Fragment {
@@ -88,7 +92,7 @@ public class Fragment_thongtin extends Fragment {
             }
         });
     }
-
+    Adapter_naptien adapterNaptien;
     private void lichuGG() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_lichsu,null,false);
@@ -96,7 +100,30 @@ public class Fragment_thongtin extends Fragment {
         Dialog dialog = builder.create();
         dialog.show();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        RecyclerView rcv_list_lichsu = view.findViewById(R.id.rcv_list_lichsu);
 
+        List<HashMap<String,Object>> list = getListGG();
+        adapterNaptien  = new Adapter_naptien(list,getContext());
+        rcv_list_lichsu.setAdapter(adapterNaptien);
+        rcv_list_lichsu.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+    }
+
+    private List<HashMap<String,Object>> getListGG() {
+        List<HashMap<String,Object>> list = new ArrayList<>();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        db.collection("naptien").whereEqualTo("maND",user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (!task.isComplete()){
+                    return;
+                }
+                for (QueryDocumentSnapshot dc : task.getResult()){
+                    list.add((HashMap<String, Object>) dc.getData());
+                    adapterNaptien.notifyDataSetChanged();
+                }
+            }
+        });
+        return list;
     }
 
     private void XemLichSu() {
