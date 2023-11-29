@@ -116,10 +116,10 @@ public class ManHinhAdmin extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.menu_admin_qlkh) {
-                    relaceFrg(new QuanLyKhachHang());
+                    relaceFrg(quanLyKhachHang);
                     getSupportActionBar().setTitle("Quản Lý Khách Hàng");
                 } else if (item.getItemId() == R.id.menu_admin_qlnv) {
-                    relaceFrg(new QuanLyNhanVien());
+                    relaceFrg(quanLyNhanVien);
                     getSupportActionBar().setTitle("Quản Lý Nhân Viên");
                 } else if (item.getItemId() == R.id.menu_admin_qlsp) {
                     relaceFrg(quanLyGiay);

@@ -1,5 +1,6 @@
 package com.thuydev.pro1121appbangiay.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
+import com.thuydev.pro1121appbangiay.ThongTinTaiKhoan;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_giohang;
 import com.thuydev.pro1121appbangiay.model.Don;
 import com.thuydev.pro1121appbangiay.model.DonHang;
@@ -37,10 +39,12 @@ import com.thuydev.pro1121appbangiay.model.SanPham;
 import com.thuydev.pro1121appbangiay.model.ThongBao;
 import com.thuydev.pro1121appbangiay.model.User;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 
@@ -109,8 +113,15 @@ public class Fragment_gioHang extends Fragment {
                     Toast.makeText(getContext(), "Lỗi xảy ra", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (user1[0].getHoTen()==null || user1[0].getSDT()==null || user1[0].getChonDiaCHi()==null) {
+                if (user1[0].getHoTen()==null || user1[0].getSDT()==null) {
                     Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin để đặt hàng ", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getContext(),ThongTinTaiKhoan.class);
+                    startActivity(intent);
+                    return;
+                }
+                if (user1[0].getChonDiaCHi()==null||user1[0].getChonDiaCHi().isEmpty()){
+                    Intent intent = new Intent(getContext(),ThongTinTaiKhoan.class);
+                    startActivity(intent);
                     return;
                 }
                 if (user1[0].getSoDu() >= tinhTong()) {
@@ -154,6 +165,7 @@ public class Fragment_gioHang extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isComplete()) {
+                        tongGia.setText("0 VND");
                         adapterGiohang.notifyDataSetChanged();
                     } else {
                         Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
@@ -323,7 +335,7 @@ public class Fragment_gioHang extends Fragment {
                 }
             }
         }
-        tongGia.setText(tong + " VND");
+        tongGia.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(tong) + " VND");
         return tong;
     }
 }

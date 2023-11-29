@@ -3,6 +3,7 @@ package com.thuydev.pro1121appbangiay.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.R;
+import com.thuydev.pro1121appbangiay.ThongTinTaiKhoan;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_gioHang;
 import com.thuydev.pro1121appbangiay.model.Don;
 import com.thuydev.pro1121appbangiay.model.DonHang;
@@ -121,8 +123,16 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
                     Toast.makeText(context, "Lỗi xảy ra", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (user1[0].getHoTen() == null || user1[0].getSDT() == null || user1[0].getChonDiaCHi() == null) {
+                if (user1[0].getHoTen()==null || user1[0].getSDT()==null) {
                     Toast.makeText(context, "Vui lòng nhập đầy đủ thông tin để đặt hàng ", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, ThongTinTaiKhoan.class);
+                    ((Activity)context).startActivity(intent);
+                    return;
+                }
+                if (user1[0].getChonDiaCHi()==null||user1[0].getChonDiaCHi().isEmpty()){
+                    Toast.makeText(context, "Vui lòng chọn địa chỉ để tiếp tục", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context,ThongTinTaiKhoan.class);
+                    ((Activity)context).startActivity(intent);
                     return;
                 }
                 if (user1[0].getSoDu() >= sp.getGia()) {

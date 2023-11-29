@@ -69,6 +69,23 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
     ImageView edit_profile, cancel;
     TextView ten, tien;
     FirebaseFirestore db;
+    User us;
+    FirebaseUser user;
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==0&&resultCode==RESULT_OK){
+            suaProFile();
+            return;
+        }
+        if (requestCode==1&&resultCode==RESULT_OK){
+            addDiaChi();
+            return;
+        }
+
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -224,8 +241,6 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         });
     }
 
-    User us;
-    FirebaseUser user;
 
     private void nghe() {
 
@@ -247,8 +262,22 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                 if (us.getHoTen() == null) {
                     return;
                 }
+                if (us.getHoTen().isEmpty()||us.getSDT()==null){
+                    suaProFile();
+                    return;
+                }
                 ten.setText(us.getHoTen());
                 tien.setText("Số dư: " +  NumberFormat.getNumberInstance(Locale.getDefault()).format(us.getSoDu()) + " VND");
+                if (us.getDiachi()==null||us.getDiachi().size()==0){
+                    addDiaChi();
+                    return;
+                }
+                if (us.getChonDiaCHi()==null||us.getChonDiaCHi().isEmpty()){
+                    Toast.makeText(ThongTinTaiKhoan.this, "Vui lòng chọn địa chỉ trong list", Toast.LENGTH_SHORT).show();
+                    addDiaChi();
+                    return;
+                }
+
             }
         });
     }

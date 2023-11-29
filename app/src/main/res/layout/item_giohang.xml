@@ -33,6 +33,7 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:gravity="center"
                     android:id="@+id/tv_giasp_giohang"/>
             </LinearLayout>
 
@@ -96,6 +97,7 @@
                         android:background="@color/white"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
+                        android:gravity="center"
                         android:text="Mua" />
 
                     <TextView
@@ -107,6 +109,7 @@
                         android:layout_marginLeft="40dp"
                         android:paddingRight="10dp"
                         android:layout_marginTop="5dp"
+                        android:gravity="center"
                         android:id="@+id/tv_xoa_giohang"/>
                 </LinearLayout>
             </LinearLayout>

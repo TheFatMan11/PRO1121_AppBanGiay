@@ -79,6 +79,7 @@ public class ManHinhNhanVien extends AppCompatActivity {
     QuanLyGiay quanLyGiay = new QuanLyGiay(1);
     Menu menu_thongBao;
     FragmentManager manager;
+
     Uri uri;
     List<ThongBao> list_thongBao;
     Adapter_thongbao adapterThongbao;
