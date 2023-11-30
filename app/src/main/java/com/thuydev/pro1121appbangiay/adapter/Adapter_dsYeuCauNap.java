@@ -24,9 +24,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.R;
+import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.User;
 
 import java.text.NumberFormat;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -56,6 +58,12 @@ public class Adapter_dsYeuCauNap extends RecyclerView.Adapter<Adapter_dsYeuCauNa
     @SuppressLint("RecyclerView")
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
+        list.sort(new Comparator<HashMap<String, Object>>() {
+            @Override
+            public int compare(HashMap<String, Object> o1, HashMap<String, Object> o2) {
+                return (int) (Long.parseLong(o2.get("timeSort").toString())-Long.parseLong(o1.get("timeSort").toString()));
+            }
+        });
         holder.tv_Email.setText("Email: " + list.get(position).get("email").toString());
         holder.tv_soTien.setText("+" + NumberFormat.getNumberInstance(Locale.getDefault()).format(list.get(position).get("sotien"))+" ");
         holder.tv_maNG.setText("Mã người dùng: " + list.get(position).get("maND").toString());

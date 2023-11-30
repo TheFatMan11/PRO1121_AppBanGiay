@@ -20,6 +20,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
@@ -28,6 +29,7 @@ import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,8 +52,9 @@ public class frg_lichsunap extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_frg_lichsunap, container, false);
         recyclerView = view.findViewById(R.id.rcv_nap);
-        list = getListYC();
+        list =new ArrayList<>();
         list_use = new ArrayList<>();
+        getListYC();
         getSoDU();
         adapter_dsYeuCauNap = new Adapter_dsYeuCauNap(getContext(), list, list_use);
         recyclerView.setAdapter(adapter_dsYeuCauNap);
@@ -60,9 +63,8 @@ public class frg_lichsunap extends Fragment {
     }
 
     private List<HashMap<String, Object>> getListYC() {
-        List<HashMap<String, Object>> list = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
-        db.collection("naptien").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("naptien").orderBy("timeSort", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error!=null){
@@ -94,6 +96,7 @@ public class frg_lichsunap extends Fragment {
                             adapter_dsYeuCauNap.notifyDataSetChanged();
                             break;
                     }
+
                 }
             }
         });
