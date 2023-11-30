@@ -184,7 +184,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
               map.put("maGG",maGG);
               map.put("maND",us.getMaUser());
               map.put("email",email.getText().toString().trim());
-              map.put("sotien",sotien.getText().toString().trim());
+              map.put("sotien",Long.parseLong(sotien.getText().toString().trim()));
               map.put("anh",linkAnhGiaoDich);
               map.put("time",time);
 

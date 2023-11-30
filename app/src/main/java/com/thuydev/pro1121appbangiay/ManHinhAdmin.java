@@ -53,11 +53,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_thongbao;
+import com.thuydev.pro1121appbangiay.fragment.Frg_QuanLyKH_LS;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyGiay;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyKhachHang;
 import com.thuydev.pro1121appbangiay.fragment.QuanLyNhanVien;
 import com.thuydev.pro1121appbangiay.fragment.frg_DoiMatKhau;
 import com.thuydev.pro1121appbangiay.fragment.frg_ThongKe;
+import com.thuydev.pro1121appbangiay.fragment.frg_lichsunap;
 import com.thuydev.pro1121appbangiay.model.ThongBao;
 
 import java.util.ArrayList;
@@ -73,6 +75,7 @@ public class ManHinhAdmin extends AppCompatActivity {
     QuanLyKhachHang quanLyKhachHang = new QuanLyKhachHang();
     QuanLyGiay quanLyGiay = new QuanLyGiay(0);
     frg_ThongKe thongKe = new frg_ThongKe();
+    Frg_QuanLyKH_LS frgQuanLyKHLs = new Frg_QuanLyKH_LS();
     FragmentManager manager;
     Uri uri;
     List<ThongBao> list_thongBao;
@@ -111,12 +114,12 @@ public class ManHinhAdmin extends AppCompatActivity {
         manager.beginTransaction().add(R.id.fcv_Admin, quanLyNhanVien).commit();
         list_thongBao = new ArrayList<>();
         getThongBao();
-        adapterThongbao = new Adapter_thongbao(list_thongBao,ManHinhAdmin.this);
+        adapterThongbao = new Adapter_thongbao(list_thongBao, ManHinhAdmin.this);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.menu_admin_qlkh) {
-                    relaceFrg(quanLyKhachHang);
+                    relaceFrg(frgQuanLyKHLs);
                     getSupportActionBar().setTitle("Quản Lý Khách Hàng");
                 } else if (item.getItemId() == R.id.menu_admin_qlnv) {
                     relaceFrg(quanLyNhanVien);
@@ -130,8 +133,6 @@ public class ManHinhAdmin extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.menu_admin_resetpass) {
                     doipass(ManHinhAdmin.this);
                     return false;
-                } else if (item.getItemId()==R.id.menu_admin_lichsunap) {
-                    // viweet
                 } else {
                     Toast.makeText(ManHinhAdmin.this, "Lỗi", Toast.LENGTH_SHORT).show();
                 }
@@ -178,7 +179,9 @@ public class ManHinhAdmin extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     Menu menu_thongBao;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -203,7 +206,7 @@ public class ManHinhAdmin extends AppCompatActivity {
             layAnh();
             return;
         }
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             String[] quyen = new String[]{Manifest.permission.READ_MEDIA_IMAGES};
             requestPermissions(quyen, CODE_QUYEN);
             return;
@@ -231,7 +234,7 @@ public class ManHinhAdmin extends AppCompatActivity {
         }
     }
 
-    public static void doipass(Activity activity){
+    public static void doipass(Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog__doi_mat_khau, null);
@@ -258,14 +261,15 @@ public class ManHinhAdmin extends AppCompatActivity {
                 if (pasCu.isEmpty() || pasMoi.isEmpty() || xacNhan.isEmpty()) {
                     Toast.makeText(activity, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 } else if (xacNhan.equals(pasMoi)) {
-                    doiMK(pasCu, pasMoi,dialog,activity,progressDialog);
+                    doiMK(pasCu, pasMoi, dialog, activity, progressDialog);
                 } else {
                     Toast.makeText(activity, "Xác nhận mật khẩu mới sai", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-    public static void doiMK(String pasCu, String pasMoi, Dialog dialog,Context context,ProgressDialog progressDialog) {
+
+    public static void doiMK(String pasCu, String pasMoi, Dialog dialog, Context context, ProgressDialog progressDialog) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         AuthCredential authenticator = EmailAuthProvider.getCredential(user.getEmail(), pasCu);
         user.reauthenticate(authenticator).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -293,7 +297,7 @@ public class ManHinhAdmin extends AppCompatActivity {
 
     private void xemThongBao() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_them_hang,null,false);
+        View view = getLayoutInflater().inflate(R.layout.dialog_them_hang, null, false);
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
@@ -309,12 +313,12 @@ public class ManHinhAdmin extends AppCompatActivity {
         listView.setAdapter(adapterThongbao);
     }
 
-    public void doiIcon(){
-        if (menu_thongBao==null){
+    public void doiIcon() {
+        if (menu_thongBao == null) {
             return;
         }
         MenuItem item = menu_thongBao.findItem(R.id.menu_thongBao);
-        if (item==null){
+        if (item == null) {
             return;
         }
         item.setIcon(R.drawable.bell_dis_);
@@ -323,15 +327,15 @@ public class ManHinhAdmin extends AppCompatActivity {
 
     private void getThongBao() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("thongBao").whereEqualTo("chucVu",2).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("thongBao").whereEqualTo("chucVu", 2).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
-                    Log.e(TAG, "onEvent: "+1 );
+                    Log.e(TAG, "onEvent: " + 1);
                     return;
                 }
                 if (value == null) {
-                    Log.e(TAG, "onEvent: "+2 );
+                    Log.e(TAG, "onEvent: " + 2);
                     return;
                 }
                 for (DocumentChange dc : value.getDocumentChanges()) {

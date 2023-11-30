@@ -28,5 +28,5 @@
         android:background="#FF9800"
         app:itemActiveIndicatorStyle="@drawable/shape_icon2"
         app:itemIconTint="@color/white"
-        app:menu="@menu/adminquanly" />
+        app:menu="@menu/adminquanly"/>
 </LinearLayout>
