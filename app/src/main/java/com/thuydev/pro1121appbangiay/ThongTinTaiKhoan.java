@@ -187,6 +187,8 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
               map.put("sotien",Long.parseLong(sotien.getText().toString().trim()));
               map.put("anh",linkAnhGiaoDich);
               map.put("time",time);
+              map.put("timeSort",new Date().getTime());
+              map.put("trangThai",0);
 
               db.collection("naptien").document(maGG).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                   @Override

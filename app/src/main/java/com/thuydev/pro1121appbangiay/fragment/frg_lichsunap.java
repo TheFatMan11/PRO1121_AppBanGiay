@@ -3,6 +3,7 @@ package com.thuydev.pro1121appbangiay.fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,11 +16,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_dsYeuCauNap;
+import com.thuydev.pro1121appbangiay.model.Hang;
 import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
@@ -56,17 +61,39 @@ public class frg_lichsunap extends Fragment {
 
     private List<HashMap<String, Object>> getListYC() {
         List<HashMap<String, Object>> list = new ArrayList<>();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
-        db.collection("naptien").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("naptien").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (!task.isComplete()) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error!=null){
                     return;
                 }
-                for (QueryDocumentSnapshot dc : task.getResult()) {
-                    list.add((HashMap<String, Object>) dc.getData());
-                    adapter_dsYeuCauNap.notifyDataSetChanged();
+                if (value==null){
+                    return;
+
+                }
+                for (DocumentChange dc : value.getDocumentChanges()) {
+                    switch (dc.getType()) {
+                        case ADDED:
+                            list.add((HashMap<String, Object>) dc.getDocument().getData());
+                            adapter_dsYeuCauNap.notifyDataSetChanged();
+                            break;
+                        case MODIFIED:
+                            HashMap<String,Object> dtoq = (HashMap<String, Object>) dc.getDocument().getData();
+                            if (dc.getOldIndex() == dc.getNewIndex()) {
+                                list.set(dc.getOldIndex(), dtoq);
+                                adapter_dsYeuCauNap.notifyDataSetChanged();
+                            } else {
+                                list.remove(dc.getOldIndex());
+                                list.add(dtoq);
+                                adapter_dsYeuCauNap.notifyDataSetChanged();
+                            }
+                            break;
+                        case REMOVED:
+                            list.remove(dc.getOldIndex());
+                            adapter_dsYeuCauNap.notifyDataSetChanged();
+                            break;
+                    }
                 }
             }
         });
@@ -74,14 +101,35 @@ public class frg_lichsunap extends Fragment {
     }
 
     public void getSoDU() {
-        db.collection("user").whereEqualTo("chucVu", 3).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("user").whereEqualTo("chucVu", 3).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (!task.isComplete()) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error!=null){
                     return;
                 }
-                for (QueryDocumentSnapshot dc : task.getResult()) {
-                    list_use.add(dc.toObject(User.class));
+                if (value==null){
+                    return;
+                }
+
+                for (DocumentChange dc : value.getDocumentChanges()) {
+                        switch (dc.getType()) {
+                            case ADDED:
+                                list_use.add(dc.getDocument().toObject(User.class));
+
+                                break;
+                            case MODIFIED:
+                                User dtoq = dc.getDocument().toObject(User.class);
+                                if (dc.getOldIndex() == dc.getNewIndex()) {
+                                    list_use.set(dc.getOldIndex(), dtoq);
+                                } else {
+                                    list_use.remove(dc.getOldIndex());
+                                    list_use.add(dtoq);
+                                }
+                                break;
+                            case REMOVED:
+                                list_use.remove(dc.getOldIndex());
+                                break;
+                    }
                     adapter_dsYeuCauNap.notifyDataSetChanged();
                 }
             }

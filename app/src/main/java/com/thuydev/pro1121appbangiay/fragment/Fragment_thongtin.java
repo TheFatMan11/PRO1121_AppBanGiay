@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.DangNhap_Activity;
@@ -37,6 +38,7 @@ import com.thuydev.pro1121appbangiay.model.DonHang;
 import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -102,14 +104,14 @@ public class Fragment_thongtin extends Fragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         RecyclerView rcv_list_lichsu = view.findViewById(R.id.rcv_list_lichsu);
 
-        List<HashMap<String,Object>> list = getListGG();
+        List<HashMap<String,Object>> list = new ArrayList<>();
         adapterNaptien  = new Adapter_naptien(list,getContext());
         rcv_list_lichsu.setAdapter(adapterNaptien);
         rcv_list_lichsu.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        getListGG(list);
     }
 
-    private List<HashMap<String,Object>> getListGG() {
-        List<HashMap<String,Object>> list = new ArrayList<>();
+    private void getListGG(List<HashMap<String,Object>> listA) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db.collection("naptien").whereEqualTo("maND",user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -118,12 +120,18 @@ public class Fragment_thongtin extends Fragment {
                     return;
                 }
                 for (QueryDocumentSnapshot dc : task.getResult()){
-                    list.add((HashMap<String, Object>) dc.getData());
+                    listA.add((HashMap<String, Object>) dc.getData());
+                    listA.sort(new Comparator<HashMap<String, Object>>() {
+                        @Override
+                        public int compare(HashMap<String, Object> o1, HashMap<String, Object> o2) {
+                            return (int) (Long.parseLong(o2.get("timeSort").toString())-Long.parseLong(o1.get("timeSort").toString()));
+                        }
+                    });
                     adapterNaptien.notifyDataSetChanged();
                 }
             }
         });
-        return list;
+
     }
 
     private void XemLichSu() {

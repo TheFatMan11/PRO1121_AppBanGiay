@@ -8,17 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.R;
-import com.thuydev.pro1121appbangiay.model.Don;
-import com.thuydev.pro1121appbangiay.model.DonHang;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -26,16 +21,15 @@ import java.util.List;
 import java.util.Locale;
 
 public class Adapter_naptien extends RecyclerView.Adapter<Adapter_naptien.ViewHolder> {
-    List<HashMap<String,Object>> list_donHang;
+    List<HashMap<String,Object>> list_naptien;
     Context context;
     FirebaseFirestore db;
-    int manhinh = 0;
 
 
 
 
     public Adapter_naptien(List<HashMap<String, Object>> list, Context context) {
-        this.list_donHang = list;
+        this.list_naptien = list;
         this.context = context;
     }
 
@@ -49,10 +43,19 @@ public class Adapter_naptien extends RecyclerView.Adapter<Adapter_naptien.ViewHo
     @SuppressLint({"RecyclerView", "ResourceAsColor"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.ma.setText(list_donHang.get(position).get("maGG").toString());
-        holder.sotien.setText(list_donHang.get(position).get("sotien").toString());
-        holder.ngay.setText(list_donHang.get(position).get("time").toString());
-        Log.e("TAG", "onBindViewHolder: "+list_donHang );
+        String Xanh = "#44cc00";
+        String Cam = "#FFC107";
+        holder.ma.setText(list_naptien.get(position).get("maGG").toString());
+        holder.sotien.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(list_naptien.get(position).get("sotien"))+" VND");
+        holder.ngay.setText(list_naptien.get(position).get("time").toString());
+        if (Long.parseLong(list_naptien.get(position).get("trangThai").toString())==0){
+            holder.trangthai.setText("Đang chờ duyệt");
+            holder.trangthai.setTextColor(Color.parseColor(Cam));
+        }else {
+            holder.trangthai.setText("Đã duyêt");
+            holder.trangthai.setTextColor(Color.parseColor(Xanh));
+        }
+        Log.e("TAG", "onBindViewHolder: "+ list_naptien);
     }
 
 
@@ -62,17 +65,18 @@ public class Adapter_naptien extends RecyclerView.Adapter<Adapter_naptien.ViewHo
 
     @Override
     public int getItemCount() {
-        return list_donHang.size();
+        return list_naptien.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView ma, sotien, ngay;
+        TextView ma, sotien, ngay,trangthai;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ma = itemView.findViewById(R.id.tv_maGG);
             sotien = itemView.findViewById(R.id.tv_sotien_gg);
             ngay = itemView.findViewById(R.id.tv_thoigiangg);
+            trangthai = itemView.findViewById(R.id.tv_trangThai_gg);
         }
     }
 }
