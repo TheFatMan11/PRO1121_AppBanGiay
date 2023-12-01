@@ -10,6 +10,7 @@ public class DonHang {
     private int trangThai;
     private Long giaDon;
     private String ngayMua ;
+    private String maNhanVien;
 
     public DonHang() {
     }
@@ -25,6 +26,25 @@ public class DonHang {
         this.trangThai = trangThai;
         this.giaDon = giaDon;
         this.ngayMua = ngayMua;
+    }
+
+    public DonHang(String maDon, String maKhachHang, List<Don> listSP, Long time, int trangThai, Long giaDon, String ngayMua, String maNhanVien) {
+        this.maDon = maDon;
+        this.maKhachHang = maKhachHang;
+        this.listSP = listSP;
+        this.time = time;
+        this.trangThai = trangThai;
+        this.giaDon = giaDon;
+        this.ngayMua = ngayMua;
+        this.maNhanVien = maNhanVien;
+    }
+
+    public String getMaNhanVien() {
+        return maNhanVien;
+    }
+
+    public void setMaNhanVien(String maNhanVien) {
+        this.maNhanVien = maNhanVien;
     }
 
     public String getNgayMua() {

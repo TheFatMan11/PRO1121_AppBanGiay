@@ -1,17 +1,18 @@
 package com.thuydev.pro1121appbangiay;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +27,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.adapter.Adapter_kichco;
 import com.thuydev.pro1121appbangiay.model.GioHang;
 import com.thuydev.pro1121appbangiay.model.SanPham;
@@ -76,6 +82,31 @@ public class SeeSanPham extends AppCompatActivity {
         ScrollView scv = findViewById(R.id.scv_xem);
 
         hienThi.setText(so + "");
+        hienThi.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().isEmpty()){
+                   s="0";
+                }
+                if (Integer.parseInt(s.toString())>30){
+                    Toast.makeText(SeeSanPham.this, "Không sản phẩm không được vượt quá 30", Toast.LENGTH_SHORT).show();
+                    so=30;
+                    hienThi.setText(so+"");
+                    return;
+                }
+                so=Integer.parseInt(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         them.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +118,8 @@ public class SeeSanPham extends AppCompatActivity {
                     Toast.makeText(SeeSanPham.this, "Hãy chọn kích cỡ", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                themGio();
+              checkHangDaThem(kichCo,sanPham.getMaSp(),FirebaseAuth.getInstance().getUid().toString());
+
             }
         });
 
@@ -106,11 +138,41 @@ public class SeeSanPham extends AppCompatActivity {
 
     }
 
-    private void themGio() {
+    private void checkHangDaThem(String kichCo, String maSp, String maKH) {
+        final GioHang[] gioHang = {new GioHang()};
+        db.collection("gioHang").whereEqualTo("kichCo",kichCo).
+                whereEqualTo("maKhachHang",maKH).whereEqualTo("maSanPham",maSp).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isComplete()){
+                           for (QueryDocumentSnapshot dc : task.getResult()){
+                               gioHang[0]=dc.toObject(GioHang.class);
+                           }
+                           if (gioHang[0].getMaGio()==null){
+                               themGio(gioHang[0],null);
+                           }else {
+                               themGio(gioHang[0],gioHang[0].getMaGio());
+                           }
+                        }
+                    }
+                });
+    }
+
+    private void themGio(GioHang hang,String maGio) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String maGio = UUID.randomUUID()+"";
+
+        if (hang.getSoLuong()==null){
+            hang.setSoLuong(0l);
+        }
+        if (maGio==null){
+            maGio = UUID.randomUUID()+"";
+        }
+        if (hang.getKichCo()==null){
+            hang.setKichCo(kichCo);
+        }
+        Long soLuongMoi = hang.getSoLuong()+so;
         db.collection("gioHang").document(maGio).
-                set(new GioHang(maGio, user.getUid(), sanPham.getMaSp(),kichCo, Long.parseLong(so + "")))
+                set(new GioHang(maGio, user.getUid(), sanPham.getMaSp(),hang.getKichCo(), soLuongMoi))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -132,6 +194,12 @@ public class SeeSanPham extends AppCompatActivity {
             }
         } else {
             so += 1;
+        }
+        if (so>30){
+            Toast.makeText(this, "Sản phẩm mua không được vượt quá 30 sản phẩm", Toast.LENGTH_SHORT).show();
+            so=30;
+            hienThi.setText(so+"");
+            return;
         }
         hienThi.setText(so + "");
     }
