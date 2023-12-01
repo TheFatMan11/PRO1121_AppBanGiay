@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,6 +94,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         cancel = findViewById(R.id.imv_cancel);
         ten = findViewById(R.id.tv_username_khach);
         tien = findViewById(R.id.tv_sodu_khach);
+        LinearLayout nap = findViewById(R.id.ll_naptien);
         db = FirebaseFirestore.getInstance();
         progressDialog = new ProgressDialog(ThongTinTaiKhoan.this);
         progressDialog.setTitle("Loading");
@@ -101,7 +103,7 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
         pager2.setAdapter(adapterThongtin);
         tabLayout = findViewById(R.id.tabLayout_thongtinkhach);
 
-        tien.setOnClickListener(new View.OnClickListener() {
+        nap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 naptien();
@@ -175,10 +177,8 @@ public class ThongTinTaiKhoan extends AppCompatActivity {
                   Toast.makeText(ThongTinTaiKhoan.this, "Vui lòng thêm ảnh", Toast.LENGTH_SHORT).show();
                   return;
               }
-              String time = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"/"
-                      +(Calendar.getInstance().get(Calendar.MONTH)+1)+"/"+
-                      Calendar.getInstance().get(Calendar.YEAR)+"/ - "+
-                      new Date().getHours()+":"+new Date().getMinutes()+":"+new Date().getSeconds();
+              String time =String.format("%02d/%02d/%02d",Calendar.getInstance().get(Calendar.DAY_OF_MONTH), (Calendar.getInstance().get(Calendar.MONTH)+1), Calendar.getInstance().get(Calendar.YEAR)) +"/ - "+
+                      String.format("%02d:%02d:%02d",new Date().getHours(),new Date().getMinutes(),new Date().getSeconds());
 
               HashMap<String , Object> map = new HashMap<>();
               map.put("maGG",maGG);

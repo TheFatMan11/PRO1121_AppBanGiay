@@ -49,7 +49,7 @@ public class Adapter_naptien extends RecyclerView.Adapter<Adapter_naptien.ViewHo
         holder.sotien.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(list_naptien.get(position).get("sotien"))+" VND");
         holder.ngay.setText(list_naptien.get(position).get("time").toString());
         if (Long.parseLong(list_naptien.get(position).get("trangThai").toString())==0){
-            holder.trangthai.setText("Đang chờ duyệt");
+            holder.trangthai.setText("Đang chờ");
             holder.trangthai.setTextColor(Color.parseColor(Cam));
         }else {
             holder.trangthai.setText("Đã duyêt");
