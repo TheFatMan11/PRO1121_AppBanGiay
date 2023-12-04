@@ -259,8 +259,13 @@ public class QuanLyGiay extends Fragment {
                     edt_hang.setVisibility(View.VISIBLE);
                     change = 1;
                 } else {
+                    if (edt_hang.getText().toString().isEmpty()){
+                        Toast.makeText(getContext(), "Không được để trống tên hãng sản phẩm", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     edt_hang.setVisibility(View.GONE);
                     change = 0;
+
                     db.collection("hang").document(id).set(new Hang(id, edt_hang.getText().toString(), new Date().getTime())).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

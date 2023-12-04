@@ -2,7 +2,9 @@ package com.thuydev.pro1121appbangiay.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -102,13 +104,34 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
         holder.mua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                getThongTin(position);
+                diaLogDatHang(position);
             }
         });
 
     }
+    private void diaLogDatHang(int p) {
+        final boolean[] check = {false};
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setIcon(R.drawable.baseline_question_mark_24);
+        builder.setTitle("Yêu cầu xác thực");
+        builder.setMessage("Bạn có muốn xác nhận đơn hàng ?");
 
+        builder.setNegativeButton("Đặt hàng", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getThongTin(p);
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("Không", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+
+    }
     public User getThongTin(int p) {
         final User[] user1 = new User[1];
         FirebaseFirestore db = FirebaseFirestore.getInstance();

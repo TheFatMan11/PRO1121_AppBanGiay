@@ -1,5 +1,7 @@
 package com.thuydev.pro1121appbangiay.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -26,7 +28,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.ThongTinTaiKhoan;
@@ -92,16 +93,15 @@ public class Fragment_gioHang extends Fragment {
         mua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getThongTin();
-
+                diaLogDatHang();
             }
         });
 
     }
-
     public User getThongTin() {
         final User[] user1 = new User[1];
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         db.collection("user").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -113,26 +113,51 @@ public class Fragment_gioHang extends Fragment {
                     Toast.makeText(getContext(), "Lỗi xảy ra", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (user1[0].getHoTen()==null || user1[0].getSDT()==null) {
+                if (user1[0].getHoTen() == null || user1[0].getSDT() == null) {
                     Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin để đặt hàng ", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getContext(),ThongTinTaiKhoan.class);
+                    Intent intent = new Intent(getContext(), ThongTinTaiKhoan.class);
                     startActivity(intent);
                     return;
                 }
-                if (user1[0].getChonDiaCHi()==null||user1[0].getChonDiaCHi().isEmpty()){
-                    Intent intent = new Intent(getContext(),ThongTinTaiKhoan.class);
+                if (user1[0].getChonDiaCHi() == null || user1[0].getChonDiaCHi().isEmpty()) {
+                    Intent intent = new Intent(getContext(), ThongTinTaiKhoan.class);
                     startActivity(intent);
                     return;
                 }
                 if (user1[0].getSoDu() >= tinhTong()) {
                     mua();
                 } else {
+
                     Toast.makeText(getContext(), "Số dư tài khoản của bạn không đủ", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
         });
         return user1[0];
+    }
+
+    private void diaLogDatHang() {
+        final boolean[] check = {false};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setIcon(R.drawable.baseline_question_mark_24);
+        builder.setTitle("Yêu cầu xác thực");
+        builder.setMessage("Bạn có muốn xác nhận đơn hàng ?");
+
+        builder.setNegativeButton("Đặt hàng", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getThongTin();
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("Không", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+
     }
 
     private void mua() {
