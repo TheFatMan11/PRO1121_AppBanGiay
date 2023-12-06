@@ -56,24 +56,19 @@ String TAG = "TAG";
 
     private void getData() {
         db = FirebaseFirestore.getInstance();
-        db.collection("donHang").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("donHang").whereEqualTo("maKhachHang",user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (!task.isComplete()){
                     return;
                 }
-                Log.e(TAG, "onComplete: "+1 );
                 list= new ArrayList<>();
                 adapterChoduyet = new Adapter_choduyet(list,getContext(),1);
                 rcv_list.setAdapter(adapterChoduyet);
                 rcv_list.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
                 for (QueryDocumentSnapshot dc : task.getResult()){
-                    Log.e(TAG, "onComplete: "+12 );
-                    if (user.getUid().equals(dc.toObject(DonHang.class).getMaKhachHang())) {
                         list.add(dc.toObject(DonHang.class));
                         adapterChoduyet.notifyDataSetChanged();
-                        Log.e(TAG, "onComplete: "+dc.toObject(DonHang.class).getTrangThai() );
-                    }
                 }
             }
         });

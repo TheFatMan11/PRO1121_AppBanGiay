@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thuydev.pro1121appbangiay.R;
 import com.thuydev.pro1121appbangiay.fragment.Fragment_choxacnhan;
@@ -61,6 +62,13 @@ public class Adapter_choduyet extends RecyclerView.Adapter<Adapter_choduyet.View
         holder.giaSP.setText("Tổng giá: " +  NumberFormat.getNumberInstance(Locale.getDefault()).format(list_donHang.get(position).getGiaDon()) + "đ");
         holder.soLuong.setText("Số lượng: " + soluong + " SP");
         holder.ngay.setText("Ngày mua: " + list_donHang.get(position).getNgayMua());
+        if (list_donHang.get(position).getMaNhanVien()!=null){
+            holder.nguoiduyet.setVisibility(View.VISIBLE);
+            getNguoiDuyet(holder.nguoiduyet,position);
+        }else {
+            holder.nguoiduyet.setVisibility(View.GONE);
+        }
+        holder.nguoiduyet.setText("Người duyệt: "+list_donHang.get(position).getMaNhanVien());
         if (list_donHang.get(position).getTrangThai() == 0) {
             holder.trangthai.setText("Đang chờ xác nhận");
             holder.trangthai.setTextColor(Color.parseColor(Cam));
@@ -85,6 +93,17 @@ public class Adapter_choduyet extends RecyclerView.Adapter<Adapter_choduyet.View
         });
 
 
+    }
+
+    private void getNguoiDuyet(TextView nguoiduyet,int p) {
+        db.collection("user").document(list_donHang.get(p).getMaNhanVien()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isComplete()){
+                    nguoiduyet.setText("Người duyệt: "+task.getResult().getString("hoTen"));
+                }
+            }
+        });
     }
 
 
@@ -119,7 +138,7 @@ public class Adapter_choduyet extends RecyclerView.Adapter<Adapter_choduyet.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tenSP, soLuong, giaSP, trangthai, xoa, ngay;
+        TextView tenSP, soLuong, giaSP, trangthai, xoa, ngay,nguoiduyet;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -129,6 +148,7 @@ public class Adapter_choduyet extends RecyclerView.Adapter<Adapter_choduyet.View
             trangthai = itemView.findViewById(R.id.tv_mua_giohang);
             ngay = itemView.findViewById(R.id.tv_ngay_mua);
             xoa = itemView.findViewById(R.id.tv_xoa_giohang);
+            nguoiduyet = itemView.findViewById(R.id.tv_nguoiduyet);
         }
     }
 }

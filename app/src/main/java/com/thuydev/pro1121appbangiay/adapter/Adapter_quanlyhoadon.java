@@ -202,6 +202,7 @@ public class Adapter_quanlyhoadon extends RecyclerView.Adapter<Adapter_quanlyhoa
             return;
         }
         donHang.setTrangThai(i);
+        donHang.setMaNhanVien(FirebaseAuth.getInstance().getUid());
         db.collection("donHang").document(donHang.getMaDon()).set(donHang).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

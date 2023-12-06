@@ -172,7 +172,7 @@ public class Fragment_gioHang extends Fragment {
         int ngay = lich.get(Calendar.DAY_OF_MONTH);
         int thang = lich.get(Calendar.MONTH) + 1;
         int nam = lich.get(Calendar.YEAR);
-        String ngayMua = nam + "/" + thang + "/" + ngay;
+        String ngayMua =String.format("%02d/%02d/%02d",nam,thang,ngay);
         db.collection("donHang").document(maDon).set(new DonHang(maDon, user.getUid(), listMaSP, new Date().getTime(), 0, tinhTong(), ngayMua))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
