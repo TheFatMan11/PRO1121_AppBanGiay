@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.Map;
 
@@ -77,82 +78,43 @@ public class ManHinhChao_Activity extends AppCompatActivity {
     }
 
     private void checkBan(FirebaseUser user) {
-        reference = db.collection("user").document(user.getUid());
-        registration = db.collection("user").whereEqualTo("trangThai", 1).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("user").whereEqualTo("maUser",user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (value == null) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (!task.isComplete()){
+                    Toast.makeText(ManHinhChao_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (error != null) {
-                    Toast.makeText(ManHinhChao_Activity.this, "Lỗi mẹ nó rồi sửa đi", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                int i = 0;
-                for (DocumentSnapshot dc : value.getDocuments()) {
-                    if (user.getUid().equals(dc.get("maUser"))) {
-                        DangNhap(user);
-                        i = 1;
-                        return;
-                    }
-                }
-                if (i == 0) {
-                    Toast.makeText(ManHinhChao_Activity.this, "Tài khoản bạn đã bị đình chỉ vui lòng liên", Toast.LENGTH_SHORT).show();
-                    FirebaseAuth.getInstance().signOut();
-                    finish();
-                }
-            }
-        });
-    }
-
-    private void DangNhap(FirebaseUser user) {
-        final Long[] chucvu = new Long[]{0L};
-        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isComplete()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // Tài liệu người dùng tồn tại
-                        Map<String, Object> userData = document.getData();
-                        chucvu[0] = (Long) userData.get("chucVu");
-                        if (chucvu[0] == null) {
-                            return;
-                        }
-                        if (chucvu[0] == 1) {
-                            intent = new Intent(ManHinhChao_Activity.this, ManHinhAdmin.class);
-                        } else if (chucvu[0] == 2) {
-                            intent = new Intent(ManHinhChao_Activity.this, ManHinhNhanVien.class);
-                        } else if (chucvu[0] == 3) {
-                            intent = new Intent(ManHinhChao_Activity.this, ManHinhKhachHang.class);
-                        } else {
-                            Toast.makeText(ManHinhChao_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
-                        }
-                        finishAffinity();
-                        if (!isFinishing()) {
-                            return;
-                        }
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        Log.e("TAG", "onComplete: " + "đã mở activity mới");
-                        registration.remove();
-                    } else {
-                        Toast.makeText(ManHinhChao_Activity.this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
+                if (task.isSuccessful()){
+                    if (task.getResult().toObjects(User.class).get(0).getTrangThai()==1){
+                        DangNhap(task.getResult().toObjects(User.class).get(0));
+                    }else {
+                        Toast.makeText(ManHinhChao_Activity.this, "Tài khoản bạn đã bị đình chỉ vui lòng liên", Toast.LENGTH_SHORT).show();
                         FirebaseAuth.getInstance().signOut();
+                        finish();
                     }
-                } else {
-                    Toast.makeText(ManHinhChao_Activity.this, "Lỗi truy vấn", Toast.LENGTH_SHORT).show();
-                    FirebaseAuth.getInstance().signOut();
+
                 }
             }
-
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.e("TAG", "onDestroy: " + "đã kết thúc activity");
-        System.gc();
+    private void DangNhap(User user) {
+        if (user.getChucVu() == 1) {
+            intent = new Intent(ManHinhChao_Activity.this, ManHinhAdmin.class);
+        } else if (user.getChucVu() == 2) {
+            intent = new Intent(ManHinhChao_Activity.this, ManHinhNhanVien.class);
+        } else if (user.getChucVu() == 3) {
+            intent = new Intent(ManHinhChao_Activity.this, ManHinhKhachHang.class);
+        } else {
+            Toast.makeText(ManHinhChao_Activity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+        }
+        finishAffinity();
+        if (!isFinishing()) {
+            return;
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
+
 }

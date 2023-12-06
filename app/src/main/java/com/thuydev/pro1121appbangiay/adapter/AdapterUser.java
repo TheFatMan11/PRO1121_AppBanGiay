@@ -73,6 +73,7 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder>  {
             holder.tvTrangThai.setTextColor(ContextCompat.getColor(context, R.color.xam));
             holder.ibtn_xoa.setBackgroundResource(R.drawable.remove);
             holder.ibtn_xoa.setEnabled(true);
+            holder.ibtn_xoa.setVisibility(View.GONE);
         } else if (user.getTrangThai() == 1) {
             holder.tvTrangThai.setText("Đang hoạt động");
             holder.tvTrangThai.setTextColor(ContextCompat.getColor(context, R.color.xanhla));

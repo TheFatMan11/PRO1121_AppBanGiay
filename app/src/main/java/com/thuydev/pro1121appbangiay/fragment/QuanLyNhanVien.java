@@ -188,11 +188,11 @@ public class QuanLyNhanVien extends Fragment {
                             FirebaseAuth.getInstance().signOut();
                             dialog.dismiss();
                         } else {
-                            Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-                Toast.makeText(getContext(), "Thanh cong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_SHORT).show();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -215,6 +215,7 @@ public class QuanLyNhanVien extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            Toast.makeText(getContext(), "Yêu cầu đặt đến email của nhân viên", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -230,7 +231,6 @@ public class QuanLyNhanVien extends Fragment {
                 }
                 if (value != null) {
                     for (DocumentChange dc : value.getDocumentChanges()) {
-                        Log.e("TAG", "onEvent: " + dc.getType());
                         switch (dc.getType()) {
                             case ADDED:
                                 dc.getDocument().toObject(User.class);
