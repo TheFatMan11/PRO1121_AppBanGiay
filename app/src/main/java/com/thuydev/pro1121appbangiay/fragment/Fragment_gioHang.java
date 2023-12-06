@@ -79,7 +79,7 @@ public class Fragment_gioHang extends Fragment {
         list_gio = new ArrayList<>();
         list_hang = new ArrayList<>();
         list_sanPham = new ArrayList<>();
-        nghe();
+        getData();
         rcv_list = view.findViewById(R.id.rcv_listgio);
         tongGia = view.findViewById(R.id.tv_gio_gia);
         mua = view.findViewById(R.id.ll_themgio);
@@ -226,15 +226,15 @@ public class Fragment_gioHang extends Fragment {
     }
 
 
-    private void nghe() {
+    private void getData() {
         db = FirebaseFirestore.getInstance();
-        ngheGio();
-        ngheSP();
-        ngheHang();
+        getGio();
+        getSP();
+        getHang();
 
     }
 
-    private void ngheHang() {
+    private void getHang() {
         db.collection("hang").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -273,7 +273,7 @@ public class Fragment_gioHang extends Fragment {
         });
     }
 
-    private void ngheSP() {
+    private void getSP() {
         db.collection("sanPham").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -312,7 +312,7 @@ public class Fragment_gioHang extends Fragment {
         });
     }
 
-    private void ngheGio() {
+    private void getGio() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db.collection("gioHang").whereEqualTo("maKhachHang", user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

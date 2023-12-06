@@ -101,7 +101,6 @@ public class SeeSanPham extends AppCompatActivity {
                 }
                 so=Integer.parseInt(s.toString());
             }
-
             @Override
             public void afterTextChanged(Editable s) {
 

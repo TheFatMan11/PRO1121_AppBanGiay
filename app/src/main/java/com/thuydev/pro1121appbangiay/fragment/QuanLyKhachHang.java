@@ -1,10 +1,8 @@
 package com.thuydev.pro1121appbangiay.fragment;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.SearchView;
@@ -12,21 +10,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,7 +28,6 @@ import com.thuydev.pro1121appbangiay.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 public class QuanLyKhachHang extends Fragment {
@@ -65,6 +54,7 @@ public class QuanLyKhachHang extends Fragment {
         View view = inflater.inflate(R.layout.fragment_quan_ly_khach_hang, null);
         recyclerView = view.findViewById(R.id.rcv_qlkh);
         searchView = view.findViewById(R.id.search_KH);
+        //Gọi đến load data để có thể tạo list và thêm dữ liệu vào list
         loatData();
         firebaseAuth = FirebaseAuth.getInstance();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -75,31 +65,27 @@ public class QuanLyKhachHang extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.e("TAG","ap"+list);
+                //Thực hiện tìm kiếm bằng cách gọi tới hàm getten trong adapter
                 adapterUser.getTen().filter(newText);
                 return true;
             }
         });
         return view;
     }
-
-
     public void loatData() {
+        //Khởi tạo list danh sách và thêm dữ liệu vào list danh sách người dùng
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         list =new ArrayList<>();
-        nghe();
+        getNguoiDung();
         adapterUser = new AdapterUser(getContext(), list);
         recyclerView.setAdapter(adapterUser);
-
-
-
-
     }
 
 
 
 
-    private void nghe() {
+    private void getNguoiDung() {
+        //Lấy dữ liệu của khách hàng từ trên firebase
         db.collection("user").whereEqualTo("chucVu", 3).whereEqualTo("trangThai",1).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {

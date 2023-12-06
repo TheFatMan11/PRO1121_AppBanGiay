@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +39,7 @@ import com.thuydev.pro1121appbangiay.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
+public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder>  {
     private final Context context;
     private List<User> list;
     List<User> list_nvMoi;
@@ -66,6 +67,7 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
         holder.tvTen.setText("Tên: " + list.get(position).getHoTen());
         holder.tvEmail.setText("Email: " + list.get(position).getEmail());
 
+        //Xử lý hiển thị khi trạng thái thay đổi, đỏ khi mà đối tượng đã bị ngưng hoạt động
         if (user.getTrangThai() == 0) {
             holder.tvTrangThai.setText("Không hoạt động");
             holder.tvTrangThai.setTextColor(ContextCompat.getColor(context, R.color.xam));
@@ -87,10 +89,12 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        //Truy cập tới collection user -> document có mã là user đó và tiến hành xóa vị trí đó
                         db.collection("user").document(list.get(position).getMaUser()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isComplete()) {
+                                    //Tiến hành thông báo khi thực thi thành công
                                     Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
                                     dialog.dismiss();
                                 } else {
@@ -167,6 +171,7 @@ public class AdapterUser extends RecyclerView.Adapter<AdapterUser.viewHolder> {
 
 
     private void changeTT(int i, User user) {
+        // Truyền trạng thái (0||1) vào trong đối tượng sau đó truy cập tới vị trí có chứa mã user và thực hiện sửa đổi
         user.setTrangThai(i);
         db.collection("user").document(user.getMaUser()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

@@ -105,25 +105,12 @@ public class Fragment_thongtin extends Fragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         RecyclerView rcv_list_lichsu = view.findViewById(R.id.rcv_list_lichsu);
         TextView textView = view.findViewById(R.id.tv_thongbao_rong);
-
-
         List<HashMap<String,Object>> list = new ArrayList<>();
         adapterNaptien  = new Adapter_naptien(list,getContext());
         rcv_list_lichsu.setAdapter(adapterNaptien);
         rcv_list_lichsu.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         getListGG(list);
     }
-
-    private void setRong(List<HashMap<String, Object>> list, RecyclerView rcvListLichsu, TextView textView) {
-        if (list.size()>0){
-            rcvListLichsu.setVisibility(View.VISIBLE);
-            textView.setVisibility(View.GONE);
-        }else {
-            rcvListLichsu.setVisibility(View.GONE);
-            textView.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void getListGG(List<HashMap<String,Object>> listA) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         db.collection("naptien").whereEqualTo("maND",user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

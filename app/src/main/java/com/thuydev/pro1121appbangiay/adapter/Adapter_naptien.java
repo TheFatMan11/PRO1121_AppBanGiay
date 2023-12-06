@@ -58,11 +58,6 @@ public class Adapter_naptien extends RecyclerView.Adapter<Adapter_naptien.ViewHo
         Log.e("TAG", "onBindViewHolder: "+ list_naptien);
     }
 
-
-
-
-
-
     @Override
     public int getItemCount() {
         return list_naptien.size();
@@ -70,7 +65,6 @@ public class Adapter_naptien extends RecyclerView.Adapter<Adapter_naptien.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView ma, sotien, ngay,trangthai;
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ma = itemView.findViewById(R.id.tv_maGG);

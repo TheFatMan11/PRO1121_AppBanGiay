@@ -51,6 +51,7 @@ public class frg_DoiMatKhau extends Fragment {
                 if (pasCu.isEmpty() || pasMoi.isEmpty() || xacNhan.isEmpty()) {
                     Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 } else if (xacNhan.equals(pasMoi)) {
+                    // Sau khi check pass cũ = với pass xác nhận thì thực hiện thay đổi mật khẩu
                     doiMK(pasCu, pasMoi);
                 } else {
                     Toast.makeText(getContext(), "Xác nhận mật khẩu mới sai", Toast.LENGTH_SHORT).show();
@@ -62,6 +63,7 @@ public class frg_DoiMatKhau extends Fragment {
     }
 
     public void doiMK(String pasCu, String pasMoi) {
+        //Gọi đến user hiện tại đang đăng nhập và thực hiện sửa đổi trong authention và firestore
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         AuthCredential authenticator = EmailAuthProvider.getCredential(user.getEmail(), pasCu);
         user.reauthenticate(authenticator).addOnCompleteListener(new OnCompleteListener<Void>() {

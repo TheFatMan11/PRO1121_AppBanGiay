@@ -246,6 +246,7 @@ public class QuanLyGiay extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 thuongHieu.setText(list_hang.get(position).getTenHang());
                 sanPham.setMaHang(list_hang.get(position).getMaHang());
                 dialog.dismiss();
