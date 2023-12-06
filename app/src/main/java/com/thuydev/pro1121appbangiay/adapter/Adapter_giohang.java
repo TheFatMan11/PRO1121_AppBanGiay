@@ -84,7 +84,7 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
             return;
         }
         holder.tenSP.setText(sp.getTenSP());
-        holder.giaSP.setText("Giá: " +  NumberFormat.getNumberInstance(Locale.getDefault()).format(sp.getGia()) + " VND");
+        holder.giaSP.setText("Giá: " + NumberFormat.getNumberInstance(Locale.getDefault()).format(sp.getGia()) + " VND");
         String tenHang = getTenLoai(sp.getMaHang());
         if (tenHang == null) {
             return;
@@ -97,7 +97,25 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
         holder.xoa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                xoa(list_gio.get(position).getMaGio());
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setIcon(R.drawable.baseline_question_mark_24);
+                builder.setTitle("Cảnh báo !");
+                builder.setIcon(R.drawable.warning);
+                builder.setMessage("Bạn có muốn xóa sản phẩm này khỏi giỏ hàng không ?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        xoa(list_gio.get(position).getMaGio());
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
             }
         });
 
@@ -109,6 +127,7 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
         });
 
     }
+
     private void diaLogDatHang(int p) {
         final boolean[] check = {false};
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -132,6 +151,7 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
         builder.create().show();
 
     }
+
     public User getThongTin(int p) {
         final User[] user1 = new User[1];
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -146,20 +166,20 @@ public class Adapter_giohang extends RecyclerView.Adapter<Adapter_giohang.ViewHo
                     Toast.makeText(context, "Lỗi xảy ra", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (user1[0].getHoTen()==null || user1[0].getSDT()==null) {
+                if (user1[0].getHoTen() == null || user1[0].getSDT() == null) {
                     Toast.makeText(context, "Vui lòng nhập đầy đủ thông tin để đặt hàng ", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, ThongTinTaiKhoan.class);
-                    ((Activity)context).startActivity(intent);
+                    ((Activity) context).startActivity(intent);
                     return;
                 }
-                if (user1[0].getChonDiaCHi()==null||user1[0].getChonDiaCHi().isEmpty()){
+                if (user1[0].getChonDiaCHi() == null || user1[0].getChonDiaCHi().isEmpty()) {
                     Toast.makeText(context, "Vui lòng chọn địa chỉ để tiếp tục", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context,ThongTinTaiKhoan.class);
-                    ((Activity)context).startActivity(intent);
+                    Intent intent = new Intent(context, ThongTinTaiKhoan.class);
+                    ((Activity) context).startActivity(intent);
                     return;
                 }
                 if (user1[0].getSoDu() >= sp.getGia()) {
-                   them(p);
+                    them(p);
                 } else {
                     Toast.makeText(context, "Số dư tài khoản của bạn không đủ", Toast.LENGTH_SHORT).show();
                     return;

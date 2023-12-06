@@ -173,7 +173,7 @@ public class QuanLyGiay extends Fragment {
                 return;
             }
             if (!list_kichco.getText().toString().trim().matches("[0-9,]+")) {
-                Toast.makeText(getContext(), "Bạn không được viết gì khác ngoài số và dấu phẩy", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Kích cỡ chỉ được là số và dấu phẩy", Toast.LENGTH_SHORT).show();
                 progressDialog.cancel();
                 return;
             }

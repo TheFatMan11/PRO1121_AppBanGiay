@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ public class frg_lichsunap extends Fragment {
         list_use = new ArrayList<>();
         getListYC();
         getSoDU();
+        Log.e("TAG","soDU"+list_use);
         adapter_dsYeuCauNap = new Adapter_dsYeuCauNap(getContext(), list, list_use);
         recyclerView.setAdapter(adapter_dsYeuCauNap);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
